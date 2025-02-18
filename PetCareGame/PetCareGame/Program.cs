@@ -1,2 +1,2 @@
-﻿using var game = new PetCareGame.Game1();
+﻿using var game = new PetCareGame.PetCare();
 game.Run();
