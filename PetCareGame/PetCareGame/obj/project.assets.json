@@ -238,19 +238,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\catch\\.nuget\\packages\\": {}
+    "C:\\Users\\chloe\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\catch\\PetCareAssignment\\PetCareAssignment\\PetCareGame\\PetCareGame\\PetCareGame.csproj",
+      "projectUniqueName": "C:\\Users\\chloe\\Documents\\RIC\\SoftwareEngineering\\PetCareAssignment\\PetCareGame\\PetCareGame\\PetCareGame.csproj",
       "projectName": "PetCareGame",
-      "projectPath": "C:\\Users\\catch\\PetCareAssignment\\PetCareAssignment\\PetCareGame\\PetCareGame\\PetCareGame.csproj",
-      "packagesPath": "C:\\Users\\catch\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\catch\\PetCareAssignment\\PetCareAssignment\\PetCareGame\\PetCareGame\\obj\\",
+      "projectPath": "C:\\Users\\chloe\\Documents\\RIC\\SoftwareEngineering\\PetCareAssignment\\PetCareGame\\PetCareGame\\PetCareGame.csproj",
+      "packagesPath": "C:\\Users\\chloe\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\chloe\\Documents\\RIC\\SoftwareEngineering\\PetCareAssignment\\PetCareGame\\PetCareGame\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\catch\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\chloe\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -273,7 +273,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net8.0": {
@@ -299,12 +300,30 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.12, 8.0.12]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[8.0.12, 8.0.12]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.12, 8.0.12]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.12, 8.0.12]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.405/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
