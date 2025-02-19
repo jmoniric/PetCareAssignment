@@ -9,12 +9,19 @@ public class PetCare : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
+    enum GameState
+    {
+        MainMenu,
+        Playing
+    }
+    GameState CurrentState = GameState.MainMenu;
+
     public PetCare()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
-        //test
+        
     }
 
     protected override void Initialize()
