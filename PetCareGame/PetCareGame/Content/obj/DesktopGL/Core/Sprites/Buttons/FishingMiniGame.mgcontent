@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Sprites/Buttons/FishingMiniGameClicked.png</SourceFile>
+  <SourceFile>c:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/FishingMiniGame.png</SourceFile>
   <SourceTime>2025-02-19T16:54:05.2588873-05:00</SourceTime>
-  <DestFile>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/bin/DesktopGL/Content/Sprites/Buttons/FishingMiniGameClicked.xnb</DestFile>
-  <DestTime>2025-02-19T16:55:49.0055564-05:00</DestTime>
+  <DestFile>c:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/bin/DesktopGL/Core/Sprites/Buttons/FishingMiniGame.xnb</DestFile>
+  <DestTime>2025-02-19T17:32:35.7827517-05:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2024-08-16T13:05:56-04:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

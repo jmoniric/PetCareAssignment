@@ -36,16 +36,37 @@ public class GameHandler : Game
     private WheresWaldo _waldoLevel = new WheresWaldo();
     private FoodGame _foodLevel = new FoodGame();
     ContentManager _coreAssets;
+    ContentManager _foodAssets;
+    ContentManager _waldoAssets;
+    ContentManager _fishingAssets;
+    ContentManager _petcareAssets;
 
     
     public GameHandler()
     {
         _graphics = new GraphicsDeviceManager(this);
+
+        //setting our preffered window size
+        _graphics.PreferredBackBufferHeight = 1080;
+        _graphics.PreferredBackBufferWidth = 1920;
+
         //rather than using the static methods from the content class, we should make separate content managers for separate sets of assets
         _coreAssets = new ContentManager(Content.ServiceProvider);
-        _coreAssets.RootDirectory = "Content";
+        _coreAssets.RootDirectory = "Content/Core";
+
+        _foodAssets = new ContentManager(Content.ServiceProvider);
+        _foodAssets.RootDirectory = "Content/FoodGame";
+
+        _waldoAssets = new ContentManager(Content.ServiceProvider);
+        _waldoAssets.RootDirectory = "Content/WaldoGame";
+
+        _fishingAssets = new ContentManager(Content.ServiceProvider);
+        _fishingAssets.RootDirectory = "Content/FishingGame";
+
+        _petcareAssets = new ContentManager(Content.ServiceProvider);
+        _petcareAssets.RootDirectory = "Content/PetcareGame";
+
         IsMouseVisible = true;
-        
     }
 
     protected override void Initialize()
@@ -120,6 +141,10 @@ public class GameHandler : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
+
+        //for now, loading the next minigame will be handeled via the four buttons
+        //but in the future, there will be conditional logic to allow for whether a
+        //minigame should be loaded, whether the button is enabled, etc
         if(_mouseLeftPressed)
         {
             _mouseLeftPressed = false;
@@ -127,28 +152,28 @@ public class GameHandler : Game
             {
                 _petCareButton.Clicked();
                 CurrentState = GameState.PetCareGame;
-                _petCareLevel.LoadContent(_spriteBatch);
+                _petCareLevel.LoadContent(_spriteBatch, _petcareAssets, _coreAssets);
                 _petCareLevel.LoadLevel();
             }
             if(CheckIfButtonWasClicked(_waldoButton))
             {
                 _waldoButton.Clicked();
                 CurrentState = GameState.WaldoGame;
-                _petCareLevel.LoadContent(_spriteBatch);
+                _petCareLevel.LoadContent(_spriteBatch, _waldoAssets, _coreAssets);
                 _petCareLevel.LoadLevel();
             }
             if(CheckIfButtonWasClicked(_slidingButton))
             {
                 _slidingButton.Clicked();
                 CurrentState = GameState.FoodGame;
-                _foodLevel.LoadContent(_spriteBatch);
+                _foodLevel.LoadContent(_spriteBatch, _foodAssets, _coreAssets);
                 _foodLevel.LoadLevel();
             }
             if(CheckIfButtonWasClicked(_fishingButton))
             {
                 _fishingButton.Clicked();
                 CurrentState = GameState.FishingGame;
-                _fishingLevel.LoadContent(_spriteBatch);
+                _fishingLevel.LoadContent(_spriteBatch, _fishingAssets, _coreAssets);
                 _fishingLevel.LoadLevel();
             }
         }
@@ -180,6 +205,8 @@ public class GameHandler : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
+        
+
         // TODO: Add your drawing code here
         Rectangle sourceRectangle = new Rectangle(0, 0, _petCareButton.CellWidth, _petCareButton.CellHeight);
         Rectangle sourceRectangle1 = new Rectangle(0, 0, _waldoButton.CellWidth, _waldoButton.CellHeight);
@@ -195,7 +222,8 @@ public class GameHandler : Game
         _spriteBatch.Draw(_petCareButton.Texture, destinationRectangle, sourceRectangle, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
         _spriteBatch.Draw(_waldoButton.Texture, destinationRectangle1, sourceRectangle1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
         _spriteBatch.Draw(_slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
-        _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
+        _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f,Vector2.Zero, SpriteEffects.None, 1.0f);
+        
         switch(CurrentState) {
             case GameState.MainMenu:
                 //handle the input for main menu directly here

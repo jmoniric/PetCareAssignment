@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PetCareGame;
@@ -21,6 +22,16 @@ public class FoodGame : LevelInterface
     }
 
     public void LoadContent(SpriteBatch spriteBatch)
+    {
+
+    }
+
+    public void LoadContent(SpriteBatch spriteBatch, ContentManager _manager)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void LoadContent(SpriteBatch spriteBatch, ContentManager _manager, ContentManager _coreAssets)
     {
         throw new System.NotImplementedException();
     }

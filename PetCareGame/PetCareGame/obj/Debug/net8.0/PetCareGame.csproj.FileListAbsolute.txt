@@ -32,14 +32,6 @@ C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\D
 C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\SlideMiniGameClicked.xnb
 C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\WaldoMiniGame.xnb
 C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\WaldoMiniGameClicked.xnb
-C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\FishingMiniGame.xnb
-C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\FishingMiniGameClicked.xnb
-C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\PetCareMiniGame.xnb
-C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\PetCareMiniGameClicked.xnb
-C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\SlideMiniGame.xnb
-C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\SlideMiniGameClicked.xnb
-C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\WaldoMiniGame.xnb
-C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\WaldoMiniGameClicked.xnb
 C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\PetCareGame.exe
 C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\PetCareGame.deps.json
 C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\PetCareGame.runtimeconfig.json
@@ -66,3 +58,11 @@ C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\P
 C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\obj\Debug\net8.0\PetCareGame.pdb
 C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\obj\Debug\net8.0\PetCareGame.genruntimeconfig.cache
 C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\obj\Debug\net8.0\ref\PetCareGame.dll
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Buttons\FishingMiniGame.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Buttons\FishingMiniGameClicked.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Buttons\PetCareMiniGame.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Buttons\PetCareMiniGameClicked.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Buttons\SlideMiniGame.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Buttons\SlideMiniGameClicked.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Buttons\WaldoMiniGame.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Buttons\WaldoMiniGameClicked.xnb
