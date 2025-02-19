@@ -39,6 +39,7 @@ namespace PetCareGame
             AnimationTime = 30;
             Texture = _clickedTexture;
         }
+        
         public void UpdateButton(){
             if(AnimationTime > 0){
                 AnimationTime--;

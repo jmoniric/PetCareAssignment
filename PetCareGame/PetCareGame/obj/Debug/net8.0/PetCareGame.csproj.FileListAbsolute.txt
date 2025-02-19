@@ -1,11 +1,3 @@
-C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\Sprite-0001.xnb
-C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\Sprite-0002.xnb
-C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\Sprite-0003.xnb
-C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\Sprite-0004.xnb
-C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\Sprite-0005.xnb
-C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\Sprite-0006.xnb
-C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\Sprite-0007.xnb
-C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\Sprite-0008.xnb
 C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\PetCareGame.exe
 C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\PetCareGame.deps.json
 C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\PetCareGame.runtimeconfig.json
@@ -32,3 +24,11 @@ C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\obj\D
 C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\obj\Debug\net8.0\PetCareGame.pdb
 C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\obj\Debug\net8.0\PetCareGame.genruntimeconfig.cache
 C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\obj\Debug\net8.0\ref\PetCareGame.dll
+C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\FishingMiniGame.xnb
+C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\FishingMiniGameClicked.xnb
+C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\PetCareMiniGame.xnb
+C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\PetCareMiniGameClicked.xnb
+C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\SlideMiniGame.xnb
+C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\SlideMiniGameClicked.xnb
+C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\WaldoMiniGame.xnb
+C:\Users\catch\PetCareAssignment\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Sprites\Buttons\WaldoMiniGameClicked.xnb
