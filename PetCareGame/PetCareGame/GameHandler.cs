@@ -59,7 +59,6 @@ public class GameHandler : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-
         // TODO: use this.Content to load your game content here
         _petCareButton = new Button(Content.Load<Texture2D>("Sprites/Buttons/PetCareMiniGame"), Content.Load<Texture2D>("Sprites/Buttons/PetCareMiniGameClicked"), 
                                             new Point(64, 33), _petCareButtonPosition, "Pet Care Minigame", 33, true);
@@ -115,6 +114,33 @@ public class GameHandler : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
+        if(_mouseLeftPressed)
+        {
+            _mouseLeftPressed = false;
+            if(CheckIfButtonWasClicked(_petCareButton))
+            {
+                _petCareButton.Clicked();
+                CurrentState = GameState.PetCareGame;
+            }
+            if(CheckIfButtonWasClicked(_waldoButton))
+            {
+                _waldoButton.Clicked();
+                CurrentState = GameState.WaldoGame;
+                _petCareLevel.LoadContent(_spriteBatch);
+                _petCareLevel.LoadLevel();
+            }
+            if(CheckIfButtonWasClicked(_slidingButton))
+            {
+                _slidingButton.Clicked();
+                CurrentState = GameState.FoodGame;
+            }
+            if(CheckIfButtonWasClicked(_fishingButton))
+            {
+                _fishingButton.Clicked();
+                CurrentState = GameState.FishingGame;
+            }
+        }
+
         switch(CurrentState) {
             case GameState.MainMenu:
                 //handle the input for main menu directly here
@@ -133,26 +159,7 @@ public class GameHandler : Game
                 break;   
         }
 
-        if(_mouseLeftPressed)
-        {
-            _mouseLeftPressed = false;
-            if(CheckIfButtonWasClicked(_petCareButton))
-            {
-                _petCareButton.Clicked();
-            }
-            if(CheckIfButtonWasClicked(_waldoButton))
-            {
-                _waldoButton.Clicked();
-            }
-            if(CheckIfButtonWasClicked(_slidingButton))
-            {
-                _slidingButton.Clicked();
-            }
-            if(CheckIfButtonWasClicked(_fishingButton))
-            {
-                _fishingButton.Clicked();
-            }
-        }
+        
 
         base.Update(gameTime);
     }
