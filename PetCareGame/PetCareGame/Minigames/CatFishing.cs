@@ -20,17 +20,18 @@ public class CatFishing : LevelInterface
         
     }
 
-    public void Update(GameTime gameTime)
+    public void LoadContent(SpriteBatch spriteBatch)
     {
-        
-    }
-
-    public void LoadContent(SpriteBatch _spriteBatch) {
-
+        throw new System.NotImplementedException();
     }
 
     public void LoadLevel()
     {
         throw new System.NotImplementedException();
+    }
+
+    public void Update(GameTime gameTime)
+    {
+        
     }
 }

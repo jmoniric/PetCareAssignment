@@ -38,13 +38,12 @@ public class GameHandler : Game
     ContentManager _coreAssets;
 
     
-
     public GameHandler()
     {
         _graphics = new GraphicsDeviceManager(this);
         //rather than using the static methods from the content class, we should make separate content managers for separate sets of assets
         _coreAssets = new ContentManager(Content.ServiceProvider);
-        _coreAssets.RootDirectory = "Content/Core";
+        _coreAssets.RootDirectory = "Content";
         IsMouseVisible = true;
         
     }
@@ -67,13 +66,13 @@ public class GameHandler : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         // TODO: use this.Content to load your game content here
         
-        _petCareButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGame"), Content.Load<Texture2D>("Sprites/Buttons/PetCareMiniGameClicked"), 
+        _petCareButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGameClicked"), 
                                             new Point(64, 33), _petCareButtonPosition, "Pet Care Minigame", 33, true);
-        _waldoButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGame"), Content.Load<Texture2D>("Sprites/Buttons/WaldoMiniGameClicked"),
+        _waldoButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGameClicked"),
                                             new Point(64, 33), _waldoButtonPosition, "Where's Waldo Minigame", 34, true);
-        _slidingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/SlideMiniGame"), Content.Load<Texture2D>("Sprites/Buttons/SlideMiniGameClicked"),
+        _slidingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/SlideMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/SlideMiniGameClicked"),
                                             new Point(64, 33), _slidingButtonPosition, "Sliding Minigame", 35, true);
-        _fishingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGame"), Content.Load<Texture2D>("Sprites/Buttons/FishingMiniGameClicked"),
+        _fishingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGameClicked"),
                                             new Point(64, 33), _fishingButtonPosition, "Fishing Minigame", 36, true);
 
     }
