@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/catch/PetCareAssignment/PetCareAssignment/PetCareGame/PetCareGame/Content/Sprites/Buttons/Sprite-0001.png</File>
+    <File>C:/Users/catch/PetCareAssignment/PetCareAssignment/PetCareGame/PetCareGame/Content/Sprites/Buttons/Sprite-0002.png</File>
+    <File>C:/Users/catch/PetCareAssignment/PetCareAssignment/PetCareGame/PetCareGame/Content/Sprites/Buttons/Sprite-0003.png</File>
+    <File>C:/Users/catch/PetCareAssignment/PetCareAssignment/PetCareGame/PetCareGame/Content/Sprites/Buttons/Sprite-0004.png</File>
+    <File>C:/Users/catch/PetCareAssignment/PetCareAssignment/PetCareGame/PetCareGame/Content/Sprites/Buttons/Sprite-0005.png</File>
+    <File>C:/Users/catch/PetCareAssignment/PetCareAssignment/PetCareGame/PetCareGame/Content/Sprites/Buttons/Sprite-0006.png</File>
+    <File>C:/Users/catch/PetCareAssignment/PetCareAssignment/PetCareGame/PetCareGame/Content/Sprites/Buttons/Sprite-0007.png</File>
+    <File>C:/Users/catch/PetCareAssignment/PetCareAssignment/PetCareGame/PetCareGame/Content/Sprites/Buttons/Sprite-0008.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>
