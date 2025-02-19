@@ -4,12 +4,15 @@ using Microsoft.Xna.Framework.Input;
 
 namespace PetCareGame;
 
-public class PetCare : Game
+public class GameHandler : Game
 {
     enum GameState
     {
         MainMenu,
-        Playing
+        PetCareGame,
+        WaldoGame,
+        FishingGame,
+        FoodGame
     }
     GameState CurrentState = GameState.MainMenu;
 
@@ -25,9 +28,14 @@ public class PetCare : Game
     private Vector2 _fishingButtonPosition;
     private MouseState _oneShotMouseState;
     private bool _mouseLeftPressed;
+    private PetCare _petCareLevel = new PetCare();
+    private CatFishing _fishingLevel = new CatFishing();
+    private WheresWaldo _waldoLevel = new WheresWaldo();
+    private FoodGame _foodLevel = new FoodGame();
+
     
 
-    public PetCare()
+    public GameHandler()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
@@ -75,6 +83,23 @@ public class PetCare : Game
                 _mouseLeftPressed = true;
             }
         }
+        switch(CurrentState) {
+            case GameState.MainMenu:
+                //handle the input for main menu directly here
+                break;
+            case GameState.PetCareGame:
+                _petCareLevel.HandleInput(gameTime);
+                break;
+            case GameState.FishingGame:
+                _fishingLevel.HandleInput(gameTime);
+                break;
+            case GameState.WaldoGame:
+                _waldoLevel.HandleInput(gameTime);
+                break;
+            case GameState.FoodGame:
+                _foodLevel.HandleInput(gameTime);
+                break;   
+        }
     }
 
     protected override void Update(GameTime gameTime)
@@ -85,10 +110,28 @@ public class PetCare : Game
         _slidingButton.UpdateButton();
         _fishingButton.UpdateButton();
 
+        
+
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Add your update logic here
+        switch(CurrentState) {
+            case GameState.MainMenu:
+                //handle the input for main menu directly here
+                break;
+            case GameState.PetCareGame:
+                _petCareLevel.Update(gameTime);
+                break;
+            case GameState.FishingGame:
+                _fishingLevel.Update(gameTime);
+                break;
+            case GameState.WaldoGame:
+                _waldoLevel.Update(gameTime);
+                break;
+            case GameState.FoodGame:
+                _foodLevel.Update(gameTime);
+                break;   
+        }
 
         if(_mouseLeftPressed)
         {
@@ -134,6 +177,23 @@ public class PetCare : Game
         _spriteBatch.Draw(_waldoButton.Texture, destinationRectangle1, sourceRectangle1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
         _spriteBatch.Draw(_slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
         _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
+        switch(CurrentState) {
+            case GameState.MainMenu:
+                //handle the input for main menu directly here
+                break;
+            case GameState.PetCareGame:
+                _petCareLevel.Draw(gameTime, _spriteBatch);
+                break;
+            case GameState.FishingGame:
+                _fishingLevel.Draw(gameTime, _spriteBatch);
+                break;
+            case GameState.WaldoGame:
+                _waldoLevel.Draw(gameTime, _spriteBatch);
+                break;
+            case GameState.FoodGame:
+                _foodLevel.Draw(gameTime, _spriteBatch);
+                break;   
+        }
         _spriteBatch.End();
         
         base.Draw(gameTime);
