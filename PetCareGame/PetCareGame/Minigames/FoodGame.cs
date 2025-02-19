@@ -20,6 +20,16 @@ public class FoodGame : LevelInterface
         
     }
 
+    public void LoadContent(SpriteBatch spriteBatch)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void LoadLevel()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void Update(GameTime gameTime)
     {
         

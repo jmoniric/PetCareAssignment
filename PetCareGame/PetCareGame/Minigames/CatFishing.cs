@@ -24,4 +24,13 @@ public class CatFishing : LevelInterface
     {
         
     }
+
+    public void LoadContent(SpriteBatch _spriteBatch) {
+
+    }
+
+    public void LoadLevel()
+    {
+        throw new System.NotImplementedException();
+    }
 }

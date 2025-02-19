@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Net.Mime;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -32,13 +35,16 @@ public class GameHandler : Game
     private CatFishing _fishingLevel = new CatFishing();
     private WheresWaldo _waldoLevel = new WheresWaldo();
     private FoodGame _foodLevel = new FoodGame();
+    ContentManager _coreAssets;
 
     
 
     public GameHandler()
     {
         _graphics = new GraphicsDeviceManager(this);
-        Content.RootDirectory = "Content";
+        //rather than using the static methods from the content class, we should make separate content managers for separate sets of assets
+        _coreAssets = new ContentManager(Content.ServiceProvider);
+        _coreAssets.RootDirectory = "Content/Core";
         IsMouseVisible = true;
         
     }
@@ -60,13 +66,14 @@ public class GameHandler : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         // TODO: use this.Content to load your game content here
-        _petCareButton = new Button(Content.Load<Texture2D>("Sprites/Buttons/PetCareMiniGame"), Content.Load<Texture2D>("Sprites/Buttons/PetCareMiniGameClicked"), 
+        
+        _petCareButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGame"), Content.Load<Texture2D>("Sprites/Buttons/PetCareMiniGameClicked"), 
                                             new Point(64, 33), _petCareButtonPosition, "Pet Care Minigame", 33, true);
-        _waldoButton = new Button(Content.Load<Texture2D>("Sprites/Buttons/WaldoMiniGame"), Content.Load<Texture2D>("Sprites/Buttons/WaldoMiniGameClicked"),
+        _waldoButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGame"), Content.Load<Texture2D>("Sprites/Buttons/WaldoMiniGameClicked"),
                                             new Point(64, 33), _waldoButtonPosition, "Where's Waldo Minigame", 34, true);
-        _slidingButton = new Button(Content.Load<Texture2D>("Sprites/Buttons/SlideMiniGame"), Content.Load<Texture2D>("Sprites/Buttons/SlideMiniGameClicked"),
+        _slidingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/SlideMiniGame"), Content.Load<Texture2D>("Sprites/Buttons/SlideMiniGameClicked"),
                                             new Point(64, 33), _slidingButtonPosition, "Sliding Minigame", 35, true);
-        _fishingButton = new Button(Content.Load<Texture2D>("Sprites/Buttons/FishingMiniGame"), Content.Load<Texture2D>("Sprites/Buttons/FishingMiniGameClicked"),
+        _fishingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGame"), Content.Load<Texture2D>("Sprites/Buttons/FishingMiniGameClicked"),
                                             new Point(64, 33), _fishingButtonPosition, "Fishing Minigame", 36, true);
 
     }
@@ -121,6 +128,8 @@ public class GameHandler : Game
             {
                 _petCareButton.Clicked();
                 CurrentState = GameState.PetCareGame;
+                _petCareLevel.LoadContent(_spriteBatch);
+                _petCareLevel.LoadLevel();
             }
             if(CheckIfButtonWasClicked(_waldoButton))
             {
@@ -133,11 +142,15 @@ public class GameHandler : Game
             {
                 _slidingButton.Clicked();
                 CurrentState = GameState.FoodGame;
+                _foodLevel.LoadContent(_spriteBatch);
+                _foodLevel.LoadLevel();
             }
             if(CheckIfButtonWasClicked(_fishingButton))
             {
                 _fishingButton.Clicked();
                 CurrentState = GameState.FishingGame;
+                _fishingLevel.LoadContent(_spriteBatch);
+                _fishingLevel.LoadLevel();
             }
         }
 
