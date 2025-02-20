@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Mime;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -112,6 +113,49 @@ public class GameHandler : Game
                 _mouseLeftPressed = true;
             }
         }
+
+        _petCareButton.UpdateButton();
+        _waldoButton.UpdateButton();
+        _slidingButton.UpdateButton();
+        _fishingButton.UpdateButton();
+
+        //for now, loading the next minigame will be handeled via the four buttons
+        //but in the future, there will be conditional logic to allow for whether a
+        //minigame should be loaded, whether the button is enabled, etc
+        if(_mouseLeftPressed)
+        {
+            _mouseLeftPressed = false;
+            if(CheckIfButtonWasClicked(_petCareButton))
+            {
+                SetVisiblity(false); //hides buttons to prevent them from being pressed again
+                _petCareButton.Clicked();
+                CurrentState = GameState.PetCareGame;
+                _petCareLevel.LoadContent(_petcareAssets, _coreAssets);
+                _petCareLevel.LoadLevel();
+            } else if(CheckIfButtonWasClicked(_waldoButton))
+            {
+                SetVisiblity(false);
+                _waldoButton.Clicked();
+                CurrentState = GameState.WaldoGame;
+                _petCareLevel.LoadContent(_waldoAssets, _coreAssets);
+                _petCareLevel.LoadLevel();
+            } else if(CheckIfButtonWasClicked(_slidingButton))
+            {
+                SetVisiblity(false);
+                _slidingButton.Clicked();
+                CurrentState = GameState.FoodGame;
+                _foodLevel.LoadContent(_foodAssets, _coreAssets);
+                _foodLevel.LoadLevel();
+            } else if(CheckIfButtonWasClicked(_fishingButton))
+            {
+                SetVisiblity(false);
+                _fishingButton.Clicked();
+                CurrentState = GameState.FishingGame;
+                _fishingLevel.LoadContent(_fishingAssets, _coreAssets);
+                _fishingLevel.LoadLevel();
+            }
+        }
+
         switch(CurrentState) {
             case GameState.MainMenu:
                 //handle the input for main menu directly here
@@ -134,56 +178,14 @@ public class GameHandler : Game
     protected override void Update(GameTime gameTime)
     {
         HandleInput(gameTime);
-        _petCareButton.UpdateButton();
-        _waldoButton.UpdateButton();
-        _slidingButton.UpdateButton();
-        _fishingButton.UpdateButton();
-
-        
-
+            
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
 
-        //for now, loading the next minigame will be handeled via the four buttons
-        //but in the future, there will be conditional logic to allow for whether a
-        //minigame should be loaded, whether the button is enabled, etc
-        if(_mouseLeftPressed)
-        {
-            _mouseLeftPressed = false;
-            if(CheckIfButtonWasClicked(_petCareButton))
-            {
-                _petCareButton.Clicked();
-                CurrentState = GameState.PetCareGame;
-                _petCareLevel.LoadContent(_petcareAssets, _coreAssets);
-                _petCareLevel.LoadLevel();
-            }
-            if(CheckIfButtonWasClicked(_waldoButton))
-            {
-                _waldoButton.Clicked();
-                CurrentState = GameState.WaldoGame;
-                _petCareLevel.LoadContent(_waldoAssets, _coreAssets);
-                _petCareLevel.LoadLevel();
-            }
-            if(CheckIfButtonWasClicked(_slidingButton))
-            {
-                _slidingButton.Clicked();
-                CurrentState = GameState.FoodGame;
-                _foodLevel.LoadContent(_foodAssets, _coreAssets);
-                _foodLevel.LoadLevel();
-            }
-            if(CheckIfButtonWasClicked(_fishingButton))
-            {
-                _fishingButton.Clicked();
-                CurrentState = GameState.FishingGame;
-                _fishingLevel.LoadContent(_fishingAssets, _coreAssets);
-                _fishingLevel.LoadLevel();
-            }
-        }
-
         switch(CurrentState) {
             case GameState.MainMenu:
-                //handle the input for main menu directly here
+                //handle the update for main menu directly here
                 break;
             case GameState.PetCareGame:
                 _petCareLevel.Update(gameTime);
@@ -198,8 +200,6 @@ public class GameHandler : Game
                 _foodLevel.Update(gameTime);
                 break;   
         }
-
-        
 
         base.Update(gameTime);
     }
@@ -247,13 +247,23 @@ public class GameHandler : Game
 
     private bool CheckIfButtonWasClicked(Button button)
     {
-        if(_oneShotMouseState.X >= button.Position.X && _oneShotMouseState.X <= (button.Position.X + button.Dimensions.X))
-        {
-            if(_oneShotMouseState.Y >= button.Position.Y && _oneShotMouseState.Y <= (button.Position.Y + button.Dimensions.Y) && button.Visible)
+        if(button.Visible) {
+            if(_oneShotMouseState.X >= button.Position.X && _oneShotMouseState.X <= (button.Position.X + button.Dimensions.X))
             {
-                return true;
+                if(_oneShotMouseState.Y >= button.Position.Y && _oneShotMouseState.Y <= (button.Position.Y + button.Dimensions.Y))
+                {
+                    return true;
+                }
             }
         }
         return false;
+    }
+
+    //hide or show visiblity of items in here
+    private void SetVisiblity(bool isVisible) {
+        _petCareButton.Visible = isVisible;
+        _fishingButton.Visible = isVisible;
+        _waldoButton.Visible = isVisible;
+        _slidingButton.Visible = isVisible;
     }
 }

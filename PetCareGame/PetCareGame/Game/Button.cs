@@ -11,7 +11,7 @@ namespace PetCareGame
         public string Name{ get; set; }
         public int ID { get; set; }
         public int AnimationTime { get; set; }
-        public bool Visible { get; set; }
+        public bool Visible { get; set; } = false;
         public Point Dimensions { get; set; }
         public Vector2 Position { get; set; }
         public Texture2D Texture { get; set; }
