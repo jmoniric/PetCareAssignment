@@ -72,3 +72,4 @@ C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\P
 C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Animal\run.xnb
 C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Animal\spritesheet.xnb
 C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Animal\walk.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\PetcareGame\Sprites\petcare_textureatlas.xnb

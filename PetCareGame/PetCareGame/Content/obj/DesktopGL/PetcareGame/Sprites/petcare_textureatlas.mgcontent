@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>c:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Animal/run.png</SourceFile>
-  <SourceTime>2025-02-19T19:05:16.3359085-05:00</SourceTime>
-  <DestFile>c:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/bin/DesktopGL/Core/Sprites/Animal/run.xnb</DestFile>
-  <DestTime>2025-02-19T20:43:25.4294775-05:00</DestTime>
+  <SourceFile>c:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/PetcareGame/Sprites/petcare_textureatlas.png</SourceFile>
+  <SourceTime>2025-02-19T20:42:55.4502925-05:00</SourceTime>
+  <DestFile>c:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/bin/DesktopGL/PetcareGame/Sprites/petcare_textureatlas.xnb</DestFile>
+  <DestTime>2025-02-19T20:43:25.4893891-05:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2024-08-16T13:05:56-04:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
