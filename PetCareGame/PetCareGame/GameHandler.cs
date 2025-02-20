@@ -41,6 +41,8 @@ public class GameHandler : Game
     ContentManager _fishingAssets;
     ContentManager _petcareAssets;
 
+    public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
+
     
     public GameHandler()
     {
@@ -95,6 +97,7 @@ public class GameHandler : Game
                                             new Point(64, 33), _slidingButtonPosition, "Sliding Minigame", 35, true);
         _fishingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGameClicked"),
                                             new Point(64, 33), _fishingButtonPosition, "Fishing Minigame", 36, true);
+        catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
 
     }
 
@@ -152,28 +155,28 @@ public class GameHandler : Game
             {
                 _petCareButton.Clicked();
                 CurrentState = GameState.PetCareGame;
-                _petCareLevel.LoadContent(_spriteBatch, _petcareAssets, _coreAssets);
+                _petCareLevel.LoadContent(_petcareAssets, _coreAssets);
                 _petCareLevel.LoadLevel();
             }
             if(CheckIfButtonWasClicked(_waldoButton))
             {
                 _waldoButton.Clicked();
                 CurrentState = GameState.WaldoGame;
-                _petCareLevel.LoadContent(_spriteBatch, _waldoAssets, _coreAssets);
+                _petCareLevel.LoadContent(_waldoAssets, _coreAssets);
                 _petCareLevel.LoadLevel();
             }
             if(CheckIfButtonWasClicked(_slidingButton))
             {
                 _slidingButton.Clicked();
                 CurrentState = GameState.FoodGame;
-                _foodLevel.LoadContent(_spriteBatch, _foodAssets, _coreAssets);
+                _foodLevel.LoadContent(_foodAssets, _coreAssets);
                 _foodLevel.LoadLevel();
             }
             if(CheckIfButtonWasClicked(_fishingButton))
             {
                 _fishingButton.Clicked();
                 CurrentState = GameState.FishingGame;
-                _fishingLevel.LoadContent(_spriteBatch, _fishingAssets, _coreAssets);
+                _fishingLevel.LoadContent(_fishingAssets, _coreAssets);
                 _fishingLevel.LoadLevel();
             }
         }
@@ -205,40 +208,36 @@ public class GameHandler : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        
-
-        // TODO: Add your drawing code here
-        Rectangle sourceRectangle = new Rectangle(0, 0, _petCareButton.CellWidth, _petCareButton.CellHeight);
-        Rectangle sourceRectangle1 = new Rectangle(0, 0, _waldoButton.CellWidth, _waldoButton.CellHeight);
-        Rectangle sourceRectangle2 = new Rectangle(0, 0, _slidingButton.CellWidth, _slidingButton.CellHeight);
-        Rectangle sourceRectangle3 = new Rectangle(0, 0, _fishingButton.CellWidth, _fishingButton.CellHeight);
-        
-        Rectangle destinationRectangle = new Rectangle((int)_petCareButtonPosition.X, (int)_petCareButtonPosition.Y, _petCareButton.CellWidth, _petCareButton.CellHeight);
-        Rectangle destinationRectangle1 = new Rectangle((int)_waldoButtonPosition.X, (int)_waldoButtonPosition.Y, _waldoButton.CellWidth, _waldoButton.CellHeight);
-        Rectangle destinationRectangle2 = new Rectangle((int)_slidingButtonPosition.X, (int)_slidingButtonPosition.Y, _slidingButton.CellWidth, _slidingButton.CellHeight);
-        Rectangle destinationRectangle3 = new Rectangle((int)_fishingButtonPosition.X, (int)_fishingButtonPosition.Y, _fishingButton.CellWidth, _fishingButton.CellHeight);
-        
         _spriteBatch.Begin(SpriteSortMode.FrontToBack);
-        _spriteBatch.Draw(_petCareButton.Texture, destinationRectangle, sourceRectangle, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
-        _spriteBatch.Draw(_waldoButton.Texture, destinationRectangle1, sourceRectangle1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
-        _spriteBatch.Draw(_slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
-        _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f,Vector2.Zero, SpriteEffects.None, 1.0f);
-        
+
         switch(CurrentState) {
             case GameState.MainMenu:
-                //handle the input for main menu directly here
+                Rectangle sourceRectangle = new Rectangle(0, 0, _petCareButton.CellWidth, _petCareButton.CellHeight);
+                Rectangle sourceRectangle1 = new Rectangle(0, 0, _waldoButton.CellWidth, _waldoButton.CellHeight);
+                Rectangle sourceRectangle2 = new Rectangle(0, 0, _slidingButton.CellWidth, _slidingButton.CellHeight);
+                Rectangle sourceRectangle3 = new Rectangle(0, 0, _fishingButton.CellWidth, _fishingButton.CellHeight);
+                
+                Rectangle destinationRectangle = new Rectangle((int)_petCareButtonPosition.X, (int)_petCareButtonPosition.Y, _petCareButton.CellWidth, _petCareButton.CellHeight);
+                Rectangle destinationRectangle1 = new Rectangle((int)_waldoButtonPosition.X, (int)_waldoButtonPosition.Y, _waldoButton.CellWidth, _waldoButton.CellHeight);
+                Rectangle destinationRectangle2 = new Rectangle((int)_slidingButtonPosition.X, (int)_slidingButtonPosition.Y, _slidingButton.CellWidth, _slidingButton.CellHeight);
+                Rectangle destinationRectangle3 = new Rectangle((int)_fishingButtonPosition.X, (int)_fishingButtonPosition.Y, _fishingButton.CellWidth, _fishingButton.CellHeight);
+                
+                _spriteBatch.Draw(_petCareButton.Texture, destinationRectangle, sourceRectangle, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
+                _spriteBatch.Draw(_waldoButton.Texture, destinationRectangle1, sourceRectangle1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
+                _spriteBatch.Draw(_slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
+                _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f,Vector2.Zero, SpriteEffects.None, 1.0f);
                 break;
             case GameState.PetCareGame:
-                _petCareLevel.Draw(gameTime, _spriteBatch);
+                _petCareLevel.Draw(gameTime, _spriteBatch, _graphics);
                 break;
             case GameState.FishingGame:
-                _fishingLevel.Draw(gameTime, _spriteBatch);
+                _fishingLevel.Draw(gameTime, _spriteBatch, _graphics);
                 break;
             case GameState.WaldoGame:
-                _waldoLevel.Draw(gameTime, _spriteBatch);
+                _waldoLevel.Draw(gameTime, _spriteBatch, _graphics);
                 break;
             case GameState.FoodGame:
-                _foodLevel.Draw(gameTime, _spriteBatch);
+                _foodLevel.Draw(gameTime, _spriteBatch, _graphics);
                 break;   
         }
         _spriteBatch.End();

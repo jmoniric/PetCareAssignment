@@ -66,3 +66,9 @@ C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\P
 C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Buttons\SlideMiniGameClicked.xnb
 C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Buttons\WaldoMiniGame.xnb
 C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Buttons\WaldoMiniGameClicked.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Animal\attack.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Animal\idle.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Animal\jump.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Animal\run.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Animal\spritesheet.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\Animal\walk.xnb

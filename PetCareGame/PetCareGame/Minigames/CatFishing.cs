@@ -11,7 +11,7 @@ public class CatFishing : LevelInterface
         
     }
 
-    public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+    public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
     {
         
     }
@@ -21,17 +21,7 @@ public class CatFishing : LevelInterface
         
     }
 
-    public void LoadContent(SpriteBatch spriteBatch)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void LoadContent(SpriteBatch spriteBatch, ContentManager _manager)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void LoadContent(SpriteBatch spriteBatch, ContentManager _manager, ContentManager _coreAssets)
+    public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
         throw new System.NotImplementedException();
     }
