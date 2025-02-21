@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\chloe\\Documents\\RIC\\SoftwareEngineering\\PetCareAssignment\\PetCareGame\\PetCareGame\\PetCareGame.csproj": {}
+    "C:\\Users\\Alli\\Documents\\RIC\\SoftwareEngineering\\PetCareAssignment\\PetCareGame\\PetCareGame\\PetCareGame.csproj": {}
   },
   "projects": {
-    "C:\\Users\\chloe\\Documents\\RIC\\SoftwareEngineering\\PetCareAssignment\\PetCareGame\\PetCareGame\\PetCareGame.csproj": {
+    "C:\\Users\\Alli\\Documents\\RIC\\SoftwareEngineering\\PetCareAssignment\\PetCareGame\\PetCareGame\\PetCareGame.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\chloe\\Documents\\RIC\\SoftwareEngineering\\PetCareAssignment\\PetCareGame\\PetCareGame\\PetCareGame.csproj",
+        "projectUniqueName": "C:\\Users\\Alli\\Documents\\RIC\\SoftwareEngineering\\PetCareAssignment\\PetCareGame\\PetCareGame\\PetCareGame.csproj",
         "projectName": "PetCareGame",
-        "projectPath": "C:\\Users\\chloe\\Documents\\RIC\\SoftwareEngineering\\PetCareAssignment\\PetCareGame\\PetCareGame\\PetCareGame.csproj",
-        "packagesPath": "C:\\Users\\chloe\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\chloe\\Documents\\RIC\\SoftwareEngineering\\PetCareAssignment\\PetCareGame\\PetCareGame\\obj\\",
+        "projectPath": "C:\\Users\\Alli\\Documents\\RIC\\SoftwareEngineering\\PetCareAssignment\\PetCareGame\\PetCareGame\\PetCareGame.csproj",
+        "packagesPath": "C:\\Users\\Alli\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Alli\\Documents\\RIC\\SoftwareEngineering\\PetCareAssignment\\PetCareGame\\PetCareGame\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\chloe\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Alli\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,7 +40,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -64,30 +66,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.12, 8.0.12]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[8.0.12, 8.0.12]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.12, 8.0.12]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.12, 8.0.12]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

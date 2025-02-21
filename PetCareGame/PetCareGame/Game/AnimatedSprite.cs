@@ -69,18 +69,20 @@ public class AnimatedTexture
         }
     }
 
-    public void DrawFrame(SpriteBatch batch, Vector2 screenPos)
+    //added in SpriteEffects parameter to allow sprite to be flipped easily
+    public void DrawFrame(SpriteBatch batch, Vector2 screenPos, SpriteEffects effect)
     {
-        DrawFrame(batch, frame, screenPos);
+        DrawFrame(batch, frame, screenPos, effect);
     }
 
-    public void DrawFrame(SpriteBatch batch, int frame, Vector2 screenPos)
+    //added in SpriteEffects parameter to allow sprite to be flipped easily
+    public void DrawFrame(SpriteBatch batch, int frame, Vector2 screenPos, SpriteEffects effect)
     {
         int FrameWidth = myTexture.Width / frameCount;
         Rectangle sourcerect = new Rectangle(FrameWidth * frame, 0,
             FrameWidth, myTexture.Height);
         batch.Draw(myTexture, screenPos, sourcerect, Color.White,
-            Rotation, Origin, Scale, SpriteEffects.None, Depth);
+            Rotation, Origin, Scale, effect, Depth);
     }
 
     public bool IsPaused

@@ -4,21 +4,21 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Animal/attack.png</File>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Animal/idle.png</File>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Animal/jump.png</File>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Animal/run.png</File>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Animal/spritesheet.png</File>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Animal/walk.png</File>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/FishingMiniGame.png</File>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/FishingMiniGameClicked.png</File>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/PetCareMiniGame.png</File>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/PetCareMiniGameClicked.png</File>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/SlideMiniGame.png</File>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/SlideMiniGameClicked.png</File>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/WaldoMiniGame.png</File>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/WaldoMiniGameClicked.png</File>
-    <File>C:/Users/chloe/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/PetcareGame/Sprites/petcare_textureatlas.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Animal/attack.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Animal/idle.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Animal/jump.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Animal/run.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Animal/spritesheet.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Animal/walk.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/FishingMiniGame.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/FishingMiniGameClicked.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/PetCareMiniGame.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/PetCareMiniGameClicked.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/SlideMiniGame.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/SlideMiniGameClicked.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/WaldoMiniGame.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/Core/Sprites/Buttons/WaldoMiniGameClicked.png</File>
+    <File>C:/Users/Alli/Documents/RIC/SoftwareEngineering/PetCareAssignment/PetCareGame/PetCareGame/Content/PetcareGame/Sprites/petcare_textureatlas.png</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />

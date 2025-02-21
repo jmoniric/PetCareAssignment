@@ -42,6 +42,9 @@ public class GameHandler : Game
     ContentManager _fishingAssets;
     ContentManager _petcareAssets;
 
+    public static int windowHeight = 1080;
+    public static int windowWidth = 1920;
+
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
 
     
@@ -50,8 +53,8 @@ public class GameHandler : Game
         _graphics = new GraphicsDeviceManager(this);
 
         //setting our preffered window size
-        _graphics.PreferredBackBufferHeight = 1080;
-        _graphics.PreferredBackBufferWidth = 1920;
+        _graphics.PreferredBackBufferHeight = windowHeight;
+        _graphics.PreferredBackBufferWidth = windowWidth;
 
         //rather than using the static methods from the content class, we should make separate content managers for separate sets of assets
         _coreAssets = new ContentManager(Content.ServiceProvider);
@@ -137,8 +140,8 @@ public class GameHandler : Game
                 SetVisiblity(false);
                 _waldoButton.Clicked();
                 CurrentState = GameState.WaldoGame;
-                _petCareLevel.LoadContent(_waldoAssets, _coreAssets);
-                _petCareLevel.LoadLevel();
+                _waldoLevel.LoadContent(_waldoAssets, _coreAssets);
+                _waldoLevel.LoadLevel();
             } else if(CheckIfButtonWasClicked(_slidingButton))
             {
                 SetVisiblity(false);
@@ -208,7 +211,7 @@ public class GameHandler : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        _spriteBatch.Begin(SpriteSortMode.FrontToBack);
+        _spriteBatch.Begin(SpriteSortMode.Deferred);
 
         switch(CurrentState) {
             case GameState.MainMenu:

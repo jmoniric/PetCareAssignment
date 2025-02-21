@@ -13,7 +13,7 @@ public class FoodGame : LevelInterface
 
     public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
     {
-        
+        _graphics.GraphicsDevice.Clear(Color.LightGreen);
     }
 
     public void HandleInput(GameTime gameTime)
@@ -23,12 +23,12 @@ public class FoodGame : LevelInterface
 
     public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
-        throw new System.NotImplementedException();
+
     }
 
     public void LoadLevel()
     {
-        throw new System.NotImplementedException();
+        
     }
 
     public void Update(GameTime gameTime)
