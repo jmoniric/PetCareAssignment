@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace PetCareGame;
 
@@ -19,14 +21,18 @@ public class PetCare : LevelInterface
     private Vector2 catPos = new Vector2(GameHandler.windowWidth / 2, 720);
     private Color backgroundColour = new Color(197, 118, 38);
     private Texture2D atlas;
+    private Texture2D particleTex;
 
     private Point sprayBottlePos = new Point(124, 400);
     private Vector2 sprayBottleOrigin = new Vector2(0,0);
     private Rectangle sprayBottleBounds;
     private float sprayBottleRot = 0f;
+    private DateTime cooldown;
 
     private bool faceRight = true;
     private ObjectHeld currentObject = ObjectHeld.None;
+
+    private List<Particle> particles = new List<Particle>();
 
     public void Dispose()
     {
@@ -73,6 +79,10 @@ public class PetCare : LevelInterface
         } else {
             spriteBatch.Draw(atlas, sprayBottleBounds, sprayBottle, Color.White, sprayBottleRot, sprayBottleOrigin, SpriteEffects.None, 1f);
         }
+
+        for(int i = 0; i < particles.Count; i++) {
+            particles[i].Draw(gameTime, spriteBatch, _graphics, Color.SkyBlue);
+        }
         
         
     }
@@ -90,10 +100,20 @@ public class PetCare : LevelInterface
 
         //orientates held spray bottle to point at cat
         if(currentObject == ObjectHeld.SprayBottle) {
-            sprayBottleRot = PointAtSprite(sprayBottlePos.X, sprayBottlePos.Y, (int)catPos.X, (int)catPos.Y);
+            sprayBottleRot = Particle.PointAtSprite(sprayBottlePos.X, sprayBottlePos.Y, (int)catPos.X, (int)catPos.Y);
         }
+
+        TimeSpan cooldownBuffer = new TimeSpan(3L);
+
+        //Console.WriteLine(cooldown.Milliseconds);
+        //sprays water particles
         if(currentObject == ObjectHeld.SprayBottle && mouseState.LeftButton == ButtonState.Pressed) {
-            
+            /*Console.WriteLine(cooldown.Add(cooldownBuffer).Millisecond);
+            Console.WriteLine(DateTime.Now.Millisecond);
+            if(cooldown.Add(cooldownBuffer).Millisecond <= DateTime.Now.Millisecond) {*/
+                particles.Add(new Particle(mouseState.X, mouseState.Y, (int)catPos.X, (int)catPos.Y, 20, 10, 10, particleTex));
+                cooldown = DateTime.Now;
+            //}
         }
 
         //controls held object
@@ -110,6 +130,7 @@ public class PetCare : LevelInterface
         GameHandler.catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 4f, 0.5f);
         GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         atlas = _manager.Load<Texture2D>("Sprites/petcare_textureatlas");
+        particleTex = _coreAssets.Load<Texture2D>("Sprites/plain_white");
     }
 
     public void LoadLevel()
@@ -128,9 +149,17 @@ public class PetCare : LevelInterface
             sprayBottlePos = new Point(mouseState.X, mouseState.Y);
             sprayBottleOrigin = new Vector2(16, 16);
         }
+
+        int index = 0;
+        while (index < particles.Count) {
+            particles[index].Update(gameTime);
+            if(particles[index].CheckToDestroy(5)) {
+                particles.RemoveAt(index);
+            } else {
+                index++;
+            }
+        }
     }
 
-    private float PointAtSprite(int pointX, int pointY, int targetX, int targetY) {
-        return (float)Math.Atan2(targetY - pointY, targetX - pointX);
-    }
+    
 }
