@@ -16,7 +16,8 @@ public class GameHandler : Game
         PetCareGame,
         WaldoGame,
         FishingGame,
-        FoodGame
+        SlidingGame,
+        PauseMenu
     }
     GameState CurrentState = GameState.MainMenu;
 
@@ -41,6 +42,8 @@ public class GameHandler : Game
     ContentManager _waldoAssets;
     ContentManager _fishingAssets;
     ContentManager _petcareAssets;
+
+    public bool isPaused = false;
 
     public static int windowHeight = 1080;
     public static int windowWidth = 1920;
@@ -146,7 +149,7 @@ public class GameHandler : Game
             {
                 SetVisiblity(false);
                 _slidingButton.Clicked();
-                CurrentState = GameState.FoodGame;
+                CurrentState = GameState.SlidingGame;
                 _slidingLevel.LoadContent(_slidingAssets, _coreAssets);
                 _slidingLevel.LoadLevel();
             } else if(CheckIfButtonWasClicked(_fishingButton))
@@ -172,7 +175,7 @@ public class GameHandler : Game
             case GameState.WaldoGame:
                 _waldoLevel.HandleInput(gameTime);
                 break;
-            case GameState.FoodGame:
+            case GameState.SlidingGame:
                 _slidingLevel.HandleInput(gameTime);
                 break;   
         }
@@ -199,7 +202,7 @@ public class GameHandler : Game
             case GameState.WaldoGame:
                 _waldoLevel.Update(gameTime);
                 break;
-            case GameState.FoodGame:
+            case GameState.SlidingGame:
                 _slidingLevel.Update(gameTime);
                 break;   
         }
@@ -211,7 +214,7 @@ public class GameHandler : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        _spriteBatch.Begin(SpriteSortMode.Deferred);
+        _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
 
         switch(CurrentState) {
             case GameState.MainMenu:
@@ -239,7 +242,7 @@ public class GameHandler : Game
             case GameState.WaldoGame:
                 _waldoLevel.Draw(gameTime, _spriteBatch, _graphics);
                 break;
-            case GameState.FoodGame:
+            case GameState.SlidingGame:
                 _slidingLevel.Draw(gameTime, _spriteBatch, _graphics);
                 break;   
         }
