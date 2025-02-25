@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PetCareGame;
 
-public class FoodGame : LevelInterface
+public class SlidingGame : LevelInterface
 {
     public void Dispose()
     {

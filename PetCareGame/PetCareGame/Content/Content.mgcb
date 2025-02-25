@@ -13,6 +13,11 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Core/Sounds/placeholder.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Core/Sounds/placeholder.xml
+
 #begin Core/Sprites/Animal/attack.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -193,6 +198,21 @@
 /processorParam:TextureFormat=Color
 /build:Core/Sprites/plain_white.png
 
+#begin FishingGame/Sounds/placeholder.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:FishingGame/Sounds/placeholder.xml
+
+#begin FishingGame/Sprites/placeholder.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:FishingGame/Sprites/placeholder.xml
+
+#begin PetcareGame/Sounds/placeholder.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:PetcareGame/Sounds/placeholder.xml
+
 #begin PetcareGame/Sprites/petcare_textureatlas.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -204,4 +224,24 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:PetcareGame/Sprites/petcare_textureatlas.png
+
+#begin SlidingGame/Sounds/placeholder.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:SlidingGame/Sounds/placeholder.xml
+
+#begin SlidingGame/Sprites/placeholder.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:SlidingGame/Sprites/placeholder.xml
+
+#begin WaldoGame/Sounds/placeholder.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:WaldoGame/Sounds/placeholder.xml
+
+#begin WaldoGame/Sprites/placeholder.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:WaldoGame/Sprites/placeholder.xml
 

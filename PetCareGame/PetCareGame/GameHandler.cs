@@ -35,9 +35,9 @@ public class GameHandler : Game
     private PetCare _petCareLevel = new PetCare();
     private CatFishing _fishingLevel = new CatFishing();
     private WheresWaldo _waldoLevel = new WheresWaldo();
-    private FoodGame _foodLevel = new FoodGame();
+    private SlidingGame _slidingLevel = new SlidingGame();
     ContentManager _coreAssets;
-    ContentManager _foodAssets;
+    ContentManager _slidingAssets;
     ContentManager _waldoAssets;
     ContentManager _fishingAssets;
     ContentManager _petcareAssets;
@@ -60,8 +60,8 @@ public class GameHandler : Game
         _coreAssets = new ContentManager(Content.ServiceProvider);
         _coreAssets.RootDirectory = "Content/Core";
 
-        _foodAssets = new ContentManager(Content.ServiceProvider);
-        _foodAssets.RootDirectory = "Content/FoodGame";
+        _slidingAssets = new ContentManager(Content.ServiceProvider);
+        _slidingAssets.RootDirectory = "Content/SlidingGame";
 
         _waldoAssets = new ContentManager(Content.ServiceProvider);
         _waldoAssets.RootDirectory = "Content/WaldoGame";
@@ -147,8 +147,8 @@ public class GameHandler : Game
                 SetVisiblity(false);
                 _slidingButton.Clicked();
                 CurrentState = GameState.FoodGame;
-                _foodLevel.LoadContent(_foodAssets, _coreAssets);
-                _foodLevel.LoadLevel();
+                _slidingLevel.LoadContent(_slidingAssets, _coreAssets);
+                _slidingLevel.LoadLevel();
             } else if(CheckIfButtonWasClicked(_fishingButton))
             {
                 SetVisiblity(false);
@@ -173,7 +173,7 @@ public class GameHandler : Game
                 _waldoLevel.HandleInput(gameTime);
                 break;
             case GameState.FoodGame:
-                _foodLevel.HandleInput(gameTime);
+                _slidingLevel.HandleInput(gameTime);
                 break;   
         }
     }
@@ -200,7 +200,7 @@ public class GameHandler : Game
                 _waldoLevel.Update(gameTime);
                 break;
             case GameState.FoodGame:
-                _foodLevel.Update(gameTime);
+                _slidingLevel.Update(gameTime);
                 break;   
         }
 
@@ -240,7 +240,7 @@ public class GameHandler : Game
                 _waldoLevel.Draw(gameTime, _spriteBatch, _graphics);
                 break;
             case GameState.FoodGame:
-                _foodLevel.Draw(gameTime, _spriteBatch, _graphics);
+                _slidingLevel.Draw(gameTime, _spriteBatch, _graphics);
                 break;   
         }
         _spriteBatch.End();
