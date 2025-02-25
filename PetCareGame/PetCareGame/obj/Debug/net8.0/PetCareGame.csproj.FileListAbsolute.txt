@@ -115,3 +115,4 @@ C:\Users\Alli\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\Pe
 C:\Users\Alli\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\obj\Debug\net8.0\PetCareGame.genruntimeconfig.cache
 C:\Users\Alli\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\obj\Debug\net8.0\ref\PetCareGame.dll
 C:\Users\Alli\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\plain_white.xnb
+C:\Users\chloe\Documents\RIC\SoftwareEngineering\PetCareAssignment\PetCareGame\PetCareGame\bin\Debug\net8.0\Content\Core\Sprites\plain_white.xnb
