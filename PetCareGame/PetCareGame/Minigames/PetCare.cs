@@ -24,9 +24,14 @@ public class PetCare : LevelInterface
     private Texture2D particleTex;
 
     private Point sprayBottlePos = new Point(124, 400);
-    private Vector2 sprayBottleOrigin = new Vector2(0,0);
+    private Vector2 sprayBottleOrigin = Vector2.Zero;
     private Rectangle sprayBottleBounds;
     private float sprayBottleRot = 0f;
+
+    private Point clippersPos = new Point(1200, 400);
+    private Vector2 clippersOrigin = Vector2.Zero;
+    private Rectangle clipperBounds;
+
     private DateTime cooldown;
 
     private bool faceRight = true;
@@ -44,7 +49,8 @@ public class PetCare : LevelInterface
         Rectangle floor = new Rectangle(0, 0, 31, 31);
         Rectangle floorFiller = new Rectangle(0, 12, 16, 16);
         Rectangle wall = new Rectangle(32, 0, 31, 31);
-        Rectangle sprayBottle = new Rectangle(64, 0, 31, 31);
+        Rectangle sprayBottle = new Rectangle(64, 0, 32, 32);
+        Rectangle clippers = new Rectangle(96, 0, 31, 31);
 
         _graphics.GraphicsDevice.Clear(backgroundColour);
         
@@ -80,9 +86,16 @@ public class PetCare : LevelInterface
             spriteBatch.Draw(atlas, sprayBottleBounds, sprayBottle, Color.White, sprayBottleRot, sprayBottleOrigin, SpriteEffects.None, 1f);
         }
 
+        //render water particles
         for(int i = 0; i < particles.Count; i++) {
             particles[i].Draw(gameTime, spriteBatch, _graphics, Color.SkyBlue);
         }
+
+        //bounding box of clippers
+        clipperBounds = new Rectangle(clippersPos, new Point(96, 96));
+
+        //draw clippers
+        spriteBatch.Draw(atlas, clipperBounds, clippers, Color.White, 0f, clippersOrigin, SpriteEffects.None, 1f);
         
         
     }
