@@ -16,8 +16,7 @@ public class GameHandler : Game
         PetCareGame,
         WaldoGame,
         FishingGame,
-        SlidingGame,
-        PauseMenu
+        SlidingGame
     }
     GameState CurrentState = GameState.MainMenu;
 
@@ -33,10 +32,16 @@ public class GameHandler : Game
     private Vector2 _fishingButtonPosition;
     private MouseState _oneShotMouseState;
     private bool _mouseLeftPressed;
+
+    private Button pauseButton;
+    private Texture2D pauseButtonTexture;
+    private Vector2 pausePos;
+
     private PetCare _petCareLevel = new PetCare();
     private CatFishing _fishingLevel = new CatFishing();
     private WheresWaldo _waldoLevel = new WheresWaldo();
     private SlidingGame _slidingLevel = new SlidingGame();
+    private PauseMenu _pauseMenu = new PauseMenu();
     ContentManager _coreAssets;
     ContentManager _slidingAssets;
     ContentManager _waldoAssets;
@@ -86,6 +91,7 @@ public class GameHandler : Game
         _slidingButtonPosition = new Vector2(228, 100);
         _fishingButtonPosition = new Vector2(292, 100);
         _oneShotMouseState = OneShotMouseButtons.GetState();
+        pausePos = Vector2.Zero;
         _mouseLeftPressed = false;
 
         base.Initialize();
@@ -106,10 +112,14 @@ public class GameHandler : Game
                                             new Point(64, 33), _fishingButtonPosition, "Fishing Minigame", 36, true);
         catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
 
+        pauseButtonTexture = _coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
+        pauseButton = new Button(pauseButtonTexture, pauseButtonTexture, new Point(64,64), Vector2.Zero, "Pause", 37, true);
+
     }
 
     public void HandleInput(GameTime gameTime)
     {
+        
         _oneShotMouseState = OneShotMouseButtons.GetState();
 
         if(_oneShotMouseState.LeftButton == ButtonState.Pressed)
@@ -124,6 +134,7 @@ public class GameHandler : Game
         _waldoButton.UpdateButton();
         _slidingButton.UpdateButton();
         _fishingButton.UpdateButton();
+        pauseButton.UpdateButton();
 
         //for now, loading the next minigame will be handeled via the four buttons
         //but in the future, there will be conditional logic to allow for whether a
@@ -131,7 +142,11 @@ public class GameHandler : Game
         if(_mouseLeftPressed)
         {
             _mouseLeftPressed = false;
-            if(CheckIfButtonWasClicked(_petCareButton))
+            if(CheckIfButtonWasClicked(pauseButton)) {
+                pauseButton.Clicked();
+                isPaused = true;
+                _pauseMenu.LoadLevel();
+            } else if(CheckIfButtonWasClicked(_petCareButton))
             {
                 SetVisiblity(false); //hides buttons to prevent them from being pressed again
                 _petCareButton.Clicked();
@@ -185,26 +200,28 @@ public class GameHandler : Game
     {
         HandleInput(gameTime);
             
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
-
-
-        switch(CurrentState) {
-            case GameState.MainMenu:
-                //handle the update for main menu directly here
-                break;
-            case GameState.PetCareGame:
-                _petCareLevel.Update(gameTime);
-                break;
-            case GameState.FishingGame:
-                _fishingLevel.Update(gameTime);
-                break;
-            case GameState.WaldoGame:
-                _waldoLevel.Update(gameTime);
-                break;
-            case GameState.SlidingGame:
-                _slidingLevel.Update(gameTime);
-                break;   
+        //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+          //  Exit();
+        if(isPaused) {
+            _pauseMenu.Update(gameTime);
+        } else {
+            switch(CurrentState) {
+                case GameState.MainMenu:
+                    //handle the update for main menu directly here
+                    break;
+                case GameState.PetCareGame:
+                    _petCareLevel.Update(gameTime);
+                    break;
+                case GameState.FishingGame:
+                    _fishingLevel.Update(gameTime);
+                    break;
+                case GameState.WaldoGame:
+                    _waldoLevel.Update(gameTime);
+                    break;
+                case GameState.SlidingGame:
+                    _slidingLevel.Update(gameTime);
+                    break;   
+            }
         }
 
         base.Update(gameTime);
@@ -227,6 +244,7 @@ public class GameHandler : Game
                 Rectangle destinationRectangle1 = new Rectangle((int)_waldoButtonPosition.X, (int)_waldoButtonPosition.Y, _waldoButton.CellWidth, _waldoButton.CellHeight);
                 Rectangle destinationRectangle2 = new Rectangle((int)_slidingButtonPosition.X, (int)_slidingButtonPosition.Y, _slidingButton.CellWidth, _slidingButton.CellHeight);
                 Rectangle destinationRectangle3 = new Rectangle((int)_fishingButtonPosition.X, (int)_fishingButtonPosition.Y, _fishingButton.CellWidth, _fishingButton.CellHeight);
+                Rectangle pauseDestination = new Rectangle((int)pausePos.X, (int)pausePos.Y, pauseButton.CellWidth, pauseButton.CellHeight);
                 
                 _spriteBatch.Draw(_petCareButton.Texture, destinationRectangle, sourceRectangle, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
                 _spriteBatch.Draw(_waldoButton.Texture, destinationRectangle1, sourceRectangle1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
@@ -246,7 +264,14 @@ public class GameHandler : Game
                 _slidingLevel.Draw(gameTime, _spriteBatch, _graphics);
                 break;   
         }
+
+        //draw pause button last
+        _spriteBatch.Draw(pauseButton.Texture, new Rectangle(1840,10,64,64), new Rectangle(0,0,16,16), Color.White);
         _spriteBatch.End();
+
+        if(isPaused) {
+            _pauseMenu.Draw(gameTime, _spriteBatch, _graphics);
+        }
         
         base.Draw(gameTime);
     }
