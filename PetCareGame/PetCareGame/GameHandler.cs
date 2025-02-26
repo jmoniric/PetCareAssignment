@@ -23,6 +23,9 @@ public class GameHandler : Game
 
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+
+    private DisplayManager _displayManager;
+
     private Button _petCareButton;
     private Vector2 _petCareButtonPosition;
     private Button _waldoButton;
@@ -55,13 +58,9 @@ public class GameHandler : Game
     {
         _graphics = new GraphicsDeviceManager(this);
 
-        // Automatically adjusts window size to the size of the screen currently used in Windows
-        // _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-        // _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-
-        // //setting our preffered window size
-        _graphics.PreferredBackBufferHeight = windowHeight;
-        _graphics.PreferredBackBufferWidth = windowWidth;
+        //setting our preffered window size
+        // _graphics.PreferredBackBufferHeight = windowHeight;
+        // _graphics.PreferredBackBufferWidth = windowWidth;
 
         //rather than using the static methods from the content class, we should make separate content managers for separate sets of assets
         _coreAssets = new ContentManager(Content.ServiceProvider);
@@ -85,6 +84,8 @@ public class GameHandler : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
+        _displayManager = new(this, _graphics);
+
         _petCareButtonPosition = new Vector2(100, 100);
         _waldoButtonPosition = new Vector2(164, 100);
         _slidingButtonPosition = new Vector2(228, 100);
@@ -216,6 +217,7 @@ public class GameHandler : Game
 
     protected override void Draw(GameTime gameTime)
     {
+        _displayManager.SetResolution(windowWidth, windowHeight);
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
@@ -237,6 +239,7 @@ public class GameHandler : Game
                 _slidingLevel.Draw(gameTime, _spriteBatch, _graphics);
                 break;   
         }
+
         _spriteBatch.End();
         
         base.Draw(gameTime);
