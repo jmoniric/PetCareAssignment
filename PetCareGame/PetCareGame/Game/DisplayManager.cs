@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PetCareGame;
@@ -17,14 +16,14 @@ public class DisplayManager
         SetResolution(windowWidth, windowHeight);
     }
 
-    // 
+    // Changes the resolution of window to a specified
     public void SetResolution(int x, int y){
         _graphics.PreferredBackBufferWidth = x;
         _graphics.PreferredBackBufferHeight = y;
-        _graphics.ApplyChanges();
+        _graphics.ApplyChanges(); // ApplyChanges() is required for changes to screen outside of GameHandler
     }
 
-    //
+    // Changes game window to fullscreen
     public void SetFullScreen(){
         _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
         _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
