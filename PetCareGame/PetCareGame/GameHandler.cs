@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Net.Mime;
 using Microsoft.Xna.Framework;
@@ -22,6 +22,9 @@ public class GameHandler : Game
 
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+
+    private DisplayManager _displayManager;
+
     private Button _petCareButton;
     private Vector2 _petCareButtonPosition;
     private Button _waldoButton;
@@ -61,8 +64,8 @@ public class GameHandler : Game
         _graphics = new GraphicsDeviceManager(this);
 
         //setting our preffered window size
-        _graphics.PreferredBackBufferHeight = windowHeight;
-        _graphics.PreferredBackBufferWidth = windowWidth;
+        // _graphics.PreferredBackBufferHeight = windowHeight;
+        // _graphics.PreferredBackBufferWidth = windowWidth;
 
         //rather than using the static methods from the content class, we should make separate content managers for separate sets of assets
         _coreAssets = new ContentManager(Content.ServiceProvider);
@@ -86,6 +89,8 @@ public class GameHandler : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
+        _displayManager = new(this, _graphics);
+
         _petCareButtonPosition = new Vector2(100, 100);
         _waldoButtonPosition = new Vector2(164, 100);
         _slidingButtonPosition = new Vector2(228, 100);
@@ -229,12 +234,14 @@ public class GameHandler : Game
 
     protected override void Draw(GameTime gameTime)
     {
+        _displayManager.SetResolution(windowWidth, windowHeight);
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
 
         switch(CurrentState) {
             case GameState.MainMenu:
+<<<<<<< HEAD
                 Rectangle sourceRectangle = new Rectangle(0, 0, _petCareButton.CellWidth, _petCareButton.CellHeight);
                 Rectangle sourceRectangle1 = new Rectangle(0, 0, _waldoButton.CellWidth, _waldoButton.CellHeight);
                 Rectangle sourceRectangle2 = new Rectangle(0, 0, _slidingButton.CellWidth, _slidingButton.CellHeight);
@@ -250,6 +257,9 @@ public class GameHandler : Game
                 _spriteBatch.Draw(_waldoButton.Texture, destinationRectangle1, sourceRectangle1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
                 _spriteBatch.Draw(_slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
                 _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f,Vector2.Zero, SpriteEffects.None, 1.0f);
+=======
+                DrawMainMenuButtons();
+>>>>>>> a173d4caa0254ed5ebad0af494347237df3f6a79
                 break;
             case GameState.PetCareGame:
                 _petCareLevel.Draw(gameTime, _spriteBatch, _graphics);
@@ -265,8 +275,11 @@ public class GameHandler : Game
                 break;   
         }
 
+<<<<<<< HEAD
         //draw pause button last
         _spriteBatch.Draw(pauseButton.Texture, new Rectangle(1840,10,64,64), new Rectangle(0,0,16,16), Color.White);
+=======
+>>>>>>> a173d4caa0254ed5ebad0af494347237df3f6a79
         _spriteBatch.End();
 
         if(isPaused) {
@@ -276,6 +289,7 @@ public class GameHandler : Game
         base.Draw(gameTime);
     }
 
+    // State that checks if the button was clicked to prevent multiple clicks
     private bool CheckIfButtonWasClicked(Button button)
     {
         if(button.Visible) {
@@ -296,5 +310,24 @@ public class GameHandler : Game
         _fishingButton.Visible = isVisible;
         _waldoButton.Visible = isVisible;
         _slidingButton.Visible = isVisible;
+    }
+
+
+    // Draws Button's in the current main menu's textures and hitbox
+    private void DrawMainMenuButtons(){
+        Rectangle sourceRectangle = new Rectangle(0, 0, _petCareButton.CellWidth, _petCareButton.CellHeight);
+        Rectangle sourceRectangle1 = new Rectangle(0, 0, _waldoButton.CellWidth, _waldoButton.CellHeight);
+        Rectangle sourceRectangle2 = new Rectangle(0, 0, _slidingButton.CellWidth, _slidingButton.CellHeight);
+        Rectangle sourceRectangle3 = new Rectangle(0, 0, _fishingButton.CellWidth, _fishingButton.CellHeight);
+
+        Rectangle destinationRectangle = new Rectangle((int)_petCareButtonPosition.X, (int)_petCareButtonPosition.Y, _petCareButton.CellWidth, _petCareButton.CellHeight);
+        Rectangle destinationRectangle1 = new Rectangle((int)_waldoButtonPosition.X, (int)_waldoButtonPosition.Y, _waldoButton.CellWidth, _waldoButton.CellHeight);
+        Rectangle destinationRectangle2 = new Rectangle((int)_slidingButtonPosition.X, (int)_slidingButtonPosition.Y, _slidingButton.CellWidth, _slidingButton.CellHeight);
+        Rectangle destinationRectangle3 = new Rectangle((int)_fishingButtonPosition.X, (int)_fishingButtonPosition.Y, _fishingButton.CellWidth, _fishingButton.CellHeight);
+
+        _spriteBatch.Draw(_petCareButton.Texture, destinationRectangle, sourceRectangle, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
+        _spriteBatch.Draw(_waldoButton.Texture, destinationRectangle1, sourceRectangle1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
+        _spriteBatch.Draw(_slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
+        _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
     }
 }
