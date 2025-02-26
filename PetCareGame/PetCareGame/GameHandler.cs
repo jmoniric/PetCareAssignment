@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Net.Mime;
 using Microsoft.Xna.Framework;
@@ -106,7 +106,7 @@ public class GameHandler : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         // TODO: use this.Content to load your game content here
-        
+
         _petCareButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGameClicked"), 
                                             new Point(64, 33), _petCareButtonPosition, "Pet Care Minigame", 33, true);
         _waldoButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGameClicked"),
@@ -288,7 +288,7 @@ public class GameHandler : Game
         
         base.Draw(gameTime);
     }
-
+    
     // State that checks if the button was clicked to prevent multiple clicks
     private bool CheckIfButtonWasClicked(Button button)
     {
