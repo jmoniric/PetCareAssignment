@@ -241,7 +241,6 @@ public class GameHandler : Game
 
         switch(CurrentState) {
             case GameState.MainMenu:
-<<<<<<< HEAD
                 Rectangle sourceRectangle = new Rectangle(0, 0, _petCareButton.CellWidth, _petCareButton.CellHeight);
                 Rectangle sourceRectangle1 = new Rectangle(0, 0, _waldoButton.CellWidth, _waldoButton.CellHeight);
                 Rectangle sourceRectangle2 = new Rectangle(0, 0, _slidingButton.CellWidth, _slidingButton.CellHeight);
@@ -257,9 +256,6 @@ public class GameHandler : Game
                 _spriteBatch.Draw(_waldoButton.Texture, destinationRectangle1, sourceRectangle1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
                 _spriteBatch.Draw(_slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
                 _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f,Vector2.Zero, SpriteEffects.None, 1.0f);
-=======
-                DrawMainMenuButtons();
->>>>>>> a173d4caa0254ed5ebad0af494347237df3f6a79
                 break;
             case GameState.PetCareGame:
                 _petCareLevel.Draw(gameTime, _spriteBatch, _graphics);
@@ -275,11 +271,8 @@ public class GameHandler : Game
                 break;   
         }
 
-<<<<<<< HEAD
         //draw pause button last
         _spriteBatch.Draw(pauseButton.Texture, new Rectangle(1840,10,64,64), new Rectangle(0,0,16,16), Color.White);
-=======
->>>>>>> a173d4caa0254ed5ebad0af494347237df3f6a79
         _spriteBatch.End();
 
         if(isPaused) {
