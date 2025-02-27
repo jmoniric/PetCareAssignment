@@ -36,6 +36,7 @@ public class PetCare : LevelInterface
 
     private bool faceRight = true;
     private ObjectHeld currentObject = ObjectHeld.None;
+    private bool clippersUse = false;
 
     private List<Particle> particles = new List<Particle>();
 
@@ -46,11 +47,12 @@ public class PetCare : LevelInterface
 
     public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
     {
-        Rectangle floor = new Rectangle(0, 0, 31, 31);
+        Rectangle floor = new Rectangle(0, 0, 32, 32);
         Rectangle floorFiller = new Rectangle(0, 12, 16, 16);
-        Rectangle wall = new Rectangle(32, 0, 31, 31);
+        Rectangle wall = new Rectangle(32, 0, 32, 32);
         Rectangle sprayBottle = new Rectangle(64, 0, 32, 32);
-        Rectangle clippers = new Rectangle(96, 0, 31, 31);
+        Rectangle clippers = new Rectangle(96, 0, 32, 32);
+        Rectangle clippersClosed = new Rectangle(96, 32, 32, 32);
 
         _graphics.GraphicsDevice.Clear(backgroundColour);
         
@@ -95,7 +97,11 @@ public class PetCare : LevelInterface
         clipperBounds = new Rectangle(clippersPos, new Point(96, 96));
 
         //draw clippers
-        spriteBatch.Draw(atlas, clipperBounds, clippers, Color.White, 0f, clippersOrigin, SpriteEffects.None, 1f);
+        if(clippersUse) {
+            spriteBatch.Draw(atlas, clipperBounds, clippersClosed, Color.White, 0f, clippersOrigin, SpriteEffects.None, 1f);
+        } else {
+            spriteBatch.Draw(atlas, clipperBounds, clippers, Color.White, 0f, clippersOrigin, SpriteEffects.None, 1f);
+        }
         
         
     }
@@ -129,10 +135,19 @@ public class PetCare : LevelInterface
             //}
         }
 
+        //closes clipper when used  
+        if(currentObject == ObjectHeld.NailClippers && mouseState.LeftButton == ButtonState.Pressed) {
+            clippersUse = true;
+        } else {
+            clippersUse = false;
+        }
+
         //controls held object
         if(mouseState.LeftButton == ButtonState.Pressed) {
             if(sprayBottleBounds.Contains(mouseState.X, mouseState.Y)) {
                 currentObject = ObjectHeld.SprayBottle;
+            } else if(clipperBounds.Contains(mouseState.X, mouseState.Y)) {
+                currentObject = ObjectHeld.NailClippers;
             }
         }
     }
@@ -161,6 +176,9 @@ public class PetCare : LevelInterface
         if(currentObject == ObjectHeld.SprayBottle) {
             sprayBottlePos = new Point(mouseState.X, mouseState.Y);
             sprayBottleOrigin = new Vector2(16, 16);
+        } else if(currentObject == ObjectHeld.NailClippers) {
+            clippersPos = new Point(mouseState.X, mouseState.Y);
+            clippersOrigin = new Vector2(16, 16);
         }
 
         int index = 0;

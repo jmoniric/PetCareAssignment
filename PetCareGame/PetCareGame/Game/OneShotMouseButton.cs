@@ -11,7 +11,7 @@ namespace PetCareGame
         static MouseState currentMouseState;
         static MouseState previousMouseState;
 
-        public OneShotMouseButtons(){
+        public OneShotMouseButtons() {
 
         }
 
