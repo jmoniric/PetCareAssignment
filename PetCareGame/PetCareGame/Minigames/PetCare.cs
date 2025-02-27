@@ -143,7 +143,7 @@ public class PetCare : LevelInterface
         GameHandler.catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 4f, 0.5f);
         GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         atlas = _manager.Load<Texture2D>("Sprites/petcare_textureatlas");
-        particleTex = _coreAssets.Load<Texture2D>("Sprites/plain_white");
+        particleTex = GameHandler.plainWhiteTexture;
     }
 
     public void LoadLevel()
