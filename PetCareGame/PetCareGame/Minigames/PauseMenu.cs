@@ -1,13 +1,21 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace PetCareGame;
 
 public class PauseMenu : LevelInterface
 {
     private Button saveButton;
-    private Vector2 saveButtonPos = new Vector2(880, 400);
+    private Button mainMenuButton;
+    private Button saveQuitButton;
+    private Button resumeButton;
+    private Vector2 saveButtonPos = new Vector2(790, 400);
+    private Vector2 mmButtonPos = new Vector2(790, 480);
+    private Vector2 sqButtonPos = new Vector2(790, 560);
+    private Vector2 resumeButtonPos = new Vector2(790, 700);
     public void Dispose()
     {
         throw new System.NotImplementedException();
@@ -15,22 +23,56 @@ public class PauseMenu : LevelInterface
 
     public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
     {
-        spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(0, 0, GameHandler.windowWidth, GameHandler.windowHeight), Color.LightGray);
+        //draw backing texture
+        spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle(0, 0, GameHandler.windowWidth, GameHandler.windowHeight), new Rectangle(32,0,16,16), Color.LightGray);
+        //draw window
         spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle(GameHandler.windowWidth/4, GameHandler.windowHeight/6, GameHandler.windowWidth/2, (int)(GameHandler.windowHeight/1.5)), new Rectangle(16,0,16,16), Color.DimGray);
-        spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle((int)saveButtonPos.X, (int)saveButtonPos.Y, 160, 64), new Rectangle(16,0,16,16), Color.White);
-        spriteBatch.DrawString(GameHandler.courierNew, "Save", new Vector2(900,400), Color.Black);
+
+        //draw "Game Paused"
+        spriteBatch.DrawString(GameHandler.courierNew52, "Game Paused", new Vector2(720,280), Color.White);
+
+        //draw save button
+        spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle((int)saveButtonPos.X, (int)saveButtonPos.Y, 320, 64), new Rectangle(16,0,16,16), Color.White);
+        //draw "Save"
+        spriteBatch.DrawString(GameHandler.courierNew36, "Save", new Vector2(890,saveButtonPos.Y), Color.Black);
+
+        //draw main menu button
+        spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle((int)mmButtonPos.X, (int)mmButtonPos.Y, 320, 64), new Rectangle(16,0,16,16), Color.White);
+        //draw "Main Menu"
+        spriteBatch.DrawString(GameHandler.courierNew36, "Main Menu", new Vector2(820,mmButtonPos.Y), Color.Black);
+
+        //draw save and quit button
+        spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle((int)sqButtonPos.X, (int)sqButtonPos.Y, 320, 128), new Rectangle(16,0,16,16), Color.White);
+        //draw "Save and Quit Game"
+        spriteBatch.DrawString(GameHandler.courierNew36, "Save and\nQuit Game", new Vector2(820,sqButtonPos.Y), Color.Black);
+
+        //draw resume button
+        spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle((int)resumeButtonPos.X, (int)resumeButtonPos.Y, 320, 64), new Rectangle(16,0,16,16), Color.White);
+        //draw "Resume"
+        spriteBatch.DrawString(GameHandler.courierNew36, "Resume", new Vector2(870,resumeButtonPos.Y), Color.Black);
     }
 
     public void HandleInput(GameTime gameTime)
     {
-        if(GameHandler.CheckIfButtonWasClicked(saveButton)) {
-            //call save function here :3
-        }
+        if(GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
+            if(saveButton.CheckIfButtonWasClicked()) {
+                //call save function here :3
+            } else if(mainMenuButton.CheckIfButtonWasClicked()) {
+                //return to main menu
+            } else if(saveQuitButton.CheckIfButtonWasClicked()) {
+                //call save function, then quit game
+            } else if(resumeButton.CheckIfButtonWasClicked()) {
+                GameHandler.isPaused = false;
+            }
+        } 
     }
 
     public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
-        saveButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(64,160), saveButtonPos, "Save", 38, true);
+        saveButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(320,64), saveButtonPos, "Save", 38, true);
+        mainMenuButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(320,64), mmButtonPos, "Main Menu", 39, true);
+        saveQuitButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(320,128), sqButtonPos, "Save and Quit Game", 40, true);
+        resumeButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(320,64), resumeButtonPos, "Resume", 41, true);
     }
 
     public void LoadLevel()

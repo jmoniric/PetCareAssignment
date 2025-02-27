@@ -13,12 +13,19 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Core/Fonts/courier_new.spritefont
+#begin Core/Fonts/courier_new_36.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Core/Fonts/courier_new.spritefont
+/build:Core/Fonts/courier_new_36.spritefont
+
+#begin Core/Fonts/courier_new_52.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Core/Fonts/courier_new_52.spritefont
 
 #begin Core/Sounds/placeholder.xml
 /importer:XmlImporter

@@ -33,7 +33,7 @@ public class GameHandler : Game
     private Vector2 _slidingButtonPosition;
     private Button _fishingButton;
     private Vector2 _fishingButtonPosition;
-    private static MouseState _oneShotMouseState;
+    public static MouseState _mouseState;
     private bool _mouseLeftPressed;
 
     private Button pauseButton;
@@ -50,7 +50,7 @@ public class GameHandler : Game
     ContentManager _fishingAssets;
     ContentManager _petcareAssets;
 
-    public bool isPaused = false;
+    public static bool isPaused = false;
 
     public static int windowHeight = 1080;
     public static int windowWidth = 1920;
@@ -58,7 +58,8 @@ public class GameHandler : Game
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static Texture2D coreTextureAtlas;
     public static Texture2D plainWhiteTexture;
-    public static SpriteFont courierNew;
+    public static SpriteFont courierNew36;
+    public static SpriteFont courierNew52;
 
     
     public GameHandler()
@@ -97,7 +98,7 @@ public class GameHandler : Game
         _waldoButtonPosition = new Vector2(164, 100);
         _slidingButtonPosition = new Vector2(228, 100);
         _fishingButtonPosition = new Vector2(292, 100);
-        _oneShotMouseState = OneShotMouseButtons.GetState();
+        _mouseState = OneShotMouseButtons.GetState();
         pausePos = new Vector2(1840,10);
         _mouseLeftPressed = false;
 
@@ -117,21 +118,26 @@ public class GameHandler : Game
                                             new Point(64, 33), _slidingButtonPosition, "Sliding Minigame", 35, true);
         _fishingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGameClicked"),
                                             new Point(64, 33), _fishingButtonPosition, "Fishing Minigame", 36, true);
+        
+        
+        //Core assets
         catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
-
         coreTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
         pauseButton = new Button(coreTextureAtlas, coreTextureAtlas, new Point(64,64), pausePos, "Pause", 37, true);
         plainWhiteTexture = _coreAssets.Load<Texture2D>("Sprites/plain_white");
-        courierNew = _coreAssets.Load<SpriteFont>("Fonts/courier_new");
+        
+        //fonts
+        courierNew36 = _coreAssets.Load<SpriteFont>("Fonts/courier_new_36");
+        courierNew52 = _coreAssets.Load<SpriteFont>("Fonts/courier_new_52");
 
     }
 
     public void HandleInput(GameTime gameTime)
     {
         
-        _oneShotMouseState = OneShotMouseButtons.GetState();
+        _mouseState = OneShotMouseButtons.GetState();
 
-        if(_oneShotMouseState.LeftButton == ButtonState.Pressed)
+        if(_mouseState.LeftButton == ButtonState.Pressed)
         {
             if(OneShotMouseButtons.HasNotBeenPressed(true))
             {
@@ -152,35 +158,36 @@ public class GameHandler : Game
         {
             _mouseLeftPressed = false;
             //checks if already paused to prevent spamming of button
-            if(CheckIfButtonWasClicked(pauseButton) && !isPaused) {
+            if(pauseButton.CheckIfButtonWasClicked() && !isPaused) {
                 pauseButton.Clicked();
                 isPaused = true;
+                _pauseMenu.LoadContent(null,_coreAssets);
                 _pauseMenu.LoadLevel();
 
             //prevents checking of other buttons while in pause menu
             } else if (!isPaused) {
-                if(CheckIfButtonWasClicked(_petCareButton))
+                if(_petCareButton.CheckIfButtonWasClicked())
                 {
                     SetVisiblity(false); //hides buttons to prevent them from being pressed again
                     _petCareButton.Clicked();
                     CurrentState = GameState.PetCareGame;
                     _petCareLevel.LoadContent(_petcareAssets, _coreAssets);
                     _petCareLevel.LoadLevel();
-                } else if(CheckIfButtonWasClicked(_waldoButton))
+                } else if(_waldoButton.CheckIfButtonWasClicked())
                 {
                     SetVisiblity(false);
                     _waldoButton.Clicked();
                     CurrentState = GameState.WaldoGame;
                     _waldoLevel.LoadContent(_waldoAssets, _coreAssets);
                     _waldoLevel.LoadLevel();
-                } else if(CheckIfButtonWasClicked(_slidingButton))
+                } else if(_slidingButton.CheckIfButtonWasClicked())
                 {
                     SetVisiblity(false);
                     _slidingButton.Clicked();
                     CurrentState = GameState.SlidingGame;
                     _slidingLevel.LoadContent(_slidingAssets, _coreAssets);
                     _slidingLevel.LoadLevel();
-                } else if(CheckIfButtonWasClicked(_fishingButton))
+                } else if(_fishingButton.CheckIfButtonWasClicked())
                 {
                     SetVisiblity(false);
                     _fishingButton.Clicked();
@@ -190,23 +197,27 @@ public class GameHandler : Game
                 }
             }
         }
-
-        switch(CurrentState) {
-            case GameState.MainMenu:
-                //handle the input for main menu directly here
-                break;
-            case GameState.PetCareGame:
-                _petCareLevel.HandleInput(gameTime);
-                break;
-            case GameState.FishingGame:
-                _fishingLevel.HandleInput(gameTime);
-                break;
-            case GameState.WaldoGame:
-                _waldoLevel.HandleInput(gameTime);
-                break;
-            case GameState.SlidingGame:
-                _slidingLevel.HandleInput(gameTime);
-                break;   
+        
+        if(isPaused) {
+            _pauseMenu.HandleInput(gameTime);
+        } else {
+            switch(CurrentState) {
+                case GameState.MainMenu:
+                    //handle the input for main menu directly here
+                    break;
+                case GameState.PetCareGame:
+                    _petCareLevel.HandleInput(gameTime);
+                    break;
+                case GameState.FishingGame:
+                    _fishingLevel.HandleInput(gameTime);
+                    break;
+                case GameState.WaldoGame:
+                    _waldoLevel.HandleInput(gameTime);
+                    break;
+                case GameState.SlidingGame:
+                    _slidingLevel.HandleInput(gameTime);
+                    break;   
+            }
         }
     }
 
@@ -280,21 +291,6 @@ public class GameHandler : Game
         _spriteBatch.End();
 
         base.Draw(gameTime);
-    }
-    
-    // State that checks if the button was clicked to prevent multiple clicks
-    public static bool CheckIfButtonWasClicked(Button button)
-    {
-        if(button.Visible) {
-            if(_oneShotMouseState.X >= button.Position.X && _oneShotMouseState.X <= (button.Position.X + button.Dimensions.X))
-            {
-                if(_oneShotMouseState.Y >= button.Position.Y && _oneShotMouseState.Y <= (button.Position.Y + button.Dimensions.Y))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     //hide or show visiblity of items in here

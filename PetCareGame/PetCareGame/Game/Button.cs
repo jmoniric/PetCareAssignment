@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace PetCareGame
 {
@@ -48,6 +49,19 @@ namespace PetCareGame
             {
                 Texture = _staticTexture;
             }
+        }
+
+        public bool CheckIfButtonWasClicked() {
+            if(Visible) {
+            if(GameHandler._mouseState.X >= Position.X && GameHandler._mouseState.X <= (Position.X + Dimensions.X))
+            {
+                if(GameHandler._mouseState.Y >= Position.Y && GameHandler._mouseState.Y <= (Position.Y + Dimensions.Y))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
         }
     }
 }
