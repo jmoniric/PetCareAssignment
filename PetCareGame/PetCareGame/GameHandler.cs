@@ -58,8 +58,12 @@ public class GameHandler : Game
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static Texture2D coreTextureAtlas;
     public static Texture2D plainWhiteTexture;
+
+    //fonts
     public static SpriteFont courierNew36;
     public static SpriteFont courierNew52;
+    public static SpriteFont highPixel36;
+    public static SpriteFont highPixel64;
 
     
     public GameHandler()
@@ -129,6 +133,8 @@ public class GameHandler : Game
         //fonts
         courierNew36 = _coreAssets.Load<SpriteFont>("Fonts/courier_new_36");
         courierNew52 = _coreAssets.Load<SpriteFont>("Fonts/courier_new_52");
+        highPixel36 = _coreAssets.Load<SpriteFont>("Fonts/high_pixel_36");
+        highPixel64 = _coreAssets.Load<SpriteFont>("Fonts/high_pixel_64");
 
     }
 
