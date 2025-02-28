@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -7,13 +8,11 @@ public class DisplayManager
 {
     private Game _game;
     private GraphicsDeviceManager _graphics;
-    public static int windowHeight = 1080;
-    public static int windowWidth = 1920;
 
     public DisplayManager(Game game, GraphicsDeviceManager graphics){
         _game = game;
         _graphics = graphics;
-        SetResolution(windowWidth, windowHeight);
+        SetResolution(800, 600);
     }
 
     // Changes the resolution of window to a specified
@@ -30,7 +29,7 @@ public class DisplayManager
         _graphics.IsFullScreen = true;
     }
 
-    public void Draw(SpriteBatch spriteBatch)
+    private void Draw(SpriteBatch spriteBatch)
     {
         
     }
