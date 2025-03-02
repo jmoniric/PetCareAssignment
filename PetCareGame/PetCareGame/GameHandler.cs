@@ -50,9 +50,6 @@ public class GameHandler : Game
 
     public static bool isPaused = false;
 
-    public static int windowHeight = 1080;
-    public static int windowWidth = 1920;
-
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static Texture2D coreTextureAtlas;
     public static Texture2D plainWhiteTexture;
@@ -65,7 +62,7 @@ public class GameHandler : Game
 
     Vector2 baseScreenSize = new Vector2(800, 480);
     private Matrix globalTransformation;
-    int backbufferWidth, backbufferHeight;
+    public static int backbufferWidth, backbufferHeight;
 
     public static Vector2 relativeMousePos;
 
@@ -107,7 +104,7 @@ public class GameHandler : Game
         _slidingButtonPosition = new Vector2(228, 100);
         _fishingButtonPosition = new Vector2(292, 100);
         _mouseState = OneShotMouseButtons.GetState();
-        pausePos = new Vector2(1840,10);
+        pausePos = new Vector2(750,10);
         _mouseLeftPressed = false;
 
         Window.AllowUserResizing = true;
@@ -133,7 +130,7 @@ public class GameHandler : Game
         //Core assets
         catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         coreTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
-        pauseButton = new Button(coreTextureAtlas, coreTextureAtlas, new Point(64,64), pausePos, "Pause", 37, true);
+        pauseButton = new Button(coreTextureAtlas, coreTextureAtlas, new Point(48,48), pausePos, "Pause", 37, true);
         plainWhiteTexture = _coreAssets.Load<Texture2D>("Sprites/plain_white");
         
         //fonts
@@ -246,10 +243,17 @@ public class GameHandler : Game
             //to find other number and then multiplies 3 and 5 by that factor and sets
             //it to height and width, respectively, before updating graphics
 
-            if(GraphicsDevice.PresentationParameters.BackBufferWidth % 5 != 0 ||
-            GraphicsDevice.PresentationParameters.BackBufferHeight % 3 != 0) {
+            if(GraphicsDevice.PresentationParameters.BackBufferWidth % 5 != 0) {
                 //factor being multiplied by 5
                 int factor = GraphicsDevice.PresentationParameters.BackBufferWidth / 5;
+                //set preferred dimensions to aspect-correct dimensions
+                _graphics.PreferredBackBufferWidth = factor *5;
+                _graphics.PreferredBackBufferHeight = factor *3;
+                //applies changes
+                _graphics.ApplyChanges();
+            } else if(GraphicsDevice.PresentationParameters.BackBufferHeight % 3 != 0) {
+                //factor being multiplied by 3
+                int factor = GraphicsDevice.PresentationParameters.BackBufferHeight / 3;
                 //set preferred dimensions to aspect-correct dimensions
                 _graphics.PreferredBackBufferWidth = factor *5;
                 _graphics.PreferredBackBufferHeight = factor *3;
@@ -323,7 +327,7 @@ public class GameHandler : Game
 
         //draw pause button last
         if(!isPaused) {
-            _spriteBatch.Draw(pauseButton.Texture, new Rectangle(1840,10,64,64), new Rectangle(0,0,16,16), Color.White);
+            _spriteBatch.Draw(pauseButton.Texture, new Rectangle(750,10,48,48), new Rectangle(0,0,16,16), Color.White);
         }
 
         if(isPaused) {

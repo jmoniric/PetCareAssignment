@@ -10,9 +10,9 @@ public class SlidingGame : LevelInterface
 
     private Color backgroundColour = new Color(50,205,50);
 
-    private Vector2 catPos = new Vector2(GameHandler.windowWidth / 2, 720);
+    private Vector2 catPos = new Vector2(GameHandler.backbufferHeight / 2, 720);
 
-    private Vector2 boxPos = new Vector2(GameHandler.windowWidth / 2, 840);
+    private Vector2 boxPos = new Vector2(GameHandler.backbufferWidth / 2, 840);
 
      private Point chestPos = new Point(400, 400);
 
@@ -87,7 +87,6 @@ public class SlidingGame : LevelInterface
 
     public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
-
         atlas = _manager.Load<Texture2D>("Sprites/petcare_slidetextureatlas");
         GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         chest = _manager.Load<Texture2D>("Sprites/treasure_atlas");

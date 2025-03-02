@@ -18,17 +18,17 @@ public class PetCare : LevelInterface
         NailClippers,
         None
     }
-    private Vector2 catPos = new Vector2(GameHandler.windowWidth / 2, 720);
+    private Vector2 catPos = new Vector2(400, 235);
     private Color backgroundColour = new Color(197, 118, 38);
     private Texture2D atlas;
     private Texture2D particleTex;
 
-    private Point sprayBottlePos = new Point(124, 400);
+    private Point sprayBottlePos = new Point(64, 250);
     private Vector2 sprayBottleOrigin = Vector2.Zero;
     private Rectangle sprayBottleBounds;
     private float sprayBottleRot = 0f;
 
-    private Point clippersPos = new Point(1200, 400);
+    private Point clippersPos = new Point(650, 250);
     private Vector2 clippersOrigin = Vector2.Zero;
     private Rectangle clipperBounds;
 
@@ -57,16 +57,16 @@ public class PetCare : LevelInterface
         _graphics.GraphicsDevice.Clear(backgroundColour);
         
         //draw wall paneling
-        for(int h = 0; h < 16; h++) {
-            for(int v = 0; v < 8; v++) {
-                spriteBatch.Draw(atlas, new Rectangle(h*124, v*124, 128, 128), wall, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+        for(int h = 0; h < 8; h++) {
+            for(int v = 0; v < 4; v++) {
+                spriteBatch.Draw(atlas, new Rectangle(h*128, v*128, 128, 128), wall, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
             }
         }
 
         //draw flooring
-        for(int i = 0; i < 16; i++) {
-            spriteBatch.Draw(atlas, new Rectangle(i*124, 830, 128, 128), floor, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1f);
-            spriteBatch.Draw(atlas, new Rectangle(i*124, 958, 128, 128), floorFiller, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1f);
+        for(int i = 0; i < 8; i++) {
+            spriteBatch.Draw(atlas, new Rectangle(i*128, 380, 128, 128), floor, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1f);
+            spriteBatch.Draw(atlas, new Rectangle(i*128, 400, 128, 128), floorFiller, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1f);
         }
 
         //draw cat
@@ -111,7 +111,7 @@ public class PetCare : LevelInterface
         MouseState mouseState = Mouse.GetState();
 
         //makes cat face in mouse's direction
-        if(GameHandler.relativeMousePos.X > (GameHandler.windowWidth/2)) {
+        if(GameHandler.relativeMousePos.X > 400) {
             faceRight = true;
         } else {
             faceRight = false;
@@ -155,7 +155,7 @@ public class PetCare : LevelInterface
     public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
         //loads cat in at bigger scale for my game
-        GameHandler.catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 4f, 0.5f);
+        GameHandler.catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 5f, 0.5f);
         GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         atlas = _manager.Load<Texture2D>("Sprites/petcare_textureatlas");
         particleTex = GameHandler.plainWhiteTexture;
@@ -178,7 +178,7 @@ public class PetCare : LevelInterface
             sprayBottleOrigin = new Vector2(16, 16);
         } else if(currentObject == ObjectHeld.NailClippers) {
             clippersPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
-            clippersOrigin = new Vector2(16, 16);
+            clippersOrigin = new Vector2(16, 8);
         }
 
         int index = 0;

@@ -1,4 +1,5 @@
 using System;
+using System.Security.Principal;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,9 +26,11 @@ public class PauseMenu : LevelInterface
     {
         SpriteFont font = GameHandler.highPixel36;
         //draw backing texture
-        spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle(0, 0, GameHandler.windowWidth, GameHandler.windowHeight), new Rectangle(32,0,16,16), Color.LightGray);
+        int backBufferWidth = _graphics.GraphicsDevice.PresentationParameters.BackBufferWidth;
+        int backBufferHeight = _graphics.GraphicsDevice.PresentationParameters.BackBufferHeight;
+        spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle(0, 0, backBufferWidth, backBufferHeight), new Rectangle(32,0,16,16), Color.LightGray);
         //draw window
-        spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle(GameHandler.windowWidth/4, GameHandler.windowHeight/6, GameHandler.windowWidth/2, (int)(GameHandler.windowHeight/1.5)), new Rectangle(16,0,16,16), Color.DimGray);
+        spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle(backBufferWidth/4, backBufferHeight/6, backBufferWidth/2, (int)(backBufferHeight / 1.5)), new Rectangle(16,0,16,16), Color.DimGray);
 
         //draw "Game Paused"
         spriteBatch.DrawString(GameHandler.highPixel64, "Game Paused", new Vector2(680,280), Color.White);
