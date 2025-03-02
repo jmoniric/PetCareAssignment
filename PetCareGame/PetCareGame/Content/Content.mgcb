@@ -27,19 +27,19 @@
 /processorParam:TextureFormat=Compressed
 /build:Core/Fonts/courier_new_52.spritefont
 
+#begin Core/Fonts/high_pixel_22.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Core/Fonts/high_pixel_22.spritefont
+
 #begin Core/Fonts/high_pixel_36.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Core/Fonts/high_pixel_36.spritefont
-
-#begin Core/Fonts/high_pixel_64.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Core/Fonts/high_pixel_64.spritefont
 
 #begin Core/Sounds/placeholder.xml
 /importer:XmlImporter

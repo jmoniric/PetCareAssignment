@@ -57,10 +57,10 @@ public class GameHandler : Game
     //fonts
     public static SpriteFont courierNew36;
     public static SpriteFont courierNew52;
+    public static SpriteFont highPixel22;
     public static SpriteFont highPixel36;
-    public static SpriteFont highPixel64;
 
-    Vector2 baseScreenSize = new Vector2(800, 480);
+    public static Vector2 baseScreenSize = new Vector2(800, 480);
     private Matrix globalTransformation;
     public static int backbufferWidth, backbufferHeight;
 
@@ -136,8 +136,8 @@ public class GameHandler : Game
         //fonts
         courierNew36 = _coreAssets.Load<SpriteFont>("Fonts/courier_new_36");
         courierNew52 = _coreAssets.Load<SpriteFont>("Fonts/courier_new_52");
+        highPixel22 = _coreAssets.Load<SpriteFont>("Fonts/high_pixel_22");
         highPixel36 = _coreAssets.Load<SpriteFont>("Fonts/high_pixel_36");
-        highPixel64 = _coreAssets.Load<SpriteFont>("Fonts/high_pixel_64");
 
         ScalePresentationArea();
     }
