@@ -48,4 +48,26 @@ public class DisplayManager
         _renderDestination.Y = (size.Y - _renderDestination.Height) / 2;
     }
 
+    public void CalculateButtonDimensionsNPosition(Button button){
+        Point size = _graphicsDevice.Viewport.Bounds.Size;
+
+        float scaleX = (float)size.X / _renderTarget.Width;
+        float scaleY = (float)size.Y / _renderTarget.Height;
+        float scale = Math.Min(scaleX, scaleY);
+
+        Vector2 vector2 = button.Position;
+        
+        vector2.X = (int)(vector2.X * scale);
+        vector2.Y = (int)(vector2.Y * scale);
+
+        button.Position = vector2;
+
+        Point dimensions = button.Dimensions;
+
+        dimensions.X = (size.X - dimensions.X) / 2;
+        dimensions.Y = (size.Y - dimensions.Y) / 2;
+
+        button.Dimensions = dimensions;
+    }
+
 }

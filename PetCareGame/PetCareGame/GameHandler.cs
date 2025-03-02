@@ -100,7 +100,7 @@ public class GameHandler : Game
             isResizing = true;
 
             _displayManager.CalculateRectangleDestination();
-
+            _displayManager.CalculateButtonDimensionsNPosition(_petCareButton);
             isResizing = false;
         }
     }
@@ -300,7 +300,7 @@ public class GameHandler : Game
                 break;
             case GameState.SlidingGame:
                 _slidingLevel.Draw(gameTime, _spriteBatch, _graphics);
-                break;   
+                break;
         }
 
         //draw pause button last

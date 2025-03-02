@@ -51,17 +51,19 @@ namespace PetCareGame
             }
         }
 
-        public bool CheckIfButtonWasClicked() {
-            if(Visible) {
-            if(GameHandler._mouseState.X >= Position.X && GameHandler._mouseState.X <= (Position.X + Dimensions.X))
+        public bool CheckIfButtonWasClicked()
+        {
+            if(Visible) 
             {
-                if(GameHandler._mouseState.Y >= Position.Y && GameHandler._mouseState.Y <= (Position.Y + Dimensions.Y))
+                if(GameHandler._mouseState.X >= Position.X && GameHandler._mouseState.X <= (Position.X + Dimensions.X))
                 {
-                    return true;
+                    if(GameHandler._mouseState.Y >= Position.Y && GameHandler._mouseState.Y <= (Position.Y + Dimensions.Y))
+                    {
+                        return true;
+                    }
                 }
             }
-        }
-        return false;
+            return false;
         }
     }
 }
