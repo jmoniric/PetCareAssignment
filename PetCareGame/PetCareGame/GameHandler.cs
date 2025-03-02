@@ -65,6 +65,12 @@ public class GameHandler : Game
     public static SpriteFont highPixel36;
     public static SpriteFont highPixel64;
 
+    Vector2 baseScreenSize = new Vector2(800, 480);
+    private Matrix globalTransformation;
+    int backbufferWidth, backbufferHeight;
+
+    public static Vector2 relativeMousePos;
+    
     
     public GameHandler()
     {
