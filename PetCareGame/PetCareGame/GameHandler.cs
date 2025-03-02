@@ -236,8 +236,6 @@ public class GameHandler : Game
 
     protected override void Update(GameTime gameTime)
     {
-        Console.WriteLine(backbufferWidth);
-        Console.WriteLine(backbufferHeight);
         //fix window scaling before checking input
         if (backbufferHeight != GraphicsDevice.PresentationParameters.BackBufferHeight ||
                 backbufferWidth != GraphicsDevice.PresentationParameters.BackBufferWidth)
