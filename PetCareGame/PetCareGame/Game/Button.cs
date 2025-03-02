@@ -53,9 +53,9 @@ namespace PetCareGame
 
         public bool CheckIfButtonWasClicked() {
             if(Visible) {
-            if(GameHandler._mouseState.X >= Position.X && GameHandler._mouseState.X <= (Position.X + Dimensions.X))
+            if(GameHandler.relativeMousePos.X >= Position.X && GameHandler.relativeMousePos.X <= (Position.X + Dimensions.X))
             {
-                if(GameHandler._mouseState.Y >= Position.Y && GameHandler._mouseState.Y <= (Position.Y + Dimensions.Y))
+                if(GameHandler.relativeMousePos.Y >= Position.Y && GameHandler.relativeMousePos.Y <= (Position.Y + Dimensions.Y))
                 {
                     return true;
                 }

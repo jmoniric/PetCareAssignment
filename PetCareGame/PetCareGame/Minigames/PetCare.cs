@@ -111,7 +111,7 @@ public class PetCare : LevelInterface
         MouseState mouseState = Mouse.GetState();
 
         //makes cat face in mouse's direction
-        if(mouseState.X > (GameHandler.windowWidth/2)) {
+        if(GameHandler.relativeMousePos.X > (GameHandler.windowWidth/2)) {
             faceRight = true;
         } else {
             faceRight = false;
@@ -130,7 +130,7 @@ public class PetCare : LevelInterface
             /*Console.WriteLine(cooldown.Add(cooldownBuffer).Millisecond);
             Console.WriteLine(DateTime.Now.Millisecond);
             if(cooldown.Add(cooldownBuffer).Millisecond <= DateTime.Now.Millisecond) {*/
-                particles.Add(new Particle(mouseState.X, mouseState.Y, (int)catPos.X, (int)catPos.Y, 20, 10, 10, particleTex));
+                particles.Add(new Particle((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y, (int)catPos.X, (int)catPos.Y, 20, 10, 10, particleTex));
                 cooldown = DateTime.Now;
             //}
         }
@@ -144,9 +144,9 @@ public class PetCare : LevelInterface
 
         //controls held object
         if(mouseState.LeftButton == ButtonState.Pressed) {
-            if(sprayBottleBounds.Contains(mouseState.X, mouseState.Y)) {
+            if(sprayBottleBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
                 currentObject = ObjectHeld.SprayBottle;
-            } else if(clipperBounds.Contains(mouseState.X, mouseState.Y)) {
+            } else if(clipperBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
                 currentObject = ObjectHeld.NailClippers;
             }
         }
@@ -174,10 +174,10 @@ public class PetCare : LevelInterface
         GameHandler.catIdle.UpdateFrame(elapsed);
 
         if(currentObject == ObjectHeld.SprayBottle) {
-            sprayBottlePos = new Point(mouseState.X, mouseState.Y);
+            sprayBottlePos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
             sprayBottleOrigin = new Vector2(16, 16);
         } else if(currentObject == ObjectHeld.NailClippers) {
-            clippersPos = new Point(mouseState.X, mouseState.Y);
+            clippersPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
             clippersOrigin = new Vector2(16, 16);
         }
 

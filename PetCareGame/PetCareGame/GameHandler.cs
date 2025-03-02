@@ -65,6 +65,12 @@ public class GameHandler : Game
     public static SpriteFont highPixel36;
     public static SpriteFont highPixel64;
 
+    Vector2 baseScreenSize = new Vector2(800, 480);
+    private Matrix globalTransformation;
+    int backbufferWidth, backbufferHeight;
+
+    public static Vector2 relativeMousePos;
+
     
     public GameHandler()
     {
@@ -96,7 +102,7 @@ public class GameHandler : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
-        _displayManager = new(this, _graphics);
+        //_displayManager = new(this, _graphics);
 
         _petCareButtonPosition = new Vector2(100, 100);
         _waldoButtonPosition = new Vector2(164, 100);
@@ -105,6 +111,8 @@ public class GameHandler : Game
         _mouseState = OneShotMouseButtons.GetState();
         pausePos = new Vector2(1840,10);
         _mouseLeftPressed = false;
+
+        Window.AllowUserResizing = true;
 
         base.Initialize();
     }
@@ -136,6 +144,7 @@ public class GameHandler : Game
         highPixel36 = _coreAssets.Load<SpriteFont>("Fonts/high_pixel_36");
         highPixel64 = _coreAssets.Load<SpriteFont>("Fonts/high_pixel_64");
 
+        ScalePresentationArea();
     }
 
     public void HandleInput(GameTime gameTime)
@@ -229,7 +238,21 @@ public class GameHandler : Game
 
     protected override void Update(GameTime gameTime)
     {
+        //fix window scaling before checking input
+        if (backbufferHeight != GraphicsDevice.PresentationParameters.BackBufferHeight ||
+                backbufferWidth != GraphicsDevice.PresentationParameters.BackBufferWidth)
+        {
+            ScalePresentationArea();
+        }
+        //convert from Point to Vector2
+        Vector2 mousePos = new Vector2(_mouseState.X, _mouseState.Y);
+
+    
+        //use the transformation matrix to transform coords to local scale
+        relativeMousePos = Vector2.Transform(mousePos, Matrix.Invert(globalTransformation));
         HandleInput(gameTime);
+
+        
             
         //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
           //  Exit();
@@ -260,10 +283,10 @@ public class GameHandler : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        _displayManager.SetResolution(windowWidth, windowHeight);
+        //_displayManager.SetResolution(windowWidth, windowHeight);
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+        _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, globalTransformation);
 
         switch(CurrentState) {
             case GameState.MainMenu:
@@ -324,5 +347,22 @@ public class GameHandler : Game
         _spriteBatch.Draw(_waldoButton.Texture, destinationRectangle1, sourceRectangle1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
         _spriteBatch.Draw(_slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
         _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
+    }
+
+    /***
+    @author: Monogame
+
+    Code taken from Monogame sample Platformer2D project
+    ***/
+    public void ScalePresentationArea()
+    {
+        //Work out how much we need to scale our graphics to fill the screen
+        backbufferWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
+        backbufferHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
+        float horScaling = backbufferWidth / baseScreenSize.X;
+        float verScaling = backbufferHeight / baseScreenSize.Y;
+        Vector3 screenScalingFactor = new Vector3(horScaling, verScaling, 1);
+        globalTransformation = Matrix.CreateScale(screenScalingFactor);
+        System.Diagnostics.Debug.WriteLine("Screen Size - Width[" + GraphicsDevice.PresentationParameters.BackBufferWidth + "] Height [" + GraphicsDevice.PresentationParameters.BackBufferHeight + "]");
     }
 }
