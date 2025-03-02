@@ -10,11 +10,11 @@ public class SlidingGame : LevelInterface
 
     private Color backgroundColour = new Color(50, 205, 50);
 
-    private Vector2 catPos = new Vector2(GameHandler.baseScreenSize.Y / 2, 720);
+    private Vector2 catPos = new Vector2(GameHandler.baseScreenSize.X / 2, 300);
 
     private Vector2 boxPos = new Vector2(GameHandler.baseScreenSize.X / 2, 840);
 
-    private Point chestPos = new Point(400, 400);
+    private Point chestPos = new Point(120, 100);
 
     private Texture2D atlas;
 
@@ -39,11 +39,11 @@ public class SlidingGame : LevelInterface
 
 
         //draw background
-        for (int h = 0; h < 16; h++)
+        for (int h = 0; h < 13; h++)
         {
-            for (int v = 0; v < 16; v++)
+            for (int v = 0; v < 8; v++)
             {
-                spriteBatch.Draw(atlas, new Rectangle(h * 128, v * 128, 128, 128), grass, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+                spriteBatch.Draw(atlas, new Rectangle(h * 64, v * 64, 64, 64), grass, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
             }
         }
 

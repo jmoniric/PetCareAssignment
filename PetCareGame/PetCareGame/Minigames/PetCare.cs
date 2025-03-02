@@ -71,9 +71,9 @@ public class PetCare : LevelInterface
 
         //draw cat
         if(faceRight) {
-            GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.None);
+            GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 5f);
         } else {
-            GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.FlipHorizontally);
+            GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.FlipHorizontally, 5f);
         }
 
         //bounding box of spray bottle
@@ -155,8 +155,8 @@ public class PetCare : LevelInterface
     public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
         //loads cat in at bigger scale for my game
-        GameHandler.catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 5f, 0.5f);
-        GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
+        //GameHandler.catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 5f, 0.5f);
+        //GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         atlas = _manager.Load<Texture2D>("Sprites/petcare_textureatlas");
         particleTex = GameHandler.plainWhiteTexture;
     }
