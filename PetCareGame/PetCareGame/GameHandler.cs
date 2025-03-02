@@ -56,10 +56,6 @@ public class GameHandler : Game
     public static int windowWidth = 800;
     private bool isResizing;
 
-    private RenderTarget2D _renderTarget;
-    private Rectangle _renderDestination;
-    private Rectangle _renderSourceDestination;
-
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static Texture2D coreTextureAtlas;
     public static Texture2D plainWhiteTexture;
@@ -103,8 +99,7 @@ public class GameHandler : Game
         {
             isResizing = true;
 
-            CalculateRectangleDestination();
-            CalculateSourceRectangleDestination();
+            _displayManager.CalculateRectangleDestination();
 
             isResizing = false;
         }
@@ -113,18 +108,13 @@ public class GameHandler : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
-        _displayManager = new(this, _graphics);
+        _displayManager = new(this, _graphics, GraphicsDevice);
 
-        // _petCareButtonPosition = new Vector2(100, 100);
-        // _waldoButtonPosition = new Vector2(164, 100);
-        // _slidingButtonPosition = new Vector2(228, 100);
-        // _fishingButtonPosition = new Vector2(292, 100);
-        pausePos = new Vector2(1840,10);
-
-        _petCareButtonPosition = new Vector2(_graphics.PreferredBackBufferWidth - 700, _graphics.PreferredBackBufferHeight - 500);
+        _petCareButtonPosition = new Vector2(100, 100);
         _waldoButtonPosition = new Vector2(164, 100);
         _slidingButtonPosition = new Vector2(228, 100);
         _fishingButtonPosition = new Vector2(292, 100);
+        pausePos = new Vector2(1840,10);
 
         _mouseState = OneShotMouseButtons.GetState();
 
@@ -132,8 +122,7 @@ public class GameHandler : Game
 
         base.Initialize();
 
-        CalculateRectangleDestination();
-        CalculateSourceRectangleDestination();
+        _displayManager.CalculateRectangleDestination();
     }
 
     protected override void LoadContent()
@@ -150,8 +139,8 @@ public class GameHandler : Game
         _fishingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGameClicked"),
                                             new Point(64, 33), _fishingButtonPosition, "Fishing Minigame", 36, true);
         
-        
-        _renderTarget = new(GraphicsDevice, 800, 600);
+
+        _displayManager._renderTarget = new(GraphicsDevice, 800, 600);
 
         //Core assets
         catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
@@ -289,7 +278,7 @@ public class GameHandler : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.SetRenderTarget(_renderTarget);
+        GraphicsDevice.SetRenderTarget(_displayManager._renderTarget);
 
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
@@ -316,7 +305,6 @@ public class GameHandler : Game
 
         //draw pause button last
         if(!isPaused) {
-            // _spriteBatch.Draw(pauseButton.Texture, new Rectangle(1840,10,64,64), new Rectangle(0,0,16,16), Color.White);
             _spriteBatch.Draw(pauseButton.Texture, new Rectangle(_graphics.PreferredBackBufferWidth - 80,10,64,64), new Rectangle(0,0,16,16), Color.White);
         }
 
@@ -330,7 +318,7 @@ public class GameHandler : Game
         GraphicsDevice.SetRenderTarget(null);
 
         _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
-        _spriteBatch.Draw(_renderTarget, _renderDestination, Color.White);
+        _spriteBatch.Draw(_displayManager._renderTarget, _displayManager._renderDestination, Color.White);
         _spriteBatch.End();
 
         base.Draw(gameTime);
@@ -361,32 +349,5 @@ public class GameHandler : Game
         _spriteBatch.Draw(_waldoButton.Texture, destinationRectangle1, sourceRectangle1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
         _spriteBatch.Draw(_slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
         _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
-    }
-
-    private void CalculateRectangleDestination(){
-        Point size = GraphicsDevice.Viewport.Bounds.Size;
-
-        float scaleX = (float)size.X / _renderTarget.Width;
-        float scaleY = (float)size.Y / _renderTarget.Height;
-        float scale = Math.Min(scaleX, scaleY);
-
-        _renderDestination.Width = (int)(_renderTarget.Width * scale);
-        _renderDestination.Height = (int)(_renderTarget.Height * scale);
-
-        _renderDestination.X = (size.X - _renderDestination.Width) / 2;
-        _renderDestination.Y = (size.Y - _renderDestination.Height) / 2;
-    }
-    private void CalculateSourceRectangleDestination(){
-        Point size = _petCareButton.Dimensions;
-
-        float scaleX = (float)_petCareButton.CellWidth / _renderTarget.Width;
-        float scaleY = (float)_petCareButton.CellHeight / _renderTarget.Height;
-        float scale = Math.Min(scaleX, scaleY);
-
-        _renderSourceDestination.Width = (int)(_renderTarget.Width * scale);
-        _renderSourceDestination.Height = (int)(_renderTarget.Height * scale);
-
-        _renderSourceDestination.X = (size.X - _renderSourceDestination.Width) / 2;
-        _renderSourceDestination.Y = (size.Y - _renderSourceDestination.Height) / 2;
     }
 }
