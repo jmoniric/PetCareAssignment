@@ -8,13 +8,13 @@ namespace PetCareGame;
 public class SlidingGame : LevelInterface
 {
 
-    private Color backgroundColour = new Color(50,205,50);
+    private Color backgroundColour = new Color(50, 205, 50);
 
-    private Vector2 catPos = new Vector2(GameHandler.windowWidth / 2, 720);
+    private Vector2 catPos = new Vector2(GameHandler.baseScreenSize.X / 2, 300);
 
-    private Vector2 boxPos = new Vector2(GameHandler.windowWidth / 2, 840);
+    private Vector2 boxPos = new Vector2(GameHandler.baseScreenSize.X / 2, 840);
 
-     private Point chestPos = new Point(400, 400);
+    private Point chestPos = new Point(120, 100);
 
     private Texture2D atlas;
 
@@ -25,33 +25,35 @@ public class SlidingGame : LevelInterface
 
     public void Dispose()
     {
-        
+
     }
 
     public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
     {
 
-       Rectangle grass = new Rectangle(16, 0, 16, 16);
+        Rectangle grass = new Rectangle(16, 0, 16, 16);
 
-       Rectangle chestRect = new Rectangle(0, 0, 32, 32);
+        Rectangle chestRect = new Rectangle(0, 0, 32, 32);
 
         _graphics.GraphicsDevice.Clear(backgroundColour);
 
 
-//draw background
-        for(int h = 0; h < 16; h++) {
-            for(int v = 0; v < 16; v++) {
-                spriteBatch.Draw(atlas, new Rectangle(h*128, v*128, 128, 128), grass, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+        //draw background
+        for (int h = 0; h < 13; h++)
+        {
+            for (int v = 0; v < 8; v++)
+            {
+                spriteBatch.Draw(atlas, new Rectangle(h * 64, v * 64, 64, 64), grass, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
             }
-       }
+        }
 
-    
-      chestBounds = new Rectangle(chestPos, new Point(96, 96));
 
-       GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.None);
+        chestBounds = new Rectangle(chestPos, new Point(96, 96));
 
-         spriteBatch.Draw(chest, chestBounds, chestRect, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
-    
+        GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.None);
+
+        spriteBatch.Draw(chest, chestBounds, chestRect, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+
 
 
 
@@ -81,8 +83,8 @@ public class SlidingGame : LevelInterface
             catPos.Y += 300 * elapsed;
         }
 
-        
-        
+
+
     }
 
     public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
@@ -96,12 +98,12 @@ public class SlidingGame : LevelInterface
 
     public void LoadLevel()
     {
-        
+
     }
 
     public void Update(GameTime gameTime)
     {
-        
-   
+
+
     }
 }
