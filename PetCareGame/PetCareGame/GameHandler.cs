@@ -60,7 +60,7 @@ public class GameHandler : Game
     public static SpriteFont highPixel22;
     public static SpriteFont highPixel36;
 
-    public static Vector2 baseScreenSize = new Vector2(800, 480);
+    public static Vector2 baseScreenSize = new Vector2(800, 600);
     private Matrix globalTransformation;
     public static int backbufferWidth, backbufferHeight;
 
@@ -243,11 +243,11 @@ public class GameHandler : Game
             //to find other number and then multiplies 3 and 5 by that factor and sets
             //it to height and width, respectively, before updating graphics
 
-            if(GraphicsDevice.PresentationParameters.BackBufferWidth % 5 != 0) {
+            if(GraphicsDevice.PresentationParameters.BackBufferWidth % 4 != 0) {
                 //factor being multiplied by 5
-                int factor = GraphicsDevice.PresentationParameters.BackBufferWidth / 5;
+                int factor = GraphicsDevice.PresentationParameters.BackBufferWidth / 4;
                 //set preferred dimensions to aspect-correct dimensions
-                _graphics.PreferredBackBufferWidth = factor *5;
+                _graphics.PreferredBackBufferWidth = factor *4;
                 _graphics.PreferredBackBufferHeight = factor *3;
                 //applies changes
                 _graphics.ApplyChanges();
@@ -255,7 +255,7 @@ public class GameHandler : Game
                 //factor being multiplied by 3
                 int factor = GraphicsDevice.PresentationParameters.BackBufferHeight / 3;
                 //set preferred dimensions to aspect-correct dimensions
-                _graphics.PreferredBackBufferWidth = factor *5;
+                _graphics.PreferredBackBufferWidth = factor *4;
                 _graphics.PreferredBackBufferHeight = factor *3;
                 //applies changes
                 _graphics.ApplyChanges();
