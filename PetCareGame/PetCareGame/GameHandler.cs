@@ -243,7 +243,7 @@ public class GameHandler : Game
             //to find other number and then multiplies 3 and 5 by that factor and sets
             //it to height and width, respectively, before updating graphics
 
-            if(GraphicsDevice.PresentationParameters.BackBufferWidth % 4 != 0) {
+            if (GraphicsDevice.PresentationParameters.BackBufferWidth % 4 != 0) {
                 //factor being multiplied by 5
                 int factor = GraphicsDevice.PresentationParameters.BackBufferWidth / 4;
                 //set preferred dimensions to aspect-correct dimensions
@@ -251,7 +251,7 @@ public class GameHandler : Game
                 _graphics.PreferredBackBufferHeight = factor *3;
                 //applies changes
                 _graphics.ApplyChanges();
-            } else if(GraphicsDevice.PresentationParameters.BackBufferHeight % 3 != 0) {
+            } else if (GraphicsDevice.PresentationParameters.BackBufferHeight % 3 != 0) {
                 //factor being multiplied by 3
                 int factor = GraphicsDevice.PresentationParameters.BackBufferHeight / 3;
                 //set preferred dimensions to aspect-correct dimensions

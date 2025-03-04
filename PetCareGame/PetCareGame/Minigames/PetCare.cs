@@ -23,21 +23,25 @@ public class PetCare : LevelInterface
     private Texture2D atlas;
     private Texture2D particleTex;
 
-    private Point sprayBottlePos = new Point(64, 250);
+    private Point sprayBottlePos = new Point(64, 285);
     private Vector2 sprayBottleOrigin = Vector2.Zero;
     private Rectangle sprayBottleBounds;
     private float sprayBottleRot = 0f;
 
-    private Point clippersPos = new Point(650, 250);
+    private Point clippersPos = new Point(650, 315);
     private Vector2 clippersOrigin = Vector2.Zero;
     private Rectangle clipperBounds;
+    private bool clippersUse = false;
+
+    private Point towelPos = new Point(55,85);
+    private Vector2 towelOrigin = Vector2.Zero;
+    private Rectangle towelBounds;
 
     private DateTime cooldown;
 
     private bool faceRight = true;
     private ObjectHeld currentObject = ObjectHeld.None;
-    private bool clippersUse = false;
-
+    
     private List<Particle> particles = new List<Particle>();
 
     public void Dispose()
@@ -49,10 +53,12 @@ public class PetCare : LevelInterface
     {
         Rectangle floor = new Rectangle(0, 0, 32, 32);
         Rectangle floorFiller = new Rectangle(0, 12, 16, 16);
-        Rectangle wall = new Rectangle(32, 0, 32, 32);
+        Rectangle wall = new Rectangle(32, 64, 32, 32);
         Rectangle sprayBottle = new Rectangle(64, 0, 32, 32);
         Rectangle clippers = new Rectangle(96, 0, 32, 32);
         Rectangle clippersClosed = new Rectangle(96, 32, 32, 32);
+        Rectangle towelHook = new Rectangle(32,32,32,32);
+        Rectangle towel = new Rectangle(64,32,32,32);
 
         _graphics.GraphicsDevice.Clear(backgroundColour);
         
@@ -65,8 +71,8 @@ public class PetCare : LevelInterface
 
         //draw flooring
         for(int i = 0; i < 8; i++) {
-            spriteBatch.Draw(atlas, new Rectangle(i*128, 380, 128, 128), floor, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1f);
-            spriteBatch.Draw(atlas, new Rectangle(i*128, 400, 128, 128), floorFiller, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1f);
+            spriteBatch.Draw(atlas, new Rectangle(i*128, 380, 128, 128), floor, Color.DimGray, 0f, Vector2.Zero, SpriteEffects.None, 1f);
+            spriteBatch.Draw(atlas, new Rectangle(i*128, 400, 128, 128), floorFiller, Color.DimGray, 0f, Vector2.Zero, SpriteEffects.None, 1f);
         }
 
         //draw cat
@@ -94,7 +100,7 @@ public class PetCare : LevelInterface
         }
 
         //bounding box of clippers
-        clipperBounds = new Rectangle(clippersPos, new Point(96, 96));
+        clipperBounds = new Rectangle(clippersPos, new Point(72, 72));
 
         //draw clippers
         if(clippersUse) {
@@ -102,8 +108,12 @@ public class PetCare : LevelInterface
         } else {
             spriteBatch.Draw(atlas, clipperBounds, clippers, Color.White, 0f, clippersOrigin, SpriteEffects.None, 1f);
         }
+
+        //draw towel hook
+        spriteBatch.Draw(atlas, new Rectangle(75,50,96,96), towelHook, Color.White);
         
-        
+        towelBounds = new Rectangle(towelPos, new Point(128,128));
+        spriteBatch.Draw(atlas, towelBounds, towel, Color.White, 0f, towelOrigin, SpriteEffects.None, 1f);
     }
 
     public void HandleInput(GameTime gameTime)
@@ -148,6 +158,8 @@ public class PetCare : LevelInterface
                 currentObject = ObjectHeld.SprayBottle;
             } else if(clipperBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
                 currentObject = ObjectHeld.NailClippers;
+            } else if(towelBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
+                currentObject = ObjectHeld.Towel;
             }
         }
     }
@@ -179,6 +191,9 @@ public class PetCare : LevelInterface
         } else if(currentObject == ObjectHeld.NailClippers) {
             clippersPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
             clippersOrigin = new Vector2(16, 8);
+        } else if(currentObject == ObjectHeld.Towel) {
+            towelPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
+            towelOrigin = new Vector2(16, 8);
         }
 
         int index = 0;
