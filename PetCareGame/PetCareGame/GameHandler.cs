@@ -61,10 +61,10 @@ public class GameHandler : Game
     public static SpriteFont highPixel36;
 
     public static Vector2 baseScreenSize = new Vector2(800, 600);
-    private Matrix globalTransformation;
-    public static int backbufferWidth, backbufferHeight;
+    //private Matrix globalTransformation;
+    //public static int backbufferWidth, backbufferHeight;
 
-    public static Vector2 relativeMousePos;
+    //public static Vector2 relativeMousePos;
     
     
     public GameHandler()
@@ -107,7 +107,7 @@ public class GameHandler : Game
         pausePos = new Vector2(750,10);
         _mouseLeftPressed = false;
 
-        Window.AllowUserResizing = true;
+        //Window.AllowUserResizing = true;
 
         base.Initialize();
     }
@@ -139,7 +139,7 @@ public class GameHandler : Game
         highPixel22 = _coreAssets.Load<SpriteFont>("Fonts/high_pixel_22");
         highPixel36 = _coreAssets.Load<SpriteFont>("Fonts/high_pixel_36");
 
-        ScalePresentationArea();
+        //ScalePresentationArea();
     }
 
     public void HandleInput(GameTime gameTime)
@@ -233,6 +233,7 @@ public class GameHandler : Game
 
     protected override void Update(GameTime gameTime)
     {
+        /***  //SCALING CODE
         //fix window scaling before checking input
         if (backbufferHeight != GraphicsDevice.PresentationParameters.BackBufferHeight ||
                 backbufferWidth != GraphicsDevice.PresentationParameters.BackBufferWidth)
@@ -269,6 +270,7 @@ public class GameHandler : Game
 
         //use the transformation matrix to transform coords to local scale
         relativeMousePos = Vector2.Transform(mousePos, Matrix.Invert(globalTransformation));
+        ***/
         HandleInput(gameTime);
 
         
@@ -304,7 +306,7 @@ public class GameHandler : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, globalTransformation);
+        _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null/*globalTransformation*/);
 
         switch(CurrentState) {
             case GameState.MainMenu:
@@ -366,12 +368,11 @@ public class GameHandler : Game
         _spriteBatch.Draw(_slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
         _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
     }
-
     /***
-    @author: Monogame
-
-    Code taken from Monogame sample Platformer2D project
-    ***/
+    // @author: Monogame
+    //
+    // Code taken from Monogame sample Platformer2D project
+    
     public void ScalePresentationArea()
     {
         //Work out how much we need to scale our graphics to fill the screen
@@ -383,4 +384,5 @@ public class GameHandler : Game
         globalTransformation = Matrix.CreateScale(screenScalingFactor);
         System.Diagnostics.Debug.WriteLine("Screen Size - Width[" + GraphicsDevice.PresentationParameters.BackBufferWidth + "] Height [" + GraphicsDevice.PresentationParameters.BackBufferHeight + "]");
     }
+    ***/
 }
