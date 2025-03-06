@@ -90,8 +90,10 @@ public class SlidingGame : LevelInterface
     public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
         atlas = _manager.Load<Texture2D>("Sprites/petcare_slidetextureatlas");
-        GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         chest = _manager.Load<Texture2D>("Sprites/treasure_atlas");
+
+        //you don't need to load this again, it was already loaded inside the GameHandler
+        //GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
     }
 
     public void LoadLevel()
