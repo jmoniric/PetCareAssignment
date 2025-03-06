@@ -41,7 +41,7 @@ public class SlidingGame : LevelInterface
         //draw background
         for (int h = 0; h < 13; h++)
         {
-            for (int v = 0; v < 8; v++)
+            for (int v = 0; v < 10; v++)
             {
                 spriteBatch.Draw(atlas, new Rectangle(h * 64, v * 64, 64, 64), grass, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
             }

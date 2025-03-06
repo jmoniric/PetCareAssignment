@@ -18,17 +18,17 @@ public class PetCare : LevelInterface
         NailClippers,
         None
     }
-    private Vector2 catPos = new Vector2(400, 235);
+    private Vector2 catPos = new Vector2(400, 335);
     private Color backgroundColour = new Color(197, 118, 38);
     private Texture2D atlas;
     private Texture2D particleTex;
 
-    private Point sprayBottlePos = new Point(64, 285);
+    private Point sprayBottlePos = new Point(64, 385);
     private Vector2 sprayBottleOrigin = Vector2.Zero;
     private Rectangle sprayBottleBounds;
     private float sprayBottleRot = 0f;
 
-    private Point clippersPos = new Point(650, 315);
+    private Point clippersPos = new Point(650, 415);
     private Vector2 clippersOrigin = Vector2.Zero;
     private Rectangle clipperBounds;
     private bool clippersUse = false;
@@ -43,6 +43,8 @@ public class PetCare : LevelInterface
     private ObjectHeld currentObject = ObjectHeld.None;
     
     private List<Particle> particles = new List<Particle>();
+
+    private ProgressGauge satisfaction;
 
     public void Dispose()
     {
@@ -71,9 +73,11 @@ public class PetCare : LevelInterface
 
         //draw flooring
         for(int i = 0; i < 8; i++) {
-            spriteBatch.Draw(atlas, new Rectangle(i*128, 380, 128, 128), floor, Color.DimGray, 0f, Vector2.Zero, SpriteEffects.None, 1f);
-            spriteBatch.Draw(atlas, new Rectangle(i*128, 400, 128, 128), floorFiller, Color.DimGray, 0f, Vector2.Zero, SpriteEffects.None, 1f);
+            spriteBatch.Draw(atlas, new Rectangle(i*128, 480, 128, 128), floor, Color.DimGray, 0f, Vector2.Zero, SpriteEffects.None, 1f);
+            spriteBatch.Draw(atlas, new Rectangle(i*128, 500, 128, 128), floorFiller, Color.DimGray, 0f, Vector2.Zero, SpriteEffects.None, 1f);
         }
+
+        satisfaction.Draw(gameTime, spriteBatch);
 
         //draw cat
         if(faceRight) {
@@ -121,7 +125,8 @@ public class PetCare : LevelInterface
         MouseState mouseState = Mouse.GetState();
 
         //makes cat face in mouse's direction
-        if(GameHandler.relativeMousePos.X > 400) {
+        //if(GameHandler.relativeMousePos.X > 400) {
+        if(GameHandler._mouseState.X > 400) {
             faceRight = true;
         } else {
             faceRight = false;
@@ -140,7 +145,9 @@ public class PetCare : LevelInterface
             /*Console.WriteLine(cooldown.Add(cooldownBuffer).Millisecond);
             Console.WriteLine(DateTime.Now.Millisecond);
             if(cooldown.Add(cooldownBuffer).Millisecond <= DateTime.Now.Millisecond) {*/
-                particles.Add(new Particle((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y, (int)catPos.X, (int)catPos.Y, 20, 10, 10, particleTex));
+
+                //particles.Add(new Particle((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y, (int)catPos.X, (int)catPos.Y, 20, 10, 10, particleTex));
+                particles.Add(new Particle((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y, (int)catPos.X, (int)catPos.Y, 20, 10, 10, particleTex));
                 cooldown = DateTime.Now;
             //}
         }
@@ -154,11 +161,20 @@ public class PetCare : LevelInterface
 
         //controls held object
         if(mouseState.LeftButton == ButtonState.Pressed) {
+            /***
             if(sprayBottleBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
                 currentObject = ObjectHeld.SprayBottle;
             } else if(clipperBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
                 currentObject = ObjectHeld.NailClippers;
             } else if(towelBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
+                currentObject = ObjectHeld.Towel;
+            }
+            ***/
+            if(sprayBottleBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
+                currentObject = ObjectHeld.SprayBottle;
+            } else if(clipperBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
+                currentObject = ObjectHeld.NailClippers;
+            } else if(towelBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
                 currentObject = ObjectHeld.Towel;
             }
         }
@@ -175,7 +191,7 @@ public class PetCare : LevelInterface
 
     public void LoadLevel()
     {
-        
+        satisfaction = new ProgressGauge(new Rectangle(300, 20, 300, 60), 0, 10, 0);
     }
 
     public void Update(GameTime gameTime)
@@ -186,13 +202,16 @@ public class PetCare : LevelInterface
         GameHandler.catIdle.UpdateFrame(elapsed);
 
         if(currentObject == ObjectHeld.SprayBottle) {
-            sprayBottlePos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
+            //sprayBottlePos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
+            sprayBottlePos = new Point((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y);
             sprayBottleOrigin = new Vector2(16, 16);
         } else if(currentObject == ObjectHeld.NailClippers) {
-            clippersPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
+            //clippersPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
+            clippersPos = new Point((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y);
             clippersOrigin = new Vector2(16, 8);
         } else if(currentObject == ObjectHeld.Towel) {
-            towelPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
+            //towelPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
+            towelPos = new Point((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y);
             towelOrigin = new Vector2(16, 8);
         }
 
