@@ -32,7 +32,7 @@ public class GameHandler : Game
     private Button _fishingButton;
     private Vector2 _fishingButtonPosition;
     public static MouseState _mouseState;
-    private bool _mouseLeftPressed;
+    public static bool _mouseLeftPressed;
 
     private Button pauseButton;
     private Vector2 pausePos;

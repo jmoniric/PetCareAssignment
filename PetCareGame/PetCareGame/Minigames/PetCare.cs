@@ -44,7 +44,7 @@ public class PetCare : LevelInterface
     
     private List<Particle> particles = new List<Particle>();
 
-    private ProgressGauge satisfaction;
+    private ProgressGauge progressGauge;
 
     public void Dispose()
     {
@@ -77,7 +77,7 @@ public class PetCare : LevelInterface
             spriteBatch.Draw(atlas, new Rectangle(i*128, 500, 128, 128), floorFiller, Color.DimGray, 0f, Vector2.Zero, SpriteEffects.None, 1f);
         }
 
-        satisfaction.Draw(gameTime, spriteBatch);
+        progressGauge.Draw(gameTime, spriteBatch);
 
         //draw cat
         if(faceRight) {
@@ -160,7 +160,7 @@ public class PetCare : LevelInterface
         }
 
         //controls held object
-        if(mouseState.LeftButton == ButtonState.Pressed) {
+        if(GameHandler._mouseLeftPressed) {
             /***
             if(sprayBottleBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
                 currentObject = ObjectHeld.SprayBottle;
@@ -170,6 +170,8 @@ public class PetCare : LevelInterface
                 currentObject = ObjectHeld.Towel;
             }
             ***/
+
+            GameHandler._mouseLeftPressed = false;
             if(sprayBottleBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
                 currentObject = ObjectHeld.SprayBottle;
             } else if(clipperBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
@@ -191,15 +193,17 @@ public class PetCare : LevelInterface
 
     public void LoadLevel()
     {
-        satisfaction = new ProgressGauge(new Rectangle(300, 20, 300, 60), 0, 10, 0);
+        progressGauge = new ProgressGauge(new Rectangle(300, 20, 300, 60), 0, 10, 7);
     }
 
     public void Update(GameTime gameTime)
     {
-        MouseState mouseState = Mouse.GetState();
+        MouseState mouseState = OneShotMouseButtons.GetState();
 
         float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
         GameHandler.catIdle.UpdateFrame(elapsed);
+
+        progressGauge.Update(gameTime);
 
         if(currentObject == ObjectHeld.SprayBottle) {
             //sprayBottlePos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
