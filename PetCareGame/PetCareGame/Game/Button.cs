@@ -50,6 +50,19 @@ namespace PetCareGame
                 Texture = _staticTexture;
             }
         }
+        public void UpdateButton(float scale)
+        {
+            if (AnimationTime > 0)
+            {
+                AnimationTime--;
+            }
+            if (AnimationTime == 0)
+            {
+                Texture = _staticTexture;
+            }
+            Position = Position * scale;
+
+        }
 
         public bool CheckIfButtonWasClicked()
         {
@@ -58,6 +71,20 @@ namespace PetCareGame
                 if(GameHandler._mouseState.X >= Position.X && GameHandler._mouseState.X <= (Position.X + Dimensions.X))
                 {
                     if(GameHandler._mouseState.Y >= Position.Y && GameHandler._mouseState.Y <= (Position.Y + Dimensions.Y))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        public bool CheckIfButtonWasClicked(float scale)
+        {
+            if (Visible)
+            {
+                if (GameHandler._mouseState.X >= Position.X * scale && GameHandler._mouseState.X <= (Position.X + Dimensions.X) * scale)
+                {
+                    if (GameHandler._mouseState.Y >= Position.Y * scale && GameHandler._mouseState.Y <= (Position.Y + Dimensions.Y) * scale)
                     {
                         return true;
                     }

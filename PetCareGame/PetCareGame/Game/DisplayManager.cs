@@ -11,25 +11,28 @@ public class DisplayManager
     private GraphicsDevice _graphicsDevice;
     public RenderTarget2D _renderTarget;
     public Rectangle _renderDestination;
+    public float scaleFactor;
 
     public DisplayManager(Game game, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice){
         _game = game;
         _graphics = graphics;
         _graphicsDevice = graphicsDevice;
+        _renderTarget = new(graphicsDevice, 800, 600);
         SetResolution(800, 600);
     }
 
     // Changes the resolution of window to a specified
-    public void SetResolution(int x, int y){
-        _graphics.PreferredBackBufferWidth = x;
-        _graphics.PreferredBackBufferHeight = y;
+    public void SetResolution(int width, int height){
+        _graphicsDevice.PresentationParameters.BackBufferWidth = width;
+        _graphicsDevice.PresentationParameters.BackBufferHeight = height;
         _graphics.ApplyChanges(); // ApplyChanges() is required for changes to screen outside of GameHandler
+        CalculateRectangleDestination();
     }
 
     // Changes game window to fullscreen
     public void SetFullScreen(){
-        _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-        _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        _graphicsDevice.PresentationParameters.BackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+        _graphicsDevice.PresentationParameters.BackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
         _graphics.IsFullScreen = true;
         _graphics.ApplyChanges();
     }
@@ -40,34 +43,13 @@ public class DisplayManager
         float scaleX = (float)size.X / _renderTarget.Width;
         float scaleY = (float)size.Y / _renderTarget.Height;
         float scale = Math.Min(scaleX, scaleY);
+        scaleFactor = scale;
 
         _renderDestination.Width = (int)(_renderTarget.Width * scale);
         _renderDestination.Height = (int)(_renderTarget.Height * scale);
 
         _renderDestination.X = (size.X - _renderDestination.Width) / 2;
         _renderDestination.Y = (size.Y - _renderDestination.Height) / 2;
-    }
-
-    public void CalculateButtonDimensionsNPosition(Button button){
-        Point size = _graphicsDevice.Viewport.Bounds.Size;
-
-        float scaleX = (float)size.X / _renderTarget.Width;
-        float scaleY = (float)size.Y / _renderTarget.Height;
-        float scale = Math.Min(scaleX, scaleY);
-
-        Vector2 vector2 = button.Position;
-        
-        vector2.X = (int)(vector2.X * scale);
-        vector2.Y = (int)(vector2.Y * scale);
-
-        button.Position = vector2;
-
-        Point dimensions = button.Dimensions;
-
-        dimensions.X = (size.X - dimensions.X) / 2;
-        dimensions.Y = (size.Y - dimensions.Y) / 2;
-
-        button.Dimensions = dimensions;
     }
 
 }

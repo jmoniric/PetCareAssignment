@@ -98,9 +98,7 @@ public class GameHandler : Game
         if(!isResizing && Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
         {
             isResizing = true;
-
             _displayManager.CalculateRectangleDestination();
-            _displayManager.CalculateButtonDimensionsNPosition(_petCareButton);
             isResizing = false;
         }
     }
@@ -138,9 +136,6 @@ public class GameHandler : Game
                                             new Point(64, 33), _slidingButtonPosition, "Sliding Minigame", 35, true);
         _fishingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGameClicked"),
                                             new Point(64, 33), _fishingButtonPosition, "Fishing Minigame", 36, true);
-        
-
-        _displayManager._renderTarget = new(GraphicsDevice, 800, 600);
 
         //Core assets
         catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
@@ -158,7 +153,6 @@ public class GameHandler : Game
 
     public void HandleInput(GameTime gameTime)
     {
-        
         _mouseState = OneShotMouseButtons.GetState();
 
         if(_mouseState.LeftButton == ButtonState.Pressed)
@@ -190,7 +184,8 @@ public class GameHandler : Game
 
             //prevents checking of other buttons while in pause menu
             } else if (!isPaused) {
-                if(_petCareButton.CheckIfButtonWasClicked())
+                // if(_petCareButton.CheckIfButtonWasClicked())
+                if (_petCareButton.CheckIfButtonWasClicked(_displayManager.scaleFactor))
                 {
                     SetVisiblity(false); //hides buttons to prevent them from being pressed again
                     _petCareButton.Clicked();
