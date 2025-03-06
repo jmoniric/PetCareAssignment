@@ -65,12 +65,6 @@ public class GameHandler : Game
     public static int backbufferWidth, backbufferHeight;
 
     public static Vector2 relativeMousePos;
-
-    Vector2 baseScreenSize = new Vector2(800, 480);
-    private Matrix globalTransformation;
-    int backbufferWidth, backbufferHeight;
-
-    public static Vector2 relativeMousePos;
     
     
     public GameHandler()
