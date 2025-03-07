@@ -39,6 +39,8 @@ public class PetCare : LevelInterface
 
     private DateTime cooldown;
 
+    private bool mouseDown = false;
+
     private bool faceRight = true;
     private ObjectHeld currentObject = ObjectHeld.None;
     
@@ -160,7 +162,7 @@ public class PetCare : LevelInterface
         }
 
         //controls held object
-        if(GameHandler._mouseLeftPressed) {
+        if(GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
             /***
             if(sprayBottleBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
                 currentObject = ObjectHeld.SprayBottle;
@@ -170,15 +172,19 @@ public class PetCare : LevelInterface
                 currentObject = ObjectHeld.Towel;
             }
             ***/
+            if(!mouseDown) {
+                mouseDown = true;
 
-            GameHandler._mouseLeftPressed = false;
-            if(sprayBottleBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
-                currentObject = ObjectHeld.SprayBottle;
-            } else if(clipperBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
-                currentObject = ObjectHeld.NailClippers;
-            } else if(towelBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
-                currentObject = ObjectHeld.Towel;
+                if(sprayBottleBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
+                    currentObject = ObjectHeld.SprayBottle;
+                } else if(clipperBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
+                    currentObject = ObjectHeld.NailClippers;
+                } else if(towelBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
+                    currentObject = ObjectHeld.Towel;
+                }
             }
+        } else if(mouseState.LeftButton == ButtonState.Released) {
+            mouseDown = false;
         }
     }
 
