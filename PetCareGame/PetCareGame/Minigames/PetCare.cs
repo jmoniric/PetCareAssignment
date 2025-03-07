@@ -39,8 +39,6 @@ public class PetCare : LevelInterface
 
     private DateTime cooldown;
 
-    private bool mouseDown = false;
-
     private bool faceRight = true;
     private ObjectHeld currentObject = ObjectHeld.None;
     
@@ -162,7 +160,7 @@ public class PetCare : LevelInterface
         }
 
         //controls held object
-        if(GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
+        if(GameHandler.mouseHandler.CheckLeftInput()) {
             /***
             if(sprayBottleBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
                 currentObject = ObjectHeld.SprayBottle;
@@ -172,8 +170,8 @@ public class PetCare : LevelInterface
                 currentObject = ObjectHeld.Towel;
             }
             ***/
-            if(!mouseDown) {
-                mouseDown = true;
+            
+                GameHandler.mouseHandler.SetMouseDown();
 
                 if(sprayBottleBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
                     currentObject = ObjectHeld.SprayBottle;
@@ -182,9 +180,9 @@ public class PetCare : LevelInterface
                 } else if(towelBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
                     currentObject = ObjectHeld.Towel;
                 }
-            }
-        } else if(mouseState.LeftButton == ButtonState.Released) {
-            mouseDown = false;
+            
+        } else {
+            GameHandler.mouseHandler.CheckForRelease();
         }
     }
 
