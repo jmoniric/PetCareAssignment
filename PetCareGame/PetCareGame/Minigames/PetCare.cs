@@ -18,7 +18,15 @@ public class PetCare : LevelInterface
         NailClippers,
         None
     }
-    private Vector2 catPos = new Vector2(400, 335);
+
+    enum GameStage {
+        Instructions,
+        Idle,
+        Bath,
+        NailTrim,
+        Brushing
+    }
+    private Vector2 catPos = new Vector2(400, 305);
     private Color backgroundColour = new Color(197, 118, 38);
     private Texture2D atlas;
     private Texture2D particleTex;
@@ -42,10 +50,14 @@ public class PetCare : LevelInterface
     private bool mouseDown = false;
 
     private bool faceRight = true;
-    private ObjectHeld currentObject = ObjectHeld.None;
     
     private List<Particle> particles = new List<Particle>();
 
+    private ObjectHeld currentObject = ObjectHeld.None;
+    private GameStage currentStage = GameStage.Instructions;
+    private Button startButton;
+    private Point startButtonPos = new Point(270,510);
+    private Rectangle startButtonBounds;
     private ProgressGauge progressGauge;
 
     public void Dispose()
@@ -65,6 +77,7 @@ public class PetCare : LevelInterface
         Rectangle towel = new Rectangle(64,32,32,32);
 
         _graphics.GraphicsDevice.Clear(backgroundColour);
+        GameHandler.highPixel22.LineSpacing = 35;
         
         //draw wall paneling
         for(int h = 0; h < 8; h++) {
@@ -79,13 +92,11 @@ public class PetCare : LevelInterface
             spriteBatch.Draw(atlas, new Rectangle(i*128, 500, 128, 128), floorFiller, Color.DimGray, 0f, Vector2.Zero, SpriteEffects.None, 1f);
         }
 
-        progressGauge.Draw(gameTime, spriteBatch);
-
         //draw cat
         if(faceRight) {
-            GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 5f);
+            GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 6f);
         } else {
-            GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.FlipHorizontally, 5f);
+            GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.FlipHorizontally, 6f);
         }
 
         //bounding box of spray bottle
@@ -120,6 +131,45 @@ public class PetCare : LevelInterface
         
         towelBounds = new Rectangle(towelPos, new Point(128,128));
         spriteBatch.Draw(atlas, towelBounds, towel, Color.White, 0f, towelOrigin, SpriteEffects.None, 1f);
+
+        //draw temperment meter
+        progressGauge.Draw(gameTime, spriteBatch);
+
+        if(currentStage == GameStage.Instructions) {
+            spriteBatch.Draw(
+                GameHandler.plainWhiteTexture,
+                new Rectangle(0,0,(int)GameHandler.baseScreenSize.X,(int)GameHandler.baseScreenSize.Y),
+                Color.LightPink
+            );
+
+            spriteBatch.DrawString(
+                GameHandler.highPixel36,
+                "Instructions",
+                new Vector2(240,50),
+                Color.Black
+            );
+
+            spriteBatch.DrawString(
+                GameHandler.highPixel22,
+                """
+                Owning a pet requires some work!
+                Your pet needs your help to stay
+                clean and happy. Your pet needs
+                you to brush their fur, trim their
+                nails, and give them a gentle bath.
+                But watch out! The gauge at the top
+                represents happiness. If it strays
+                into the red, your pet will get
+                very upset and you will need to
+                start over! Good Luck!
+                """,
+                new Vector2(100, 150),
+                Color.Black
+            );
+
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, startButtonBounds, new Rectangle(16,0,16,16), Color.White);
+            spriteBatch.DrawString(GameHandler.highPixel22, "Start", new Vector2(350, startButtonPos.Y+25), Color.Black);
+        }
     }
 
     public void HandleInput(GameTime gameTime)
@@ -161,7 +211,7 @@ public class PetCare : LevelInterface
             clippersUse = false;
         }
 
-        //controls held object
+        
         if(GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
             /***
             if(sprayBottleBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
@@ -175,12 +225,24 @@ public class PetCare : LevelInterface
             if(!mouseDown) {
                 mouseDown = true;
 
-                if(sprayBottleBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
-                    currentObject = ObjectHeld.SprayBottle;
-                } else if(clipperBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
-                    currentObject = ObjectHeld.NailClippers;
-                } else if(towelBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
-                    currentObject = ObjectHeld.Towel;
+                if(currentStage == GameStage.Instructions) {
+                    if(startButton.CheckIfButtonWasClicked()) {
+                        currentStage = GameStage.Idle;
+                    }
+                }
+
+                //controls held object
+                if(currentObject == ObjectHeld.None && currentStage == GameStage.Idle) {
+                    if(sprayBottleBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
+                        currentObject = ObjectHeld.SprayBottle;
+                        currentStage = GameStage.Bath;
+                    } else if(towelBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
+                        currentObject = ObjectHeld.Towel;
+                        currentStage = GameStage.Bath;
+                    } else if(clipperBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
+                        currentObject = ObjectHeld.NailClippers;
+                        currentStage = GameStage.NailTrim;
+                    }
                 }
             }
         } else if(mouseState.LeftButton == ButtonState.Released) {
@@ -195,11 +257,13 @@ public class PetCare : LevelInterface
         //GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         atlas = _manager.Load<Texture2D>("Sprites/petcare_textureatlas");
         particleTex = GameHandler.plainWhiteTexture;
+        startButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(250, 72), new Vector2(startButtonPos.X,startButtonPos.Y), "Start", 42, true);
     }
 
     public void LoadLevel()
     {
-        progressGauge = new ProgressGauge(new Rectangle(300, 20, 300, 60), 0, 10, 7);
+        progressGauge = new ProgressGauge(new Rectangle(300, 20, 300, 60), 0, 10, 5);
+        startButtonBounds = new Rectangle(startButtonPos.X, startButtonPos.Y, 250, 72);
     }
 
     public void Update(GameTime gameTime)

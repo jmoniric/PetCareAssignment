@@ -24,6 +24,8 @@ public class PauseMenu : LevelInterface
     private Rectangle sqButtonBounds;
     private Rectangle resumeButtonBounds;
 
+    private bool mouseDown = false;
+
     public void Dispose()
     {
         throw new System.NotImplementedException();
@@ -33,6 +35,8 @@ public class PauseMenu : LevelInterface
     {
         SpriteFont font = GameHandler.highPixel22;
         Rectangle atlasButton = new Rectangle(16,0,16,16);
+
+        GameHandler.highPixel22.LineSpacing = 29;
 
         //draw backing texture
         spriteBatch.Draw(
@@ -86,16 +90,22 @@ public class PauseMenu : LevelInterface
     public void HandleInput(GameTime gameTime)
     {
         if(GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
-            if(saveButton.CheckIfButtonWasClicked()) {
+            if(!mouseDown) {
+                mouseDown = true;
+
+                if(saveButton.CheckIfButtonWasClicked()) {
                 //call save function here :3
-            } else if(mainMenuButton.CheckIfButtonWasClicked()) {
-                //return to main menu
-            } else if(saveQuitButton.CheckIfButtonWasClicked()) {
-                //call save function, then quit game
-            } else if(resumeButton.CheckIfButtonWasClicked()) {
-                GameHandler.isPaused = false;
+                } else if(mainMenuButton.CheckIfButtonWasClicked()) {
+                    //return to main menu
+                } else if(saveQuitButton.CheckIfButtonWasClicked()) {
+                    //call save function, then quit game
+                } else if(resumeButton.CheckIfButtonWasClicked()) {
+                    GameHandler.isPaused = false;
+                }
             }
-        } 
+        } else if(GameHandler._mouseState.LeftButton == ButtonState.Released) {
+            mouseDown = false;
+        }
     }
 
     public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
