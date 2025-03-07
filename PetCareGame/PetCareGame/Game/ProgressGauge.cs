@@ -53,6 +53,10 @@ public class ProgressGauge {
         currentValue -= 1;
     }
 
+    public int GetValue() {
+        return currentValue;
+    }
+
     public void Update(GameTime gameTime) {
         markerPos = new Point(CalculatePosition(), markerPos.Y);
         markerBounds = new Rectangle(markerPos.X, markerPos.Y, markerBounds.Width, markerBounds.Height);

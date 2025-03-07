@@ -41,7 +41,7 @@ public class PetCare : LevelInterface
     private Rectangle clipperBounds;
     private bool clippersUse = false;
 
-    private Point towelPos = new Point(55,85);
+    private Point towelPos = new Point(55,185);
     private Vector2 towelOrigin = Vector2.Zero;
     private Rectangle towelBounds;
 
@@ -94,9 +94,23 @@ public class PetCare : LevelInterface
 
         //draw cat
         if(faceRight) {
-            GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 6f);
+            //cat is irritated
+            if(progressGauge.GetValue() == 0) {
+                GameHandler.catAttack.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 6f);
+            } else if(progressGauge.GetValue() <= 3) {
+                GameHandler.catIrritated.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 6f);
+            } else {
+                GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 6f);
+            }
         } else {
-            GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.FlipHorizontally, 6f);
+            //cat is irritated
+            if(progressGauge.GetValue() == 0) {
+                GameHandler.catAttack.DrawFrame(spriteBatch, catPos, SpriteEffects.FlipHorizontally, 6f);
+            } else if(progressGauge.GetValue() <= 3) {
+                GameHandler.catIrritated.DrawFrame(spriteBatch, catPos, SpriteEffects.FlipHorizontally, 6f);
+            } else if(progressGauge.GetValue() > 3 ){
+                GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.FlipHorizontally, 6f);
+            }
         }
 
         //bounding box of spray bottle
@@ -127,7 +141,7 @@ public class PetCare : LevelInterface
         }
 
         //draw towel hook
-        spriteBatch.Draw(atlas, new Rectangle(75,50,96,96), towelHook, Color.White);
+        spriteBatch.Draw(atlas, new Rectangle(75,150,96,96), towelHook, Color.White);
         
         towelBounds = new Rectangle(towelPos, new Point(128,128));
         spriteBatch.Draw(atlas, towelBounds, towel, Color.White, 0f, towelOrigin, SpriteEffects.None, 1f);
@@ -135,6 +149,9 @@ public class PetCare : LevelInterface
         //draw temperment meter
         progressGauge.Draw(gameTime, spriteBatch);
 
+        // HANDLE GAME STAGES HERE
+
+        //Instructions
         if(currentStage == GameStage.Instructions) {
             spriteBatch.Draw(
                 GameHandler.plainWhiteTexture,
@@ -169,6 +186,8 @@ public class PetCare : LevelInterface
 
             spriteBatch.Draw(GameHandler.coreTextureAtlas, startButtonBounds, new Rectangle(16,0,16,16), Color.White);
             spriteBatch.DrawString(GameHandler.highPixel22, "Start", new Vector2(350, startButtonPos.Y+25), Color.Black);
+        } else if(currentStage == GameStage.NailTrim) {
+
         }
     }
 
@@ -262,17 +281,12 @@ public class PetCare : LevelInterface
 
     public void LoadLevel()
     {
-        progressGauge = new ProgressGauge(new Rectangle(300, 20, 300, 60), 0, 10, 5);
+        progressGauge = new ProgressGauge(new Rectangle(75, 20, 300, 60), 0, 10, 5);
         startButtonBounds = new Rectangle(startButtonPos.X, startButtonPos.Y, 250, 72);
     }
 
     public void Update(GameTime gameTime)
     {
-        MouseState mouseState = OneShotMouseButtons.GetState();
-
-        float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        GameHandler.catIdle.UpdateFrame(elapsed);
-
         progressGauge.Update(gameTime);
 
         if(currentObject == ObjectHeld.SprayBottle) {

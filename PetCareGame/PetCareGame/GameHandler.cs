@@ -51,6 +51,9 @@ public class GameHandler : Game
     public static bool isPaused = false;
 
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
+    public static AnimatedTexture catIrritated = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
+    public static AnimatedTexture catAttack = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
+
     public static Texture2D coreTextureAtlas;
     public static Texture2D plainWhiteTexture;
 
@@ -129,6 +132,9 @@ public class GameHandler : Game
         
         //Core assets
         catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
+        catIrritated.Load(_coreAssets, "Sprites/Animal/irritated", 4, 6);
+        catAttack.Load(_coreAssets, "Sprites/Animal/attack", 3, 4);
+
         coreTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
         pauseButton = new Button(coreTextureAtlas, coreTextureAtlas, new Point(48,48), pausePos, "Pause", 37, true);
         plainWhiteTexture = _coreAssets.Load<Texture2D>("Sprites/plain_white");
@@ -271,10 +277,14 @@ public class GameHandler : Game
         //use the transformation matrix to transform coords to local scale
         relativeMousePos = Vector2.Transform(mousePos, Matrix.Invert(globalTransformation));
         ***/
+
+        float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        catIdle.UpdateFrame(elapsed);
+        catIrritated.UpdateFrame(elapsed);
+        catAttack.UpdateFrame(elapsed);
+
         HandleInput(gameTime);
 
-        
-            
         //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
           //  Exit();
         if(isPaused) {
