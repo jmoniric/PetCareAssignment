@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace PetCareGame;
 
@@ -59,6 +60,8 @@ public class PetCare : LevelInterface
     private Point startButtonPos = new Point(270,510);
     private Rectangle startButtonBounds;
     private ProgressGauge progressGauge;
+
+    private SoundEffectInstance catPurr;
 
     public void Dispose()
     {
@@ -277,6 +280,9 @@ public class PetCare : LevelInterface
         atlas = _manager.Load<Texture2D>("Sprites/petcare_textureatlas");
         particleTex = GameHandler.plainWhiteTexture;
         startButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(250, 72), new Vector2(startButtonPos.X,startButtonPos.Y), "Start", 42, true);
+        
+        catPurr = GameHandler.catPurr.CreateInstance();
+        catPurr.IsLooped = true;
     }
 
     public void LoadLevel()
@@ -287,31 +293,39 @@ public class PetCare : LevelInterface
 
     public void Update(GameTime gameTime)
     {
-        progressGauge.Update(gameTime);
+        if(GameHandler.isPaused) {
+            catPurr.Pause();
+        } else {
+            progressGauge.Update(gameTime);
 
-        if(currentObject == ObjectHeld.SprayBottle) {
-            //sprayBottlePos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
-            sprayBottlePos = new Point((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y);
-            sprayBottleOrigin = new Vector2(16, 16);
-        } else if(currentObject == ObjectHeld.NailClippers) {
-            //clippersPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
-            clippersPos = new Point((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y);
-            clippersOrigin = new Vector2(16, 8);
-        } else if(currentObject == ObjectHeld.Towel) {
-            //towelPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
-            towelPos = new Point((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y);
-            towelOrigin = new Vector2(16, 8);
-        }
+            if(currentStage == GameStage.Idle) {
+                catPurr.Play();
+            }
+            if(currentObject == ObjectHeld.SprayBottle) {
+                //sprayBottlePos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
+                sprayBottlePos = new Point((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y);
+                sprayBottleOrigin = new Vector2(16, 16);
+            } else if(currentObject == ObjectHeld.NailClippers) {
+                //clippersPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
+                clippersPos = new Point((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y);
+                clippersOrigin = new Vector2(16, 8);
+            } else if(currentObject == ObjectHeld.Towel) {
+                //towelPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
+                towelPos = new Point((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y);
+                towelOrigin = new Vector2(16, 8);
+            }
 
-        int index = 0;
-        while (index < particles.Count) {
-            particles[index].Update(gameTime);
-            if(particles[index].CheckToDestroy(5)) {
-                particles.RemoveAt(index);
-            } else {
-                index++;
+            int index = 0;
+            while (index < particles.Count) {
+                particles[index].Update(gameTime);
+                if(particles[index].CheckToDestroy(5)) {
+                    particles.RemoveAt(index);
+                } else {
+                    index++;
+                }
             }
         }
+        
     }
 
     

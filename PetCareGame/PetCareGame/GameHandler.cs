@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Net.Mime;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -53,6 +54,9 @@ public class GameHandler : Game
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static AnimatedTexture catIrritated = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static AnimatedTexture catAttack = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
+
+    public static SoundEffect catPurr;
+    public static SoundEffectInstance selectSfx;
 
     public static Texture2D coreTextureAtlas;
     public static Texture2D plainWhiteTexture;
@@ -134,6 +138,10 @@ public class GameHandler : Game
         catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         catIrritated.Load(_coreAssets, "Sprites/Animal/irritated", 4, 6);
         catAttack.Load(_coreAssets, "Sprites/Animal/attack", 3, 4);
+
+        catPurr = _coreAssets.Load<SoundEffect>("Sounds/Animal/cat_purr");
+        selectSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/select").CreateInstance();
+        selectSfx.Volume = 0.5f;
 
         coreTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
         pauseButton = new Button(coreTextureAtlas, coreTextureAtlas, new Point(48,48), pausePos, "Pause", 37, true);
@@ -289,24 +297,23 @@ public class GameHandler : Game
           //  Exit();
         if(isPaused) {
             _pauseMenu.Update(gameTime);
-        } else {
-            switch(CurrentState) {
-                case GameState.MainMenu:
-                    //handle the update for main menu directly here
-                    break;
-                case GameState.PetCareGame:
-                    _petCareLevel.Update(gameTime);
-                    break;
-                case GameState.FishingGame:
-                    _fishingLevel.Update(gameTime);
-                    break;
-                case GameState.WaldoGame:
-                    _waldoLevel.Update(gameTime);
-                    break;
-                case GameState.SlidingGame:
-                    _slidingLevel.Update(gameTime);
-                    break;   
-            }
+        }
+        switch(CurrentState) {
+            case GameState.MainMenu:
+                //handle the update for main menu directly here
+                break;
+            case GameState.PetCareGame:
+                _petCareLevel.Update(gameTime);
+                break;
+            case GameState.FishingGame:
+                _fishingLevel.Update(gameTime);
+                break;
+            case GameState.WaldoGame:
+                _waldoLevel.Update(gameTime);
+                break;
+            case GameState.SlidingGame:
+                _slidingLevel.Update(gameTime);
+                break;
         }
 
         base.Update(gameTime);

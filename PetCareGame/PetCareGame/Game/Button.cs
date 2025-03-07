@@ -66,6 +66,7 @@ namespace PetCareGame
             {
                 if(GameHandler._mouseState.Y >= Position.Y && GameHandler._mouseState.Y <= (Position.Y + Dimensions.Y))
                 {
+                    GameHandler.selectSfx.Play();
                     return true;
                 }
             }
