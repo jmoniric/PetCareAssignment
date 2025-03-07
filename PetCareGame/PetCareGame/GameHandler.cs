@@ -50,8 +50,6 @@ public class GameHandler : Game
 
     public static bool isPaused = false;
 
-    public static MouseHandler mouseHandler;
-
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static Texture2D coreTextureAtlas;
     public static Texture2D plainWhiteTexture;
@@ -108,8 +106,6 @@ public class GameHandler : Game
         _mouseState = OneShotMouseButtons.GetState();
         pausePos = new Vector2(750,10);
         _mouseLeftPressed = false;
-
-        mouseHandler = new MouseHandler();
 
         //Window.AllowUserResizing = true;
 
