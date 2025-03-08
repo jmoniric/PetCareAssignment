@@ -250,6 +250,18 @@
 /processorParam:TextureFormat=Color
 /build:Core/Sprites/core_textureatlas.png
 
+#begin Core/Sprites/gauge_atlas.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Core/Sprites/gauge_atlas.png
+
 #begin Core/Sprites/plain_white.png
 /importer:TextureImporter
 /processor:TextureProcessor

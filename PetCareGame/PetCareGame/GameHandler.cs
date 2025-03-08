@@ -60,6 +60,7 @@ public class GameHandler : Game
 
     public static Texture2D coreTextureAtlas;
     public static Texture2D plainWhiteTexture;
+    public static Texture2D gaugeTextureAtlas;
 
     //fonts
     public static SpriteFont courierNew36;
@@ -144,6 +145,7 @@ public class GameHandler : Game
         selectSfx.Volume = 0.5f;
 
         coreTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
+        gaugeTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/gauge_atlas");
         pauseButton = new Button(coreTextureAtlas, coreTextureAtlas, new Point(48,48), pausePos, "Pause", 37, true);
         plainWhiteTexture = _coreAssets.Load<Texture2D>("Sprites/plain_white");
         

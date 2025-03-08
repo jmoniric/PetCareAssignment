@@ -8,8 +8,8 @@ namespace PetCareGame;
 public class ProgressGauge {
     private Rectangle bounds;
     private Rectangle markerBounds;
-    private Rectangle sourceGauge = new Rectangle(0,16,64,16);
-    private Rectangle sourceMarker = new Rectangle(48,0,13,12);
+    private Rectangle sourceGauge = new Rectangle(0,0,64,16);
+    private Rectangle sourceMarker = new Rectangle(48,48,13,12);
     private Point markerPos;
 
     private int minValue, maxValue, currentValue;
@@ -25,8 +25,8 @@ public class ProgressGauge {
     }
     
     public void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
-        spriteBatch.Draw(GameHandler.coreTextureAtlas, bounds, sourceGauge, Color.White);
-        spriteBatch.Draw(GameHandler.coreTextureAtlas, markerBounds, sourceMarker, Color.White, 0f, new Vector2(6,0), SpriteEffects.None, 1f);
+        spriteBatch.Draw(GameHandler.gaugeTextureAtlas, bounds, sourceGauge, Color.White);
+        spriteBatch.Draw(GameHandler.gaugeTextureAtlas, markerBounds, sourceMarker, Color.White, 0f, new Vector2(6,0), SpriteEffects.None, 1f);
     }
 
     public void LoadContent(ContentManager _manager) {
