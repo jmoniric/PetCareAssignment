@@ -52,11 +52,23 @@
 /processor:PassThroughProcessor
 /build:Core/Sounds/placeholder.xml
 
+#begin Core/Sounds/UI/fail.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Core/Sounds/UI/fail.wav
+
 #begin Core/Sounds/UI/select.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Core/Sounds/UI/select.wav
+
+#begin Core/Sounds/UI/success.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Core/Sounds/UI/success.wav
 
 #begin Core/Sprites/Animal/attack.png
 /importer:TextureImporter

@@ -57,6 +57,8 @@ public class GameHandler : Game
 
     public static SoundEffect catPurr;
     public static SoundEffectInstance selectSfx;
+    public static SoundEffectInstance failSfx;
+    public static SoundEffectInstance successSfx;
 
     public static Texture2D coreTextureAtlas;
     public static Texture2D plainWhiteTexture;
@@ -143,6 +145,10 @@ public class GameHandler : Game
         catPurr = _coreAssets.Load<SoundEffect>("Sounds/Animal/cat_purr");
         selectSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/select").CreateInstance();
         selectSfx.Volume = 0.5f;
+        failSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/fail").CreateInstance();
+        failSfx.Volume = 0.5f;
+        successSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/success").CreateInstance();
+        successSfx.Volume = 0.5f;
 
         coreTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
         gaugeTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/gauge_atlas");
