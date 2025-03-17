@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
 
 namespace PetCareGame;
 
@@ -54,8 +55,7 @@ public class GameHandler : Game
 
     public static int windowHeight = 600;
     public static int windowWidth = 800;
-    private bool isResizing;
-
+    public static Vector2 _relativeMousePos;
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static Texture2D coreTextureAtlas;
     public static Texture2D plainWhiteTexture;
@@ -65,6 +65,7 @@ public class GameHandler : Game
     public static SpriteFont courierNew52;
     public static SpriteFont highPixel36;
     public static SpriteFont highPixel64;
+    private bool _isResizing;
 
     
     public GameHandler()
@@ -90,16 +91,16 @@ public class GameHandler : Game
         IsMouseVisible = true;
 
         Window.AllowUserResizing = true;
-        Window.ClientSizeChanged += OnClientSizeChanged;
+        Window.ClientSizeChanged += OnClientSizeChange;
     }
 
-    private void OnClientSizeChanged(object sender, EventArgs e)
+    private void OnClientSizeChange(object sender, EventArgs e)
     {
-        if(!isResizing && Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
+        if(!_isResizing && Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
         {
-            isResizing = true;
-            _displayManager.CalculateRectangleDestination();
-            isResizing = false;
+            _isResizing = true;
+            _displayManager.UpdateScreenScaleMatrix();
+            _isResizing = false;
         }
     }
 
@@ -107,6 +108,7 @@ public class GameHandler : Game
     {
         // TODO: Add your initialization logic here
         _displayManager = new(this, _graphics, GraphicsDevice);
+        _displayManager.UpdateScreenScaleMatrix();
 
         _petCareButtonPosition = new Vector2(100, 100);
         _waldoButtonPosition = new Vector2(164, 100);
@@ -119,8 +121,6 @@ public class GameHandler : Game
         _mouseLeftPressed = false;
 
         base.Initialize();
-
-        _displayManager.CalculateRectangleDestination();
     }
 
     protected override void LoadContent()
@@ -136,6 +136,7 @@ public class GameHandler : Game
                                             new Point(64, 33), _slidingButtonPosition, "Sliding Minigame", 35, true);
         _fishingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGameClicked"),
                                             new Point(64, 33), _fishingButtonPosition, "Fishing Minigame", 36, true);
+        
 
         //Core assets
         catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
@@ -153,6 +154,7 @@ public class GameHandler : Game
 
     public void HandleInput(GameTime gameTime)
     {
+        
         _mouseState = OneShotMouseButtons.GetState();
 
         if(_mouseState.LeftButton == ButtonState.Pressed)
@@ -184,8 +186,7 @@ public class GameHandler : Game
 
             //prevents checking of other buttons while in pause menu
             } else if (!isPaused) {
-                // if(_petCareButton.CheckIfButtonWasClicked())
-                if (_petCareButton.CheckIfButtonWasClicked(_displayManager.scaleFactor))
+                if(_petCareButton.CheckIfButtonWasClicked())
                 {
                     SetVisiblity(false); //hides buttons to prevent them from being pressed again
                     _petCareButton.Clicked();
@@ -242,10 +243,14 @@ public class GameHandler : Game
 
     protected override void Update(GameTime gameTime)
     {
+        var mousePosition = new Vector2(_mouseState.X, _mouseState.Y);
+        _relativeMousePos = Vector2.Transform(mousePosition, Matrix.Invert(_displayManager._scaleMatrix));
+
         HandleInput(gameTime);
             
         //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
           //  Exit();
+
         if(isPaused) {
             _pauseMenu.Update(gameTime);
         } else {
@@ -273,11 +278,11 @@ public class GameHandler : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.SetRenderTarget(_displayManager._renderTarget);
-
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+        GraphicsDevice.Viewport = _displayManager._viewport;
+
+        _spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp, transformMatrix: _displayManager._scaleMatrix);
 
         switch(CurrentState) {
             case GameState.MainMenu:
@@ -310,12 +315,6 @@ public class GameHandler : Game
         //end drawing
         _spriteBatch.End();
 
-        GraphicsDevice.SetRenderTarget(null);
-
-        _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
-        _spriteBatch.Draw(_displayManager._renderTarget, _displayManager._renderDestination, Color.White);
-        _spriteBatch.End();
-
         base.Draw(gameTime);
     }
 
@@ -345,4 +344,5 @@ public class GameHandler : Game
         _spriteBatch.Draw(_slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
         _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
     }
+
 }
