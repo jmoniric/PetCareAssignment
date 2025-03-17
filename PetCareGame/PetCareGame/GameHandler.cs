@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Net.Mime;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -24,8 +25,6 @@ public class GameHandler : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
-    private DisplayManager _displayManager;
-
     private Button _petCareButton;
     private Vector2 _petCareButtonPosition;
     private Button _waldoButton;
@@ -35,7 +34,7 @@ public class GameHandler : Game
     private Button _fishingButton;
     private Vector2 _fishingButtonPosition;
     public static MouseState _mouseState;
-    private bool _mouseLeftPressed;
+    public static bool _mouseLeftPressed;
 
     private Button pauseButton;
     private Vector2 pausePos;
@@ -57,15 +56,30 @@ public class GameHandler : Game
     public static int windowWidth = 800;
     public static Vector2 _relativeMousePos;
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
+    public static AnimatedTexture catIrritated = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
+    public static AnimatedTexture catAttack = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
+
+    public static SoundEffect catPurr;
+    public static SoundEffectInstance selectSfx;
+    public static SoundEffectInstance failSfx;
+    public static SoundEffectInstance successSfx;
+
     public static Texture2D coreTextureAtlas;
     public static Texture2D plainWhiteTexture;
+    public static Texture2D gaugeTextureAtlas;
 
     //fonts
     public static SpriteFont courierNew36;
     public static SpriteFont courierNew52;
+    public static SpriteFont highPixel22;
     public static SpriteFont highPixel36;
-    public static SpriteFont highPixel64;
-    private bool _isResizing;
+
+    public static Vector2 baseScreenSize = new Vector2(800, 600);
+    //private Matrix globalTransformation;
+    //public static int backbufferWidth, backbufferHeight;
+
+    //public static Vector2 relativeMousePos;
+        private bool _isResizing;
 
     
     public GameHandler()
@@ -117,8 +131,10 @@ public class GameHandler : Game
         pausePos = new Vector2(1840,10);
 
         _mouseState = OneShotMouseButtons.GetState();
-
+        pausePos = new Vector2(750,10);
         _mouseLeftPressed = false;
+
+        //Window.AllowUserResizing = true;
 
         base.Initialize();
     }
@@ -140,16 +156,29 @@ public class GameHandler : Game
 
         //Core assets
         catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
+        catIrritated.Load(_coreAssets, "Sprites/Animal/irritated", 4, 6);
+        catAttack.Load(_coreAssets, "Sprites/Animal/attack", 3, 4);
+
+        catPurr = _coreAssets.Load<SoundEffect>("Sounds/Animal/cat_purr");
+        selectSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/select").CreateInstance();
+        selectSfx.Volume = 0.5f;
+        failSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/fail").CreateInstance();
+        failSfx.Volume = 0.5f;
+        successSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/success").CreateInstance();
+        successSfx.Volume = 0.5f;
+
         coreTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
-        pauseButton = new Button(coreTextureAtlas, coreTextureAtlas, new Point(64,64), pausePos, "Pause", 37, true);
+        gaugeTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/gauge_atlas");
+        pauseButton = new Button(coreTextureAtlas, coreTextureAtlas, new Point(48,48), pausePos, "Pause", 37, true);
         plainWhiteTexture = _coreAssets.Load<Texture2D>("Sprites/plain_white");
         
         //fonts
         courierNew36 = _coreAssets.Load<SpriteFont>("Fonts/courier_new_36");
         courierNew52 = _coreAssets.Load<SpriteFont>("Fonts/courier_new_52");
+        highPixel22 = _coreAssets.Load<SpriteFont>("Fonts/high_pixel_22");
         highPixel36 = _coreAssets.Load<SpriteFont>("Fonts/high_pixel_36");
-        highPixel64 = _coreAssets.Load<SpriteFont>("Fonts/high_pixel_64");
 
+        //ScalePresentationArea();
     }
 
     public void HandleInput(GameTime gameTime)
@@ -246,31 +275,74 @@ public class GameHandler : Game
         var mousePosition = new Vector2(_mouseState.X, _mouseState.Y);
         _relativeMousePos = Vector2.Transform(mousePosition, Matrix.Invert(_displayManager._scaleMatrix));
 
+        /***  //SCALING CODE
+        //fix window scaling before checking input
+        if (backbufferHeight != GraphicsDevice.PresentationParameters.BackBufferHeight ||
+                backbufferWidth != GraphicsDevice.PresentationParameters.BackBufferWidth)
+        {
+            //window size 480x800 reduces down to 3x5
+            //checks that user set width is a factor of 5 or height is factor of 3
+            //if this fails, it uses integer division (which rounds to nearest whole number)
+            //to find other number and then multiplies 3 and 5 by that factor and sets
+            //it to height and width, respectively, before updating graphics
+
+            if (GraphicsDevice.PresentationParameters.BackBufferWidth % 4 != 0) {
+                //factor being multiplied by 5
+                int factor = GraphicsDevice.PresentationParameters.BackBufferWidth / 4;
+                //set preferred dimensions to aspect-correct dimensions
+                _graphics.PreferredBackBufferWidth = factor *4;
+                _graphics.PreferredBackBufferHeight = factor *3;
+                //applies changes
+                _graphics.ApplyChanges();
+            } else if (GraphicsDevice.PresentationParameters.BackBufferHeight % 3 != 0) {
+                //factor being multiplied by 3
+                int factor = GraphicsDevice.PresentationParameters.BackBufferHeight / 3;
+                //set preferred dimensions to aspect-correct dimensions
+                _graphics.PreferredBackBufferWidth = factor *4;
+                _graphics.PreferredBackBufferHeight = factor *3;
+                //applies changes
+                _graphics.ApplyChanges();
+            }
+
+            //scales graphics
+            ScalePresentationArea();
+        }
+        //convert from Point to Vector2
+        Vector2 mousePos = new Vector2(_mouseState.X, _mouseState.Y);
+
+        //use the transformation matrix to transform coords to local scale
+        relativeMousePos = Vector2.Transform(mousePos, Matrix.Invert(globalTransformation));
+        ***/
+
+        float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        catIdle.UpdateFrame(elapsed);
+        catIrritated.UpdateFrame(elapsed);
+        catAttack.UpdateFrame(elapsed);
+
         HandleInput(gameTime);
-            
+
         //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
           //  Exit();
 
         if(isPaused) {
             _pauseMenu.Update(gameTime);
-        } else {
-            switch(CurrentState) {
-                case GameState.MainMenu:
-                    //handle the update for main menu directly here
-                    break;
-                case GameState.PetCareGame:
-                    _petCareLevel.Update(gameTime);
-                    break;
-                case GameState.FishingGame:
-                    _fishingLevel.Update(gameTime);
-                    break;
-                case GameState.WaldoGame:
-                    _waldoLevel.Update(gameTime);
-                    break;
-                case GameState.SlidingGame:
-                    _slidingLevel.Update(gameTime);
-                    break;   
-            }
+        }
+        switch(CurrentState) {
+            case GameState.MainMenu:
+                //handle the update for main menu directly here
+                break;
+            case GameState.PetCareGame:
+                _petCareLevel.Update(gameTime);
+                break;
+            case GameState.FishingGame:
+                _fishingLevel.Update(gameTime);
+                break;
+            case GameState.WaldoGame:
+                _waldoLevel.Update(gameTime);
+                break;
+            case GameState.SlidingGame:
+                _slidingLevel.Update(gameTime);
+                break;
         }
 
         base.Update(gameTime);
@@ -303,7 +375,7 @@ public class GameHandler : Game
 
         //draw pause button last
         if(!isPaused) {
-            _spriteBatch.Draw(pauseButton.Texture, new Rectangle(_graphics.PreferredBackBufferWidth - 80,10,64,64), new Rectangle(0,0,16,16), Color.White);
+            _spriteBatch.Draw(pauseButton.Texture, new Rectangle(750,10,48,48), new Rectangle(0,0,16,16), Color.White);
         }
 
         if(isPaused) {
@@ -343,4 +415,21 @@ public class GameHandler : Game
         _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
     }
 
+    /***
+    // @author: Monogame
+    //
+    // Code taken from Monogame sample Platformer2D project
+    
+    public void ScalePresentationArea()
+    {
+        //Work out how much we need to scale our graphics to fill the screen
+        backbufferWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
+        backbufferHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
+        float horScaling = backbufferWidth / baseScreenSize.X;
+        float verScaling = backbufferHeight / baseScreenSize.Y;
+        Vector3 screenScalingFactor = new Vector3(horScaling, verScaling, 1);
+        globalTransformation = Matrix.CreateScale(screenScalingFactor);
+        System.Diagnostics.Debug.WriteLine("Screen Size - Width[" + GraphicsDevice.PresentationParameters.BackBufferWidth + "] Height [" + GraphicsDevice.PresentationParameters.BackBufferHeight + "]");
+    }
+    ***/
 }

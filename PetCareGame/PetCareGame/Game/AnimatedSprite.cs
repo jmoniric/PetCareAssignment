@@ -85,6 +85,23 @@ public class AnimatedTexture
             Rotation, Origin, Scale, effect, Depth);
     }
 
+    //allows overriding set scale when texture is originally configured
+    //this should prevent needing to reload the asset again
+    public void DrawFrame(SpriteBatch batch, Vector2 screenPos, SpriteEffects effect, float overrideScale)
+    {
+        DrawFrame(batch, frame, screenPos, effect, overrideScale);
+    }
+
+    //overload for implementing scale override
+    public void DrawFrame(SpriteBatch batch, int frame, Vector2 screenPos, SpriteEffects effect, float overrideScale)
+    {
+        int FrameWidth = myTexture.Width / frameCount;
+        Rectangle sourcerect = new Rectangle(FrameWidth * frame, 0,
+            FrameWidth, myTexture.Height);
+        batch.Draw(myTexture, screenPos, sourcerect, Color.White,
+            Rotation, Origin, overrideScale, effect, Depth);
+    }
+
     public bool IsPaused
     {
         get { return isPaused; }

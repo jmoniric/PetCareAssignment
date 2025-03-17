@@ -27,6 +27,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Core/Fonts/courier_new_52.spritefont
 
+#begin Core/Fonts/high_pixel_22.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Core/Fonts/high_pixel_22.spritefont
+
 #begin Core/Fonts/high_pixel_36.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -34,17 +41,34 @@
 /processorParam:TextureFormat=Compressed
 /build:Core/Fonts/high_pixel_36.spritefont
 
-#begin Core/Fonts/high_pixel_64.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Core/Fonts/high_pixel_64.spritefont
+#begin Core/Sounds/Animal/cat_purr.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Core/Sounds/Animal/cat_purr.wav
 
 #begin Core/Sounds/placeholder.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
 /build:Core/Sounds/placeholder.xml
+
+#begin Core/Sounds/UI/fail.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Core/Sounds/UI/fail.wav
+
+#begin Core/Sounds/UI/select.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Core/Sounds/UI/select.wav
+
+#begin Core/Sounds/UI/success.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Core/Sounds/UI/success.wav
 
 #begin Core/Sprites/Animal/attack.png
 /importer:TextureImporter
@@ -69,6 +93,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Core/Sprites/Animal/idle.png
+
+#begin Core/Sprites/Animal/irritated.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Core/Sprites/Animal/irritated.png
 
 #begin Core/Sprites/Animal/jump.png
 /importer:TextureImporter
@@ -226,6 +262,18 @@
 /processorParam:TextureFormat=Color
 /build:Core/Sprites/core_textureatlas.png
 
+#begin Core/Sprites/gauge_atlas.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Core/Sprites/gauge_atlas.png
+
 #begin Core/Sprites/plain_white.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -270,10 +318,34 @@
 /processor:PassThroughProcessor
 /build:SlidingGame/Sounds/placeholder.xml
 
+#begin SlidingGame/Sprites/hedge_maze_tiles.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:SlidingGame/Sprites/hedge_maze_tiles.png;SlidingGame/Sprites/petcare_slidetextureatlas.png
+
 #begin SlidingGame/Sprites/placeholder.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
 /build:SlidingGame/Sprites/placeholder.xml
+
+#begin SlidingGame/Sprites/treasure_chests_32x32.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:SlidingGame/Sprites/treasure_chests_32x32.png;SlidingGame/Sprites/treasure_atlas.png
 
 #begin WaldoGame/Sounds/placeholder.xml
 /importer:XmlImporter
