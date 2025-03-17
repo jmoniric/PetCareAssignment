@@ -280,8 +280,6 @@ public class GameHandler : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        GraphicsDevice.Viewport = _displayManager._viewport;
-
         _spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp, transformMatrix: _displayManager._scaleMatrix);
 
         switch(CurrentState) {

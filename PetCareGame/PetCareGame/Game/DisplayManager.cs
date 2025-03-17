@@ -48,33 +48,44 @@ public class DisplayManager
         // Determine the size of the actual screen
         float screenWidth = _graphicsDevice.PresentationParameters.BackBufferWidth;
         float screenHeight = _graphicsDevice.PresentationParameters.BackBufferHeight;
-
-        // Calculate the virtual resolution based on the current screen width and height compared to our
-        // intended resolution width and height
-        if(screenWidth / _resolutionWidth > screenHeight / _resolutionHeight)
+        //fix window scaling before checking input
+        if (screenHeight != _graphicsDevice.PresentationParameters.BackBufferHeight ||
+                screenWidth != _graphicsDevice.PresentationParameters.BackBufferWidth)
         {
-            float aspect = screenHeight / _resolutionHeight;
-            _virtualWidth = (int)(aspect * _resolutionWidth);
-            _virtualHeight = (int)screenHeight;
+            //window size 480x800 reduces down to 3x5
+            //checks that user set width is a factor of 5 or height is factor of 3
+            //if this fails, it uses integer division (which rounds to nearest whole number)
+            //to find other number and then multiplies 3 and 5 by that factor and sets
+            //it to height and width, respectively, before updating graphics
+
+            if (_graphicsDevice.PresentationParameters.BackBufferWidth % 4 != 0)
+            {
+                //factor being multiplied by 5
+                int factor = _graphicsDevice.PresentationParameters.BackBufferWidth / 4;
+                //set preferred dimensions to aspect-correct dimensions
+                _graphics.PreferredBackBufferWidth = factor * 4;
+                _graphics.PreferredBackBufferHeight = factor * 3;
+                //applies changes
+                _graphics.ApplyChanges();
+            }
+            else if (_graphicsDevice.PresentationParameters.BackBufferHeight % 3 != 0)
+            {
+                //factor being multiplied by 3
+                int factor = _graphicsDevice.PresentationParameters.BackBufferHeight / 3;
+                //set preferred dimensions to aspect-correct dimensions
+                _graphics.PreferredBackBufferWidth = factor * 4;
+                _graphics.PreferredBackBufferHeight = factor * 3;
+                //applies changes
+                _graphics.ApplyChanges();
+            }
         }
-        else
-        {
-            float aspect = screenWidth / _resolutionWidth;
-            _virtualWidth = (int)screenWidth;
-            _virtualHeight = (int)(aspect * _resolutionHeight);
-        }
 
-        _scaleMatrix = Matrix.CreateScale(_virtualWidth / (float)_resolutionWidth, _virtualHeight / (float)_resolutionHeight, 1.0f);
+        float scaleX = screenWidth / _resolutionWidth;
+        float scaleY = screenHeight / _resolutionHeight;
+        Vector3 scale = new(scaleX, scaleY, 1);
 
-        _viewport = new Viewport
-        {
-            X = (int)(screenWidth / 2 - _virtualWidth / 2),
-            Y = (int)(screenHeight / 2 - _virtualHeight / 2),
-            Width = _virtualWidth,
-            Height = _virtualHeight,
-            MinDepth = 0,
-            MaxDepth = 1
-        };
+        _scaleMatrix = Matrix.CreateScale(scale);
+
     }
 
 }
