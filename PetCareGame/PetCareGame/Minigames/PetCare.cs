@@ -292,6 +292,7 @@ public class PetCare : LevelInterface
 
                 //controls held object
                 if(currentObject == ObjectHeld.None && currentStage == GameStage.Idle) {
+                    // Change _mouseState to relativeMousePos variable
                     if(sprayBottleBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
                         currentObject = ObjectHeld.SprayBottle;
                         currentStage = GameStage.Bath;

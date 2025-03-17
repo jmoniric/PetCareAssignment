@@ -13,11 +13,7 @@ public class DisplayManager
     // Desired Resolution
     private readonly int _resolutionWidth = 800;
     private readonly int _resolutionHeight = 600;
-
-    // Resolution the game will be rendered at
-    private int _virtualWidth = 800;
-    private int _virtualHeight = 600;
-
+    
     public Matrix _scaleMatrix;
     public Viewport _viewport;
 
