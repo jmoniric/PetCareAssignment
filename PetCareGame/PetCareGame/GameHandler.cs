@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
 
 namespace PetCareGame;
 
@@ -23,6 +24,7 @@ public class GameHandler : Game
 
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+    private DisplayManager _displayManager;
 
     private Button _petCareButton;
     private Vector2 _petCareButtonPosition;
@@ -51,6 +53,9 @@ public class GameHandler : Game
 
     public static bool isPaused = false;
 
+    public static int windowHeight = 600;
+    public static int windowWidth = 800;
+    public static Vector2 _relativeMousePos;
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static AnimatedTexture catIrritated = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static AnimatedTexture catAttack = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
@@ -71,20 +76,13 @@ public class GameHandler : Game
     public static SpriteFont highPixel36;
 
     public static Vector2 baseScreenSize = new Vector2(800, 600);
-    //private Matrix globalTransformation;
-    //public static int backbufferWidth, backbufferHeight;
 
-    //public static Vector2 relativeMousePos;
-    
+    private bool _isResizing;
+
     
     public GameHandler()
     {
         _graphics = new GraphicsDeviceManager(this);
-
-        //setting our preffered window size
-        _graphics.PreferredBackBufferWidth = (int)baseScreenSize.X;
-        _graphics.PreferredBackBufferHeight = (int)baseScreenSize.Y;
-        
 
         //rather than using the static methods from the content class, we should make separate content managers for separate sets of assets
         _coreAssets = new ContentManager(Content.ServiceProvider);
@@ -103,16 +101,32 @@ public class GameHandler : Game
         _petcareAssets.RootDirectory = "Content/PetcareGame";
 
         IsMouseVisible = true;
+
+        Window.AllowUserResizing = true;
+        Window.ClientSizeChanged += OnClientSizeChange;
+    }
+
+    private void OnClientSizeChange(object sender, EventArgs e)
+    {
+        if(!_isResizing && Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
+        {
+            _isResizing = true;
+            _displayManager.UpdateScreenScaleMatrix();
+            _isResizing = false;
+        }
     }
 
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
+        _displayManager = new(this, _graphics, GraphicsDevice);
+        _displayManager.UpdateScreenScaleMatrix();
 
         _petCareButtonPosition = new Vector2(100, 100);
         _waldoButtonPosition = new Vector2(164, 100);
         _slidingButtonPosition = new Vector2(228, 100);
         _fishingButtonPosition = new Vector2(292, 100);
+
         _mouseState = OneShotMouseButtons.GetState();
         pausePos = new Vector2(750,10);
         _mouseLeftPressed = false;
@@ -136,7 +150,7 @@ public class GameHandler : Game
         _fishingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGameClicked"),
                                             new Point(64, 33), _fishingButtonPosition, "Fishing Minigame", 36, true);
         
-        
+
         //Core assets
         catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         catIrritated.Load(_coreAssets, "Sprites/Animal/irritated", 4, 6);
@@ -161,7 +175,6 @@ public class GameHandler : Game
         highPixel22 = _coreAssets.Load<SpriteFont>("Fonts/high_pixel_22");
         highPixel36 = _coreAssets.Load<SpriteFont>("Fonts/high_pixel_36");
 
-        //ScalePresentationArea();
     }
 
     public void HandleInput(GameTime gameTime)
@@ -255,44 +268,8 @@ public class GameHandler : Game
 
     protected override void Update(GameTime gameTime)
     {
-        /***  //SCALING CODE
-        //fix window scaling before checking input
-        if (backbufferHeight != GraphicsDevice.PresentationParameters.BackBufferHeight ||
-                backbufferWidth != GraphicsDevice.PresentationParameters.BackBufferWidth)
-        {
-            //window size 480x800 reduces down to 3x5
-            //checks that user set width is a factor of 5 or height is factor of 3
-            //if this fails, it uses integer division (which rounds to nearest whole number)
-            //to find other number and then multiplies 3 and 5 by that factor and sets
-            //it to height and width, respectively, before updating graphics
-
-            if (GraphicsDevice.PresentationParameters.BackBufferWidth % 4 != 0) {
-                //factor being multiplied by 5
-                int factor = GraphicsDevice.PresentationParameters.BackBufferWidth / 4;
-                //set preferred dimensions to aspect-correct dimensions
-                _graphics.PreferredBackBufferWidth = factor *4;
-                _graphics.PreferredBackBufferHeight = factor *3;
-                //applies changes
-                _graphics.ApplyChanges();
-            } else if (GraphicsDevice.PresentationParameters.BackBufferHeight % 3 != 0) {
-                //factor being multiplied by 3
-                int factor = GraphicsDevice.PresentationParameters.BackBufferHeight / 3;
-                //set preferred dimensions to aspect-correct dimensions
-                _graphics.PreferredBackBufferWidth = factor *4;
-                _graphics.PreferredBackBufferHeight = factor *3;
-                //applies changes
-                _graphics.ApplyChanges();
-            }
-
-            //scales graphics
-            ScalePresentationArea();
-        }
-        //convert from Point to Vector2
-        Vector2 mousePos = new Vector2(_mouseState.X, _mouseState.Y);
-
-        //use the transformation matrix to transform coords to local scale
-        relativeMousePos = Vector2.Transform(mousePos, Matrix.Invert(globalTransformation));
-        ***/
+        var mousePosition = new Vector2(_mouseState.X, _mouseState.Y);
+        _relativeMousePos = Vector2.Transform(mousePosition, Matrix.Invert(_displayManager._scaleMatrix));
 
         float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
         catIdle.UpdateFrame(elapsed);
@@ -303,6 +280,7 @@ public class GameHandler : Game
 
         //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
           //  Exit();
+
         if(isPaused) {
             _pauseMenu.Update(gameTime);
         }
@@ -331,7 +309,7 @@ public class GameHandler : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null/*globalTransformation*/);
+        _spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp, transformMatrix: _displayManager._scaleMatrix);
 
         switch(CurrentState) {
             case GameState.MainMenu:
@@ -349,7 +327,7 @@ public class GameHandler : Game
                 break;
             case GameState.SlidingGame:
                 _slidingLevel.Draw(gameTime, _spriteBatch, _graphics);
-                break;   
+                break;
         }
 
         //draw pause button last
@@ -393,21 +371,4 @@ public class GameHandler : Game
         _spriteBatch.Draw(_slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
         _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
     }
-    /***
-    // @author: Monogame
-    //
-    // Code taken from Monogame sample Platformer2D project
-    
-    public void ScalePresentationArea()
-    {
-        //Work out how much we need to scale our graphics to fill the screen
-        backbufferWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
-        backbufferHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
-        float horScaling = backbufferWidth / baseScreenSize.X;
-        float verScaling = backbufferHeight / baseScreenSize.Y;
-        Vector3 screenScalingFactor = new Vector3(horScaling, verScaling, 1);
-        globalTransformation = Matrix.CreateScale(screenScalingFactor);
-        System.Diagnostics.Debug.WriteLine("Screen Size - Width[" + GraphicsDevice.PresentationParameters.BackBufferWidth + "] Height [" + GraphicsDevice.PresentationParameters.BackBufferHeight + "]");
-    }
-    ***/
 }

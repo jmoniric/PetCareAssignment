@@ -1,3 +1,6 @@
+using System;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -50,28 +53,19 @@ namespace PetCareGame
                 Texture = _staticTexture;
             }
         }
-
-        public bool CheckIfButtonWasClicked() {
-        if(Visible) {
-            /***
-            if(GameHandler.relativeMousePos.X >= Position.X && GameHandler.relativeMousePos.X <= (Position.X + Dimensions.X))
+        public bool CheckIfButtonWasClicked()
+        {
+            if(Visible) 
             {
-                if(GameHandler.relativeMousePos.Y >= Position.Y && GameHandler.relativeMousePos.Y <= (Position.Y + Dimensions.Y))
+                if(GameHandler._relativeMousePos.X >= Position.X && GameHandler._relativeMousePos.X <= (Position.X + Dimensions.X))
                 {
-                    return true;
+                    if(GameHandler._relativeMousePos.Y >= Position.Y && GameHandler._relativeMousePos.Y <= (Position.Y + Dimensions.Y))
+                    {
+                        return true;
+                    }
                 }
             }
-            ***/
-            if(GameHandler._mouseState.X >= Position.X && GameHandler._mouseState.X <= (Position.X + Dimensions.X))
-            {
-                if(GameHandler._mouseState.Y >= Position.Y && GameHandler._mouseState.Y <= (Position.Y + Dimensions.Y))
-                {
-                    GameHandler.selectSfx.Play();
-                    return true;
-                }
-            }
-        }
-        return false;
+            return false;
         }
     }
 }
