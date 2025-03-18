@@ -10,17 +10,19 @@ public class SlidingGame : LevelInterface
 
     private Color backgroundColour = new Color(50, 205, 50);
 
-    private Vector2 catPos = new Vector2(GameHandler.baseScreenSize.X / 2, 300);
+    private Vector2 catPos = new Vector2(GameHandler.windowWidth / 2, 720);
 
-    private Vector2 boxPos = new Vector2(GameHandler.baseScreenSize.X / 2, 840);
+    private Vector2 boxPos = new Vector2(GameHandler.windowWidth / 2, 840);
 
-    private Point chestPos = new Point(120, 100);
+    private Point chestPos = new Point(400, 400);
 
     private Texture2D atlas;
 
     private Texture2D chest;
 
     private Rectangle chestBounds;
+
+    private bool faceRight = true;
 
 
     public void Dispose()
@@ -38,19 +40,48 @@ public class SlidingGame : LevelInterface
         _graphics.GraphicsDevice.Clear(backgroundColour);
 
 
+        int squareSize = GameHandler.windowWidth / 2;
+        int squareX = (GameHandler.windowWidth - squareSize) / 2;
+        int squareY = (GameHandler.windowHeight - squareSize) / 2;
+
+        Rectangle textureSource = new Rectangle(64, 0, 16, 16); // Select texture from the atlas
+
+
+
         //draw background
-        for (int h = 0; h < 13; h++)
+        for (int h = 0; h < 16; h++)
         {
-            for (int v = 0; v < 10; v++)
+            for (int v = 0; v < 16; v++)
             {
-                spriteBatch.Draw(atlas, new Rectangle(h * 64, v * 64, 64, 64), grass, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+                spriteBatch.Draw(atlas, new Rectangle(h * 128, v * 128, 128, 128), grass, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
             }
         }
 
+        //inner square
+        spriteBatch.Draw(atlas, new Rectangle(squareX, squareY, squareSize, 5), textureSource, Color.White);
+        // Bottom edge
+        spriteBatch.Draw(atlas, new Rectangle(squareX, squareY + squareSize - 5, squareSize, 5), textureSource, Color.White);
+        // Left edge
+        spriteBatch.Draw(atlas, new Rectangle(squareX, squareY, 5, squareSize), textureSource, Color.White);
+        // Right edge
+        spriteBatch.Draw(atlas, new Rectangle(squareX + squareSize - 5, squareY, 5, squareSize), textureSource, Color.White);
 
+
+
+        //Chests, cats and other sprites
         chestBounds = new Rectangle(chestPos, new Point(96, 96));
+        
+        
 
-        GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.None);
+        //draw cat
+        if (faceRight)
+        {
+            GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.None);
+        }
+        else
+        {
+            GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.FlipHorizontally);
+        }
 
         spriteBatch.Draw(chest, chestBounds, chestRect, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
 
@@ -68,10 +99,12 @@ public class SlidingGame : LevelInterface
 
         if (keyboardState.IsKeyDown(Keys.Left))
         {
+            faceRight = false;
             catPos.X -= 300 * elapsed;
         }
         if (keyboardState.IsKeyDown(Keys.Right))
         {
+            faceRight = true;
             catPos.X += 300 * elapsed;
         }
         if (keyboardState.IsKeyDown(Keys.Up))
@@ -89,11 +122,10 @@ public class SlidingGame : LevelInterface
 
     public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
-        atlas = _manager.Load<Texture2D>("Sprites/petcare_slidetextureatlas");
-        chest = _manager.Load<Texture2D>("Sprites/treasure_atlas");
 
-        //you don't need to load this again, it was already loaded inside the GameHandler
-        //GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
+        atlas = _manager.Load<Texture2D>("Sprites/petcare_slidetextureatlas");
+        GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
+        chest = _manager.Load<Texture2D>("Sprites/treasure_atlas");
     }
 
     public void LoadLevel()

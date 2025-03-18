@@ -1,11 +1,9 @@
-using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.Xna.Framework.Audio;
 
 namespace PetCareGame;
@@ -321,8 +319,15 @@ public class PetCare : LevelInterface
         particleTex = GameHandler.plainWhiteTexture;
         startButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(250, 72), new Vector2(startButtonPos.X,startButtonPos.Y), "Start", 42, true);
         
-        catPurr = GameHandler.catPurr.CreateInstance();
-        catPurr.IsLooped = true;
+        try {
+            catPurr = GameHandler.catPurr.CreateInstance();
+            catPurr.IsLooped = true;
+        } catch (NoAudioHardwareException e) {
+            Console.WriteLine(e.StackTrace);
+        } catch (NullReferenceException e) {
+            Console.WriteLine(e.StackTrace);
+        }
+        
     }
 
     public void LoadLevel()
@@ -342,6 +347,8 @@ public class PetCare : LevelInterface
                 catPurr.Pause();
             } catch(NoAudioHardwareException e) {
                 Console.WriteLine(e.StackTrace);
+            } catch (NullReferenceException e) {
+                Console.WriteLine(e.StackTrace);
             }
 
         //game is running
@@ -351,11 +358,13 @@ public class PetCare : LevelInterface
             //no game has been started
             if(currentStage == GameStage.Idle) {
                 try {
-
+                        catPurr.Play();
                 } catch(NoAudioHardwareException e) {
                     Console.WriteLine(e.StackTrace);
+                } catch (NullReferenceException e) {
+                    Console.WriteLine(e.StackTrace);
                 }
-                catPurr.Play();
+                
             } else if(currentStage == GameStage.NailTrim) {
                 if(nailGoalComplete) {
                     gameInputGauge.SetVisibility(false);

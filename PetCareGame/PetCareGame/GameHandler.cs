@@ -155,14 +155,18 @@ public class GameHandler : Game
         catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         catIrritated.Load(_coreAssets, "Sprites/Animal/irritated", 4, 6);
         catAttack.Load(_coreAssets, "Sprites/Animal/attack", 3, 4);
-
-        catPurr = _coreAssets.Load<SoundEffect>("Sounds/Animal/cat_purr");
-        selectSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/select").CreateInstance();
-        selectSfx.Volume = 0.5f;
-        failSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/fail").CreateInstance();
-        failSfx.Volume = 0.5f;
-        successSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/success").CreateInstance();
-        successSfx.Volume = 0.5f;
+        try {
+            catPurr = _coreAssets.Load<SoundEffect>("Sounds/Animal/cat_purr");
+            selectSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/select").CreateInstance();
+            selectSfx.Volume = 0.5f;
+            failSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/fail").CreateInstance();
+            failSfx.Volume = 0.5f;
+            successSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/success").CreateInstance();
+            successSfx.Volume = 0.5f;
+        } catch (NoAudioHardwareException e) {
+            
+        }
+        
 
         coreTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
         gaugeTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/gauge_atlas");
