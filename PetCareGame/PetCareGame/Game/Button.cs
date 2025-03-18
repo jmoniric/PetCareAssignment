@@ -78,10 +78,8 @@ namespace PetCareGame
                 {
                     if(GameHandler._relativeMousePos.Y >= Position.Y && GameHandler._relativeMousePos.Y <= (Position.Y + Dimensions.Y))
                     {
-                        try {
+                        if(GameHandler._allowAudio) {
                             sfx.Play();
-                        } catch (NoAudioHardwareException e) {
-                            Console.WriteLine(e.StackTrace);
                         }
                         return true;
                     }

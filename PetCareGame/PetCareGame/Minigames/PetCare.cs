@@ -319,15 +319,10 @@ public class PetCare : LevelInterface
         particleTex = GameHandler.plainWhiteTexture;
         startButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(250, 72), new Vector2(startButtonPos.X,startButtonPos.Y), "Start", 42, true);
         
-        try {
+        if(GameHandler._allowAudio) {
             catPurr = GameHandler.catPurr.CreateInstance();
             catPurr.IsLooped = true;
-        } catch (NoAudioHardwareException e) {
-            Console.WriteLine(e.StackTrace);
-        } catch (NullReferenceException e) {
-            Console.WriteLine(e.StackTrace);
-        }
-        
+        }        
     }
 
     public void LoadLevel()
@@ -343,12 +338,8 @@ public class PetCare : LevelInterface
     {
         //game is paused
         if(GameHandler.isPaused) {
-            try {
+            if(GameHandler._allowAudio) {
                 catPurr.Pause();
-            } catch(NoAudioHardwareException e) {
-                Console.WriteLine(e.StackTrace);
-            } catch (NullReferenceException e) {
-                Console.WriteLine(e.StackTrace);
             }
 
         //game is running
@@ -357,12 +348,8 @@ public class PetCare : LevelInterface
 
             //no game has been started
             if(currentStage == GameStage.Idle) {
-                try {
-                        catPurr.Play();
-                } catch(NoAudioHardwareException e) {
-                    Console.WriteLine(e.StackTrace);
-                } catch (NullReferenceException e) {
-                    Console.WriteLine(e.StackTrace);
+                if(GameHandler._allowAudio) {
+                    catPurr.Play();
                 }
                 
             } else if(currentStage == GameStage.NailTrim) {

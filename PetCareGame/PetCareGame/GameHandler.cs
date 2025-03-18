@@ -79,6 +79,8 @@ public class GameHandler : Game
 
     private bool _isResizing;
 
+    public static bool _allowAudio = true;
+
     
     public GameHandler()
     {
@@ -164,7 +166,9 @@ public class GameHandler : Game
             successSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/success").CreateInstance();
             successSfx.Volume = 0.5f;
         } catch (NoAudioHardwareException e) {
-            
+            _allowAudio = false;
+            Console.WriteLine("No audio drivers found, disabling audio");
+            Console.WriteLine(e.StackTrace);
         }
         
 
