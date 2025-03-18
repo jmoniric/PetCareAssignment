@@ -60,6 +60,8 @@ public class PetCare : LevelInterface
 
     private Goal nailGoal;
     private bool nailGoalComplete = false;
+
+    private SoundEffectInstance snipSfx;
     
 
     
@@ -208,7 +210,7 @@ public class PetCare : LevelInterface
     {
         //makes cat face in mouse's direction
         //if(GameHandler.relativeMousePos.X > 400) {
-        if(GameHandler._mouseState.X > 400) {
+        if(GameHandler._relativeMousePos.X > 400) {
             faceRight = true;
         } else {
             faceRight = false;
@@ -229,35 +231,29 @@ public class PetCare : LevelInterface
             if(cooldown.Add(cooldownBuffer).Millisecond <= DateTime.Now.Millisecond) {*/
 
                 //particles.Add(new Particle((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y, (int)catPos.X, (int)catPos.Y, 20, 10, 10, particleTex));
-                particles.Add(new Particle((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y, (int)catPos.X, (int)catPos.Y, 20, 10, 10, particleTex));
+                particles.Add(new Particle((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y, (int)catPos.X, (int)catPos.Y, 20, 10, 10, particleTex));
             //}
         }
 
         //closes clipper when used  
         if(currentObject == ObjectHeld.NailClippers && GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
             clippersUse = true;
+            if(GameHandler._allowAudio) {
+                snipSfx.Play();
+            }
         } else {
             clippersUse = false;
         }
 
         
         if(GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
-            /***
-            if(sprayBottleBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
-                currentObject = ObjectHeld.SprayBottle;
-            } else if(clipperBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
-                currentObject = ObjectHeld.NailClippers;
-            } else if(towelBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
-                currentObject = ObjectHeld.Towel;
-            }
-            ***/
             if(!mouseDown) {
                 mouseDown = true;
 
                 //if instructions are being displayed
                 if(currentStage == GameStage.Instructions) {
                     //if start button is clicked
-                    if(startButton.CheckIfButtonWasClicked()) {
+                    if(startButton.CheckIfSelectButtonWasClicked()) {
                         currentStage = GameStage.Idle;
                     }
                 //if game stage is nail trimming
@@ -289,13 +285,13 @@ public class PetCare : LevelInterface
                 //controls held object
                 if(currentObject == ObjectHeld.None && currentStage == GameStage.Idle) {
                     // Change _mouseState to relativeMousePos variable
-                    if(sprayBottleBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
+                    if(sprayBottleBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
                         currentObject = ObjectHeld.SprayBottle;
                         currentStage = GameStage.Bath;
-                    } else if(towelBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
+                    } else if(towelBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
                         currentObject = ObjectHeld.Towel;
                         currentStage = GameStage.Bath;
-                    } else if(clipperBounds.Contains(GameHandler._mouseState.X, GameHandler._mouseState.Y)) {
+                    } else if(clipperBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
                         //sets held object to nail clippers
                         currentObject = ObjectHeld.NailClippers;
                         //sets game stage to nail trimming
@@ -322,6 +318,7 @@ public class PetCare : LevelInterface
         if(GameHandler._allowAudio) {
             catPurr = GameHandler.catPurr.CreateInstance();
             catPurr.IsLooped = true;
+            snipSfx = _manager.Load<SoundEffect>("Sounds/snip").CreateInstance();
         }        
     }
 

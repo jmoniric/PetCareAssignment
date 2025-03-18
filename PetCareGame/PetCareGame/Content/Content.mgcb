@@ -301,6 +301,12 @@
 /processor:PassThroughProcessor
 /build:PetcareGame/Sounds/placeholder.xml
 
+#begin PetcareGame/Sounds/snip.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:PetcareGame/Sounds/snip.wav
+
 #begin PetcareGame/Sprites/petcare_textureatlas.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -12,7 +12,7 @@ namespace PetCareGame;
 
 public class GameHandler : Game
 {
-    enum GameState
+    public enum GameState
     {
         MainMenu,
         PetCareGame,
@@ -20,7 +20,7 @@ public class GameHandler : Game
         FishingGame,
         SlidingGame
     }
-    GameState CurrentState = GameState.MainMenu;
+    public static GameState CurrentState = GameState.MainMenu;
 
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
@@ -164,7 +164,7 @@ public class GameHandler : Game
             failSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/fail").CreateInstance();
             failSfx.Volume = 0.5f;
             successSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/success").CreateInstance();
-            successSfx.Volume = 0.5f;
+            successSfx.Volume = 0.2f;
         } catch (NoAudioHardwareException e) {
             _allowAudio = false;
             Console.WriteLine("No audio drivers found, disabling audio");
@@ -211,7 +211,7 @@ public class GameHandler : Game
         {
             _mouseLeftPressed = false;
             //checks if already paused to prevent spamming of button
-            if(pauseButton.CheckIfButtonWasClicked() && !isPaused) {
+            if(pauseButton.CheckIfSelectButtonWasClicked() && !isPaused) {
                 pauseButton.Clicked();
                 isPaused = true;
                 _pauseMenu.LoadContent(null,_coreAssets);
@@ -219,28 +219,28 @@ public class GameHandler : Game
 
             //prevents checking of other buttons while in pause menu
             } else if (!isPaused) {
-                if(_petCareButton.CheckIfButtonWasClicked())
+                if(_petCareButton.CheckIfSelectButtonWasClicked())
                 {
                     SetVisiblity(false); //hides buttons to prevent them from being pressed again
                     _petCareButton.Clicked();
                     CurrentState = GameState.PetCareGame;
                     _petCareLevel.LoadContent(_petcareAssets, _coreAssets);
                     _petCareLevel.LoadLevel();
-                } else if(_waldoButton.CheckIfButtonWasClicked())
+                } else if(_waldoButton.CheckIfSelectButtonWasClicked())
                 {
                     SetVisiblity(false);
                     _waldoButton.Clicked();
                     CurrentState = GameState.WaldoGame;
                     _waldoLevel.LoadContent(_waldoAssets, _coreAssets);
                     _waldoLevel.LoadLevel();
-                } else if(_slidingButton.CheckIfButtonWasClicked())
+                } else if(_slidingButton.CheckIfSelectButtonWasClicked())
                 {
                     SetVisiblity(false);
                     _slidingButton.Clicked();
                     CurrentState = GameState.SlidingGame;
                     _slidingLevel.LoadContent(_slidingAssets, _coreAssets);
                     _slidingLevel.LoadLevel();
-                } else if(_fishingButton.CheckIfButtonWasClicked())
+                } else if(_fishingButton.CheckIfSelectButtonWasClicked())
                 {
                     SetVisiblity(false);
                     _fishingButton.Clicked();

@@ -87,5 +87,23 @@ namespace PetCareGame
             }
             return false;
         }
+
+        public bool CheckIfSelectButtonWasClicked()
+        {
+            if(Visible) 
+            {
+                if(GameHandler._relativeMousePos.X >= Position.X && GameHandler._relativeMousePos.X <= (Position.X + Dimensions.X))
+                {
+                    if(GameHandler._relativeMousePos.Y >= Position.Y && GameHandler._relativeMousePos.Y <= (Position.Y + Dimensions.Y))
+                    {
+                        if(GameHandler._allowAudio) {
+                            GameHandler.selectSfx.Play();
+                        }
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 }
