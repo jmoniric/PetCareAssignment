@@ -62,10 +62,9 @@ public class PetCare : LevelInterface
 
     private Goal nailGoal;
     private bool nailGoalComplete = false;
-    private bool skipFrame = false;
-    private bool enableSlowDown = false;
+    
 
-    private double cooldown;
+    
     
 
     private Rectangle catNailsBounds = new Rectangle(330,430, 130, 75);
@@ -203,7 +202,7 @@ public class PetCare : LevelInterface
         } else if(currentStage == GameStage.NailTrim) {
             //calls draw for input gauge - will only draw if isVisible == true
             gameInputGauge.Draw(gameTime, spriteBatch);
-            nailGoal.DrawOutput(spriteBatch, GameHandler.highPixel22, new Vector2(280, 135), Color.Black, "Nails");
+            nailGoal.DrawOutput(spriteBatch, GameHandler.highPixel22, new Vector2(355, 120), Color.Black, "Nails");
         }
     }
 
@@ -233,7 +232,6 @@ public class PetCare : LevelInterface
 
                 //particles.Add(new Particle((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y, (int)catPos.X, (int)catPos.Y, 20, 10, 10, particleTex));
                 particles.Add(new Particle((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y, (int)catPos.X, (int)catPos.Y, 20, 10, 10, particleTex));
-                cooldown = gameTime.ElapsedGameTime.TotalSeconds;
             //}
         }
 
@@ -332,7 +330,7 @@ public class PetCare : LevelInterface
         progressGauge = new ProgressGauge(new Rectangle(25, 20, 300, 60), 0, 16, 8, ProgressGauge.GaugeType.GoodBad, true);
         gameInputGauge = new ProgressGauge(new Rectangle(350, 20, 300, 60), 0, 30, 15, ProgressGauge.GaugeType.HitInRange, false);
         startButtonBounds = new Rectangle(startButtonPos.X, startButtonPos.Y, 250, 72);
-        nailGoal = new Goal(20);
+        nailGoal = new Goal(10);
     }
 
     public void Update(GameTime gameTime)
@@ -352,29 +350,7 @@ public class PetCare : LevelInterface
                 if(nailGoalComplete) {
                     gameInputGauge.SetVisibility(false);
                 }
-                if(progressGauge.GetValue() > 14) {
-                    //slowdown already enabled
-                    if(enableSlowDown) {
-                        skipFrame = !skipFrame;//flip flop state
-                        if(!skipFrame) {//if not skipping frame, draw frame
-                            gameInputGauge.Update(gameTime);
-                        }
-                        //cooldown expires
-                        Console.WriteLine(gameTime.TotalGameTime.TotalSeconds);
-                        if(gameTime.TotalGameTime.TotalSeconds >= cooldown + 3.0) {
-                            enableSlowDown = false;
-                            progressGauge.SetCurrentValue(8);
-                        }
-                    } else { //enable slow down and set cooldown date to now
-                        enableSlowDown = true;
-                        cooldown = gameTime.TotalGameTime.TotalSeconds;
-                    }
-                    
-                } else { //make sure slowdown stays off and update accordingly
-                    enableSlowDown = false;
-                    gameInputGauge.Update(gameTime);
-                }
-                
+                gameInputGauge.Update(gameTime);
             }
             //spray bottle held
             if(currentObject == ObjectHeld.SprayBottle) {
