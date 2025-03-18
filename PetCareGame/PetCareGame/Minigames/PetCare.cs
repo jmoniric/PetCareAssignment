@@ -338,7 +338,11 @@ public class PetCare : LevelInterface
     {
         //game is paused
         if(GameHandler.isPaused) {
-            catPurr.Pause();
+            try {
+                catPurr.Pause();
+            } catch(NoAudioHardwareException e) {
+                Console.WriteLine(e.StackTrace);
+            }
 
         //game is running
         } else {
@@ -346,6 +350,11 @@ public class PetCare : LevelInterface
 
             //no game has been started
             if(currentStage == GameStage.Idle) {
+                try {
+
+                } catch(NoAudioHardwareException e) {
+                    Console.WriteLine(e.StackTrace);
+                }
                 catPurr.Play();
             } else if(currentStage == GameStage.NailTrim) {
                 if(nailGoalComplete) {
@@ -355,22 +364,19 @@ public class PetCare : LevelInterface
             }
             //spray bottle held
             if(currentObject == ObjectHeld.SprayBottle) {
-                //sprayBottlePos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
+                sprayBottlePos = new Point((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y);
                 
                 //makes spray bottle snap to mouse and change origin
-                sprayBottlePos = new Point((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y);
+                
                 sprayBottleOrigin = new Vector2(16, 16);
             } else if(currentObject == ObjectHeld.NailClippers) {
-                //clippersPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
+                clippersPos = new Point((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y);
                 
                 //snaps clippers to mouse and changes origin
-                clippersPos = new Point((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y);
                 clippersOrigin = new Vector2(16, 8);
             } else if(currentObject == ObjectHeld.Towel) {
-                //towelPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
-                
                 //snaps towel to mouse and changes origin
-                towelPos = new Point((int)GameHandler._mouseState.X, (int)GameHandler._mouseState.Y);
+                towelPos = new Point((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y);
                 towelOrigin = new Vector2(16, 8);
             }
 

@@ -2,6 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -61,6 +62,27 @@ namespace PetCareGame
                 {
                     if(GameHandler._relativeMousePos.Y >= Position.Y && GameHandler._relativeMousePos.Y <= (Position.Y + Dimensions.Y))
                     {
+
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool CheckIfButtonWasClicked(SoundEffectInstance sfx)
+        {
+            if(Visible) 
+            {
+                if(GameHandler._relativeMousePos.X >= Position.X && GameHandler._relativeMousePos.X <= (Position.X + Dimensions.X))
+                {
+                    if(GameHandler._relativeMousePos.Y >= Position.Y && GameHandler._relativeMousePos.Y <= (Position.Y + Dimensions.Y))
+                    {
+                        try {
+                            sfx.Play();
+                        } catch (NoAudioHardwareException e) {
+                            Console.WriteLine(e.StackTrace);
+                        }
                         return true;
                     }
                 }
