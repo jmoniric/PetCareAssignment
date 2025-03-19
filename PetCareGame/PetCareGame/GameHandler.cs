@@ -214,8 +214,8 @@ public class GameHandler : Game
             if(pauseButton.CheckIfSelectButtonWasClicked() && !isPaused) {
                 pauseButton.Clicked();
                 isPaused = true;
-                _pauseMenu.LoadContent(null,_coreAssets);
                 _pauseMenu.LoadLevel();
+                _pauseMenu.LoadContent(null,_coreAssets);
 
             //prevents checking of other buttons while in pause menu
             } else if (!isPaused) {
@@ -295,6 +295,7 @@ public class GameHandler : Game
         switch(CurrentState) {
             case GameState.MainMenu:
                 //handle the update for main menu directly here
+                SetVisiblity(true);
                 break;
             case GameState.PetCareGame:
                 _petCareLevel.Update(gameTime);
@@ -354,7 +355,7 @@ public class GameHandler : Game
     }
 
     //hide or show visiblity of items in here
-    private void SetVisiblity(bool isVisible) {
+    public void SetVisiblity(bool isVisible) {
         _petCareButton.Visible = isVisible;
         _fishingButton.Visible = isVisible;
         _waldoButton.Visible = isVisible;

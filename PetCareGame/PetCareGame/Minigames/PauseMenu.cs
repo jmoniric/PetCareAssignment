@@ -128,6 +128,6 @@ public class PauseMenu : LevelInterface
 
     public void Update(GameTime gameTime)
     {
-        
+        HandleInput(gameTime);
     }
 }
