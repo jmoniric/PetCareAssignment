@@ -26,6 +26,11 @@ public class PauseMenu : LevelInterface
 
     private bool mouseDown = false;
 
+    public void CleanupProcesses()
+    {
+        throw new NotImplementedException();
+    }
+
     public void Dispose()
     {
         throw new System.NotImplementedException();
@@ -96,7 +101,8 @@ public class PauseMenu : LevelInterface
                 if(saveButton.CheckIfSelectButtonWasClicked()) {
                 //call save function here :3
                 } else if(mainMenuButton.CheckIfSelectButtonWasClicked()) {
-                    GameHandler.CurrentState = GameHandler.GameState.MainMenu;
+                    //call this to allow levels to cleanup and then unload their assets
+                    GameHandler.UnloadCurrentLevel();
                     GameHandler.isPaused = false;
                 } else if(saveQuitButton.CheckIfSelectButtonWasClicked()) {
                     //call save function, then quit game

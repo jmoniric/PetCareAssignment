@@ -24,6 +24,10 @@ public class SlidingGame : LevelInterface
 
     private bool faceRight = true;
 
+    public void CleanupProcesses()
+    {
+        throw new System.NotImplementedException();
+    }
 
     public void Dispose()
     {

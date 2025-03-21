@@ -6,6 +6,11 @@ namespace PetCareGame;
 
 public class CatFishing : LevelInterface
 {
+    public void CleanupProcesses()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void Dispose()
     {
         
