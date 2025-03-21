@@ -160,9 +160,9 @@ public class GameHandler : Game
         try {
             catPurr = _coreAssets.Load<SoundEffect>("Sounds/Animal/cat_purr");
             selectSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/select").CreateInstance();
-            selectSfx.Volume = 0.5f;
+            selectSfx.Volume = 0.2f;
             failSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/fail").CreateInstance();
-            failSfx.Volume = 0.5f;
+            failSfx.Volume = 0.2f;
             successSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/success").CreateInstance();
             successSfx.Volume = 0.2f;
         } catch (NoAudioHardwareException e) {
