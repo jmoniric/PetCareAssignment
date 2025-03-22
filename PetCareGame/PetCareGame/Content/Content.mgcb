@@ -13,6 +13,18 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin ../../../../Downloads/GreenCheck.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../Downloads/GreenCheck.png;WaldoGame/Sprites/GreenCheck.png
+
 #begin Core/Fonts/courier_new_36.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -358,8 +370,27 @@
 /processor:PassThroughProcessor
 /build:WaldoGame/Sounds/placeholder.xml
 
-#begin WaldoGame/Sprites/placeholder.xml
-/importer:XmlImporter
-/processor:PassThroughProcessor
-/build:WaldoGame/Sprites/placeholder.xml
+#begin WaldoGame/Sprites/RedX.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:WaldoGame/Sprites/RedX.png
+
+#begin WaldoGame/Sprites/WaldoFirstDraft.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:WaldoGame/Sprites/WaldoFirstDraft.png
 
