@@ -62,7 +62,6 @@ namespace PetCareGame
                 {
                     if(GameHandler._relativeMousePos.Y >= Position.Y && GameHandler._relativeMousePos.Y <= (Position.Y + Dimensions.Y))
                     {
-
                         return true;
                     }
                 }
