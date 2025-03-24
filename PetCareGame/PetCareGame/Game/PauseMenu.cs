@@ -129,18 +129,20 @@ public class PauseMenu : LevelInterface
                 //call save function here :3
                 } else if(mainMenuButton.CheckIfSelectButtonWasClicked()) {
                     isWarning = true;
-                    SetButtonVisibility();
-                    if (yesButton.CheckIfSelectButtonWasClicked())
-                    {
-                        GameHandler.CurrentState = GameHandler.GameState.MainMenu;
-                        GameHandler.isPaused = false;
-                    }else if (noButton.CheckIfSelectButtonWasClicked()) {
-                        isWarning = false;
-                    }           
+                    SetButtonVisibility();          
                 } else if(saveQuitButton.CheckIfSelectButtonWasClicked()) {
                     //call save function, then quit game
                 } else if(resumeButton.CheckIfSelectButtonWasClicked()) {
                     GameHandler.isPaused = false;
+                } else if(isWarning) {
+                    if (yesButton.CheckIfSelectButtonWasClicked())
+                    {
+                        GameHandler.CurrentState = GameHandler.GameState.MainMenu;
+                        GameHandler.isPaused = false;
+                        isWarning = false;
+                    } else if (noButton.CheckIfSelectButtonWasClicked()) {
+                        isWarning = false;
+                    } 
                 }
             }
         } else if(GameHandler._mouseState.LeftButton == ButtonState.Released) {
