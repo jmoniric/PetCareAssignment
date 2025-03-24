@@ -296,10 +296,11 @@
 /processor:PassThroughProcessor
 /build:FishingGame/Sprites/placeholder.xml
 
-#begin PetcareGame/Sounds/placeholder.xml
-/importer:XmlImporter
-/processor:PassThroughProcessor
-/build:PetcareGame/Sounds/placeholder.xml
+#begin PetcareGame/Sounds/brush.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:PetcareGame/Sounds/brush.wav
 
 #begin PetcareGame/Sounds/snip.wav
 /importer:WavImporter
