@@ -43,6 +43,11 @@ public class PetCare : LevelInterface
     private Point towelPos = new Point(55,185);
     private Vector2 towelOrigin = Vector2.Zero;
     private Rectangle towelBounds;
+    
+    private Point brushPos = new Point(600,200);
+    private Vector2 brushOrigin = Vector2.Zero;
+    private Rectangle brushBounds;
+    private Point brushHeadOffset;
 
     private bool mouseDown = false;
 
@@ -58,18 +63,19 @@ public class PetCare : LevelInterface
     private ProgressGauge progressGauge;
     private ProgressGauge gameInputGauge;
 
-    private Goal nailGoal;
-    private bool nailGoalComplete = false;
+    private Goal nailGoal = new Goal(10);
+    private Goal brushGoal; //= new Goal();
 
-    private SoundEffectInstance snipSfx;
-    
+    private Rectangle brushPoint1 = new Rectangle(375, 280, 70, 30);
+    private Rectangle brushPoint2 = new Rectangle(340, 420, 40, 60);
+    private Rectangle brushPoint3 = new Rectangle(415, 380, 30, 70);
 
     
     
-
     private Rectangle catNailsBounds = new Rectangle(330,430, 130, 75);
 
     private SoundEffectInstance catPurr;
+    private SoundEffectInstance snipSfx;
 
     public void Dispose()
     {
@@ -86,6 +92,8 @@ public class PetCare : LevelInterface
         Rectangle clippersClosed = new Rectangle(96, 32, 32, 32);
         Rectangle towelHook = new Rectangle(32,32,32,32);
         Rectangle towel = new Rectangle(64,32,32,32);
+        Rectangle brushHanging = new Rectangle(0,64,32,32);
+        Rectangle brushHeld = new Rectangle(0,32,32,32);
 
         _graphics.GraphicsDevice.Clear(backgroundColour);
 
@@ -145,6 +153,12 @@ public class PetCare : LevelInterface
             spriteBatch.Draw(atlas, clipperBounds, clippers, Color.White, 0f, clippersOrigin, SpriteEffects.None, 1f);
         }
 
+        //draw brush when brushing stage not actiev hanging
+        brushBounds = new Rectangle(brushPos, new Point(96,96));
+        if(currentStage != GameStage.Brushing) {//brush is held, use held sprite
+            spriteBatch.Draw(atlas, brushBounds, brushHanging, Color.White, 0f, brushOrigin, SpriteEffects.None, 1f);
+        }
+
         //draw towel hook
         spriteBatch.Draw(atlas, new Rectangle(75,150,96,96), towelHook, Color.White);
         
@@ -162,7 +176,7 @@ public class PetCare : LevelInterface
         //draw temperment meter
         progressGauge.Draw(gameTime, spriteBatch);
 
-        // HANDLE GAME STAGES HERE
+        // HANDLE DRAWING GAME STAGES HERE
 
         //Instructions
         if(currentStage == GameStage.Instructions) {
@@ -203,6 +217,12 @@ public class PetCare : LevelInterface
             //calls draw for input gauge - will only draw if isVisible == true
             gameInputGauge.Draw(gameTime, spriteBatch);
             nailGoal.DrawOutput(spriteBatch, GameHandler.highPixel22, new Vector2(355, 120), Color.Black, "Nails");
+        } else if(currentStage == GameStage.Brushing) {
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, brushPoint1, Color.Red);
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, brushPoint2, Color.Green);
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, brushPoint3, Color.Blue);
+
+            spriteBatch.Draw(atlas, brushBounds, brushHeld, Color.White, 0f, brushOrigin, SpriteEffects.None, 1f);
         }
     }
 
@@ -245,7 +265,7 @@ public class PetCare : LevelInterface
             clippersUse = false;
         }
 
-        
+        //handle input for different stages in here, switch between them below
         if(GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
             if(!mouseDown) {
                 mouseDown = true;
@@ -259,7 +279,6 @@ public class PetCare : LevelInterface
                 //if game stage is nail trimming
                 } else if(currentStage == GameStage.NailTrim) {
                     //check if use has successfully entered input
-
                     if (
                         (catNailsBounds.X < clipperBounds.X && catNailsBounds.X + catNailsBounds.Width > clipperBounds.X &&
                         catNailsBounds.Y < clipperBounds.Y && catNailsBounds.Y + catNailsBounds.Height > clipperBounds.Y) || 
@@ -271,9 +290,13 @@ public class PetCare : LevelInterface
                             progressGauge.Increment();
                             //returns true if goal met
                             if(nailGoal.Increment()) {
-                                nailGoalComplete = true;
+                                //isComplete will be marked as true inside Goal
+                                nailGoal.SetCompletion(true);
                                 currentStage = GameStage.Idle;
-                                currentObject = ObjectHeld.None;
+                                currentObject = ObjectHeld.None;                        
+                                clippersPos = new Point(650, 415);
+                                clippersOrigin = Vector2.Zero;
+                                Console.WriteLine("won");
                             }
                         } else if(returnState == -1) {
                             //returns false when unable to decrease anymore
@@ -282,24 +305,37 @@ public class PetCare : LevelInterface
                             }
                         }
                     }
+                } else if(currentStage == GameStage.Brushing) {
+
                 }
+
+
+                /***********
+                    End of game input handling, begin input handling for stage switching
+                **********/
 
                 //Activates gamestate based on object pressed
                 if(currentObject == ObjectHeld.None && currentStage == GameStage.Idle) {
                     // Change _mouseState to relativeMousePos variable
+                    //bath stage
                     if(sprayBottleBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
                         currentObject = ObjectHeld.SprayBottle;
                         currentStage = GameStage.Bath;
                     } else if(towelBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
                         currentObject = ObjectHeld.Towel;
                         currentStage = GameStage.Bath;
-                    } else if(!nailGoalComplete && clipperBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
+                    //nail clipping stage
+                    } else if(!nailGoal.GetCompletion() && clipperBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
                         //sets held object to nail clippers
                         currentObject = ObjectHeld.NailClippers;
                         //sets game stage to nail trimming
                         currentStage = GameStage.NailTrim;
                         //shows input gauge
                         gameInputGauge.SetVisibility(true);
+                    //brushing stage
+                    } else if(brushBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
+                        currentObject = ObjectHeld.Brush;
+                        currentStage = GameStage.Brushing;
                     }
                 }
             }
@@ -330,7 +366,6 @@ public class PetCare : LevelInterface
         progressGauge = new ProgressGauge(new Rectangle(25, 20, 300, 60), 0, 16, 8, ProgressGauge.GaugeType.GoodBad, true);
         gameInputGauge = new ProgressGauge(new Rectangle(350, 20, 300, 60), 0, 30, 15, ProgressGauge.GaugeType.HitInRange, false);
         startButtonBounds = new Rectangle(startButtonPos.X, startButtonPos.Y, 250, 72);
-        nailGoal = new Goal(10);
     }
 
     public void Update(GameTime gameTime)
@@ -352,11 +387,12 @@ public class PetCare : LevelInterface
                 }
                 
             } else if(currentStage == GameStage.NailTrim) {
-                if(nailGoalComplete) {
+                if(nailGoal.GetCompletion()) {
                     gameInputGauge.SetVisibility(false);
                 }
                 gameInputGauge.Update(gameTime);
             }
+
             //spray bottle held
             if(currentObject == ObjectHeld.SprayBottle) {
                 sprayBottlePos = new Point((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y);
@@ -373,6 +409,9 @@ public class PetCare : LevelInterface
                 //snaps towel to mouse and changes origin
                 towelPos = new Point((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y);
                 towelOrigin = new Vector2(16, 8);
+            } else if(currentObject == ObjectHeld.Brush) {
+                brushPos = new Point((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y);
+                brushOrigin = new Vector2(28, 10);
             }
 
             int index = 0;
@@ -401,6 +440,9 @@ public class PetCare : LevelInterface
 
         towelPos = new Point(55,185);
         towelOrigin = Vector2.Zero;
+
+        brushPos = new Point(600,200);
+        brushOrigin = Vector2.Zero;
 
         mouseDown = false;
         faceRight = true;
