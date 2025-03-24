@@ -8,8 +8,6 @@ namespace PetCareGame
 {
     public class WheresWaldo : LevelInterface
     {
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
         private SpriteFont font;
         private Texture2D WaldoFirstDraft;
         private Texture2D greenCheck;

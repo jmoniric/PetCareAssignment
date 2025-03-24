@@ -13,18 +13,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin ../../../../Downloads/GreenCheck.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../Downloads/GreenCheck.png;WaldoGame/Sprites/GreenCheck.png
-
 #begin Core/Fonts/courier_new_36.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -369,6 +357,18 @@
 /importer:XmlImporter
 /processor:PassThroughProcessor
 /build:WaldoGame/Sounds/placeholder.xml
+
+#begin WaldoGame/Sprites/GreenCheck.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:WaldoGame/Sprites/GreenCheck.png
 
 #begin WaldoGame/Sprites/RedX.png
 /importer:TextureImporter
