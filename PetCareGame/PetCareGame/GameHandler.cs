@@ -41,9 +41,9 @@ public class GameHandler : Game
     private Vector2 pausePos;
 
     private static PetCare _petCareLevel = new PetCare();
-    private CatFishing _fishingLevel = new CatFishing();
-    private WheresWaldo _waldoLevel = new WheresWaldo();
-    private SlidingGame _slidingLevel = new SlidingGame();
+    private static CatFishing _fishingLevel = new CatFishing();
+    private static WheresWaldo _waldoLevel = new WheresWaldo();
+    private static SlidingGame _slidingLevel = new SlidingGame();
     private PauseMenu _pauseMenu = new PauseMenu();
     ContentManager _coreAssets;
     static ContentManager _slidingAssets;
@@ -347,6 +347,9 @@ public class GameHandler : Game
         if(isPaused) {
             _pauseMenu.Draw(gameTime, _spriteBatch, _graphics);
         }
+
+        //FOR DEV PURPOSES: prints (X,Y) of mouse in top left corner
+        _spriteBatch.DrawString(highPixel22, "("+ _relativeMousePos.X + ", " + _relativeMousePos.Y + ")", new Vector2(0, 20), Color.Black);
         
         //end drawing
         _spriteBatch.End();
@@ -368,6 +371,21 @@ public class GameHandler : Game
             case GameState.PetCareGame:
                 _petCareLevel.CleanupProcesses();
                 ((LevelInterface)_petCareLevel).UnloadLevel(_petcareAssets);
+                break;
+            case GameState.WaldoGame:
+                _waldoLevel.CleanupProcesses();
+                ((LevelInterface)_waldoLevel).UnloadLevel(_waldoAssets);
+                break;
+            case GameState.FishingGame:
+                _fishingLevel.CleanupProcesses();
+                ((LevelInterface)_fishingLevel).UnloadLevel(_fishingAssets);
+                break;
+            case GameState.SlidingGame:
+                _slidingLevel.CleanupProcesses();
+                ((LevelInterface)_slidingLevel).UnloadLevel(_slidingAssets);
+                break;
+            
+            default:
                 break;
         }
         CurrentState = GameState.MainMenu;

@@ -137,6 +137,7 @@ public class PauseMenu : LevelInterface
                 } else if(isWarning) {
                     if (yesButton.CheckIfSelectButtonWasClicked())
                     {
+                        GameHandler.UnloadCurrentLevel();
                         GameHandler.CurrentState = GameHandler.GameState.MainMenu;
                         GameHandler.isPaused = false;
                         isWarning = false;

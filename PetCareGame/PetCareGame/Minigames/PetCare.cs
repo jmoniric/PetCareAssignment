@@ -69,6 +69,9 @@ public class PetCare : LevelInterface
     private Rectangle brushPoint1 = new Rectangle(375, 280, 70, 30);
     private Rectangle brushPoint2 = new Rectangle(340, 420, 40, 60);
     private Rectangle brushPoint3 = new Rectangle(415, 380, 30, 70);
+    private AnimatedTexture hotspot1 = new AnimatedTexture(new Vector2(16,16), 0f, 1f, 1f);
+    private AnimatedTexture hotspot2 = new AnimatedTexture(new Vector2(16,16), 0f, 1f, 1f);
+    private AnimatedTexture hotspot3 = new AnimatedTexture(new Vector2(16,16), 0f, 1f, 1f);
 
     
     
@@ -381,16 +384,17 @@ public class PetCare : LevelInterface
             progressGauge.Update(gameTime);
 
             //no game has been started
-            if(currentStage == GameStage.Idle) {
+            if(currentStage == GameStage.Idle) { //no stage running
                 if(GameHandler._allowAudio) {
                     catPurr.Play();
                 }
-                
-            } else if(currentStage == GameStage.NailTrim) {
+            } else if(currentStage == GameStage.NailTrim) { //nail trimming
                 if(nailGoal.GetCompletion()) {
                     gameInputGauge.SetVisibility(false);
                 }
                 gameInputGauge.Update(gameTime);
+            } else if(currentStage == GameStage.Brushing) { //brushing
+
             }
 
             //spray bottle held
@@ -424,7 +428,6 @@ public class PetCare : LevelInterface
                 }
             }
         }
-        
     }
 
     public void CleanupProcesses()
