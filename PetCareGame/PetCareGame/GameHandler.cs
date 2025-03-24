@@ -323,7 +323,7 @@ public class GameHandler : Game
         switch(CurrentState) {
             case GameState.MainMenu:
                 DrawMainMenuButtons();
-                Rectangle pauseDestination = new Rectangle((int)pausePos.X, (int)pausePos.Y, pauseButton.CellWidth, pauseButton.CellHeight);
+                //Rectangle pauseDestination = new Rectangle((int)pausePos.X, (int)pausePos.Y, pauseButton.CellWidth, pauseButton.CellHeight);
                 break;
             case GameState.PetCareGame:
                 _petCareLevel.Draw(gameTime, _spriteBatch, _graphics);
