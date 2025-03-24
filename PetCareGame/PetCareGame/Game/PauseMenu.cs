@@ -15,8 +15,6 @@ public class PauseMenu : LevelInterface
     private Button resumeButton;
     private Button yesButton;
     private Button noButton;
-    private Button yesButton;
-    private Button noButton;
 
     private Vector2 saveButtonPos = new Vector2(310, 155);//55px spacing
     private Vector2 mmButtonPos = new Vector2(310, 210);
