@@ -15,6 +15,8 @@ public class PauseMenu : LevelInterface
     private Button resumeButton;
     private Button yesButton;
     private Button noButton;
+    private Button yesButton;
+    private Button noButton;
 
     private Vector2 saveButtonPos = new Vector2(310, 155);//55px spacing
     private Vector2 mmButtonPos = new Vector2(310, 210);
@@ -31,6 +33,11 @@ public class PauseMenu : LevelInterface
     private Rectangle noButtonBounds;
 
     private bool mouseDown = false;
+
+    public void CleanupProcesses()
+    {
+        throw new NotImplementedException();
+    }
     private bool isWarning = false;
 
     public void Dispose()
@@ -123,18 +130,15 @@ public class PauseMenu : LevelInterface
                 if(saveButton.CheckIfSelectButtonWasClicked()) {
                 //call save function here :3
                 } else if(mainMenuButton.CheckIfSelectButtonWasClicked()) {
-                    //If yes is clicked when in warning page
                     isWarning = true;
                     SetButtonVisibility();
-                    Console.WriteLine(yesButton.Position);
                     if (yesButton.CheckIfSelectButtonWasClicked())
                     {
                         GameHandler.CurrentState = GameHandler.GameState.MainMenu;
                         GameHandler.isPaused = false;
-                    }else if(noButton.CheckIfSelectButtonWasClicked())
-                    {
-                        GameHandler.isPaused = false;
-                    }
+                    }else if (noButton.CheckIfSelectButtonWasClicked()) {
+                        isWarning = false;
+                    }           
                 } else if(saveQuitButton.CheckIfSelectButtonWasClicked()) {
                     //call save function, then quit game
                 } else if(resumeButton.CheckIfSelectButtonWasClicked()) {

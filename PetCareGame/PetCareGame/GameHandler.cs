@@ -40,16 +40,16 @@ public class GameHandler : Game
     private Button pauseButton;
     private Vector2 pausePos;
 
-    private PetCare _petCareLevel = new PetCare();
+    private static PetCare _petCareLevel = new PetCare();
     private CatFishing _fishingLevel = new CatFishing();
     private WheresWaldo _waldoLevel = new WheresWaldo();
     private SlidingGame _slidingLevel = new SlidingGame();
     private PauseMenu _pauseMenu = new PauseMenu();
     ContentManager _coreAssets;
-    ContentManager _slidingAssets;
-    ContentManager _waldoAssets;
-    ContentManager _fishingAssets;
-    ContentManager _petcareAssets;
+    static ContentManager _slidingAssets;
+    static ContentManager _waldoAssets;
+    static ContentManager _fishingAssets;
+    static ContentManager _petcareAssets;
 
     public static bool isPaused = false;
 
@@ -160,9 +160,9 @@ public class GameHandler : Game
         try {
             catPurr = _coreAssets.Load<SoundEffect>("Sounds/Animal/cat_purr");
             selectSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/select").CreateInstance();
-            selectSfx.Volume = 0.5f;
+            selectSfx.Volume = 0.2f;
             failSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/fail").CreateInstance();
-            failSfx.Volume = 0.5f;
+            failSfx.Volume = 0.2f;
             successSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/success").CreateInstance();
             successSfx.Volume = 0.2f;
         } catch (NoAudioHardwareException e) {
@@ -360,6 +360,17 @@ public class GameHandler : Game
         _fishingButton.Visible = isVisible;
         _waldoButton.Visible = isVisible;
         _slidingButton.Visible = isVisible;
+    }
+
+    //allows level to cleanup and reset, then unloads its assets and sets state to main menu
+    public static void UnloadCurrentLevel() {
+        switch(CurrentState) {
+            case GameState.PetCareGame:
+                _petCareLevel.CleanupProcesses();
+                ((LevelInterface)_petCareLevel).UnloadLevel(_petcareAssets);
+                break;
+        }
+        CurrentState = GameState.MainMenu;
     }
 
 

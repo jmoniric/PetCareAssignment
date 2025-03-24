@@ -272,6 +272,8 @@ public class PetCare : LevelInterface
                             //returns true if goal met
                             if(nailGoal.Increment()) {
                                 nailGoalComplete = true;
+                                currentStage = GameStage.Idle;
+                                currentObject = ObjectHeld.None;
                             }
                         } else if(returnState == -1) {
                             //returns false when unable to decrease anymore
@@ -282,7 +284,7 @@ public class PetCare : LevelInterface
                     }
                 }
 
-                //controls held object
+                //Activates gamestate based on object pressed
                 if(currentObject == ObjectHeld.None && currentStage == GameStage.Idle) {
                     // Change _mouseState to relativeMousePos variable
                     if(sprayBottleBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
@@ -291,7 +293,7 @@ public class PetCare : LevelInterface
                     } else if(towelBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
                         currentObject = ObjectHeld.Towel;
                         currentStage = GameStage.Bath;
-                    } else if(clipperBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
+                    } else if(!nailGoalComplete && clipperBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
                         //sets held object to nail clippers
                         currentObject = ObjectHeld.NailClippers;
                         //sets game stage to nail trimming
@@ -386,5 +388,25 @@ public class PetCare : LevelInterface
         
     }
 
-    
+    public void CleanupProcesses()
+    {
+        catPos = new Vector2(400, 305);
+        sprayBottlePos = new Point(64, 385);
+        sprayBottleOrigin = Vector2.Zero;
+        sprayBottleRot = 0f;
+
+        clippersPos = new Point(650, 415);
+        clippersOrigin = Vector2.Zero;
+        clippersUse = false;
+
+        towelPos = new Point(55,185);
+        towelOrigin = Vector2.Zero;
+
+        mouseDown = false;
+        faceRight = true;
+        
+        currentObject = ObjectHeld.None;
+        currentStage = GameStage.Instructions;
+        startButtonPos = new Point(270,510);
+    }
 }
