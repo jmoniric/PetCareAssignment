@@ -128,8 +128,15 @@ public class PauseMenu : LevelInterface
                 if(saveButton.CheckIfSelectButtonWasClicked()) {
                 //call save function here :3
                 } else if(mainMenuButton.CheckIfSelectButtonWasClicked()) {
-                    GameHandler.CurrentState = GameHandler.GameState.MainMenu;
-                    GameHandler.isPaused = false;
+                    isWarning = true;
+                    SetButtonVisibility();
+                    if (yesButton.CheckIfSelectButtonWasClicked())
+                    {
+                        GameHandler.CurrentState = GameHandler.GameState.MainMenu;
+                        GameHandler.isPaused = false;
+                    }else if (noButton.CheckIfSelectButtonWasClicked()) {
+                        isWarning = false;
+                    }           
                 } else if(saveQuitButton.CheckIfSelectButtonWasClicked()) {
                     //call save function, then quit game
                 } else if(resumeButton.CheckIfSelectButtonWasClicked()) {
