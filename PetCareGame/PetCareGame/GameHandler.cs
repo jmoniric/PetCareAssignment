@@ -59,7 +59,7 @@ public class GameHandler : Game
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static AnimatedTexture catIrritated = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static AnimatedTexture catAttack = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
-
+    public static AnimatedTexture catWalk = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static SoundEffect catPurr;
     public static SoundEffectInstance selectSfx;
     public static SoundEffectInstance failSfx;
@@ -157,6 +157,8 @@ public class GameHandler : Game
         catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         catIrritated.Load(_coreAssets, "Sprites/Animal/irritated", 4, 6);
         catAttack.Load(_coreAssets, "Sprites/Animal/attack", 3, 4);
+        catWalk.Load(_coreAssets, "Sprites/Animal/walk", 7, 5);
+
         try {
             catPurr = _coreAssets.Load<SoundEffect>("Sounds/Animal/cat_purr");
             selectSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/select").CreateInstance();
