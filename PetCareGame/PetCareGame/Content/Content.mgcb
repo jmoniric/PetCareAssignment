@@ -296,10 +296,29 @@
 /processor:PassThroughProcessor
 /build:FishingGame/Sprites/placeholder.xml
 
-#begin PetcareGame/Sounds/placeholder.xml
-/importer:XmlImporter
-/processor:PassThroughProcessor
-/build:PetcareGame/Sounds/placeholder.xml
+#begin PetcareGame/Sounds/brush.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:PetcareGame/Sounds/brush.wav
+
+#begin PetcareGame/Sounds/snip.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:PetcareGame/Sounds/snip.wav
+
+#begin PetcareGame/Sprites/hotspot_gauge_32.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:PetcareGame/Sprites/hotspot_gauge_32.png
 
 #begin PetcareGame/Sprites/petcare_textureatlas.png
 /importer:TextureImporter
@@ -352,8 +371,39 @@
 /processor:PassThroughProcessor
 /build:WaldoGame/Sounds/placeholder.xml
 
-#begin WaldoGame/Sprites/placeholder.xml
-/importer:XmlImporter
-/processor:PassThroughProcessor
-/build:WaldoGame/Sprites/placeholder.xml
+#begin WaldoGame/Sprites/GreenCheck.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:WaldoGame/Sprites/GreenCheck.png
+
+#begin WaldoGame/Sprites/RedX.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:WaldoGame/Sprites/RedX.png
+
+#begin WaldoGame/Sprites/WaldoFirstDraft.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:WaldoGame/Sprites/WaldoFirstDraft.png
 

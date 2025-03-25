@@ -15,6 +15,7 @@ public class ProgressGauge {
     //atlas source for Hit In Range type gauge
     private Rectangle sourceGaugeHIR = new Rectangle(0,16,64,16);
     private Rectangle sourceMarker = new Rectangle(48,48,13,12);
+    private Rectangle sourceFlag = new Rectangle(16,48,16,16);
     private Rectangle targetRange;
     private Point markerPos;
     private bool ascending = true;
@@ -28,7 +29,8 @@ public class ProgressGauge {
 
     public enum GaugeType {
         GoodBad,
-        HitInRange
+        HitInRange,
+        Progress
     }
 
     public ProgressGauge(Rectangle bounds, int minValue, int maxValue, int currentValue, GaugeType gaugeType, bool isVisible) {
@@ -55,6 +57,9 @@ public class ProgressGauge {
             } else if(gaugeType == GaugeType.HitInRange) {
                 spriteBatch.Draw(GameHandler.gaugeTextureAtlas, bounds, sourceGaugeHIR, Color.White);
                 spriteBatch.Draw(GameHandler.gaugeTextureAtlas, targetRange, new Rectangle(32, 48, 16, 16), Color.SeaGreen);
+            } else if(gaugeType == GaugeType.Progress) {
+                spriteBatch.Draw(GameHandler.gaugeTextureAtlas, bounds, sourceGaugeHIR, Color.White);
+                spriteBatch.Draw(GameHandler.gaugeTextureAtlas, new Rectangle((bounds.X +bounds.Width) - bounds.Width/10, bounds.Y, bounds.Width/6 + bounds.Width/12, bounds.Height + bounds.Height/6), sourceFlag, Color.White);
             }
             spriteBatch.Draw(GameHandler.gaugeTextureAtlas, markerBounds, sourceMarker, Color.White, 0f, new Vector2(6,0), SpriteEffects.None, 1f);
         }
@@ -134,7 +139,7 @@ public class ProgressGauge {
 
     public void Update(GameTime gameTime) {
         if(isVisible) {
-            if(gaugeType == GaugeType.GoodBad) {
+            if(gaugeType == GaugeType.GoodBad || gaugeType == GaugeType.Progress) {
                 markerPos = new Point(CalculatePosition(), markerPos.Y);
                 markerBounds = new Rectangle(markerPos.X, markerPos.Y, markerBounds.Width, markerBounds.Height);
 
@@ -168,14 +173,24 @@ public class ProgressGauge {
     public int CheckForSuccess() {
         int returnState = 0;
         if(isVisible) {
-            if(targetRange.X <= markerPos.X && markerPos.X <= (targetRange.X +  targetRange.Width)) {
-                GameHandler.successSfx.Play();
-                returnState = 1;
-                CalculateTargetRange();
-            } else {
-                GameHandler.failSfx.Play();
-                returnState = -1;
-                CalculateTargetRange();
+            if(gaugeType == GaugeType.HitInRange) {
+                if(targetRange.X <= markerPos.X && markerPos.X <= (targetRange.X +  targetRange.Width)) {
+                    if(GameHandler._allowAudio) {
+                        GameHandler.successSfx.Play();
+                    }
+                    returnState = 1;
+                    CalculateTargetRange();
+                } else {
+                    if(GameHandler._allowAudio) {
+                        GameHandler.failSfx.Play();
+                    }
+                    returnState = -1;
+                    CalculateTargetRange();
+                }
+            } else if(gaugeType == GaugeType.Progress) {
+                if(currentValue == maxValue) {
+                    returnState = 1;
+                }
             }
         }
         return returnState;
