@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
+using System.Text.Json;
+using System.IO;
 
 namespace PetCareGame;
 
@@ -25,6 +27,8 @@ public class GameHandler : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private DisplayManager _displayManager;
+    public SaveFile saveFile;
+    private const string PATH = "stats.json";
 
     private Button _petCareButton;
     private Vector2 _petCareButtonPosition;
@@ -133,8 +137,6 @@ public class GameHandler : Game
         pausePos = new Vector2(750,10);
         _mouseLeftPressed = false;
 
-        //Window.AllowUserResizing = true;
-
         base.Initialize();
     }
 
@@ -142,6 +144,8 @@ public class GameHandler : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         // TODO: use this.Content to load your game content here
+        
+        saveFile = new SaveFile();
 
         _petCareButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGameClicked"), 
                                             new Point(64, 33), _petCareButtonPosition, "Pet Care Minigame", 33, true);
@@ -170,7 +174,6 @@ public class GameHandler : Game
             Console.WriteLine("No audio drivers found, disabling audio");
             Console.WriteLine(e.StackTrace);
         }
-        
 
         coreTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
         gaugeTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/gauge_atlas");
@@ -408,5 +411,16 @@ public class GameHandler : Game
         _spriteBatch.Draw(_waldoButton.Texture, destinationRectangle1, sourceRectangle1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
         _spriteBatch.Draw(_slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
         _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
+    }
+
+    public void Save(SaveFile saved){
+        // string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        string serializedText = JsonSerializer.Serialize<SaveFile>(saved);
+        File.WriteAllText(PATH, serializedText);
+    }
+
+    private SaveFile Load(){
+        var fileContents = File.ReadAllText(PATH);
+        return JsonSerializer.Deserialize<SaveFile>(fileContents);
     }
 }
