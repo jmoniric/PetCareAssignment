@@ -307,7 +307,7 @@ public class PetCare : LevelInterface
                     hsCooldown3 = gameTime.TotalGameTime.TotalSeconds;
                 }
 
-                if(GameHandler._allowAudio) {
+                if(GameHandler._allowAudio && !GameHandler.muted) {
                     if(brushPoint1.Contains(brushHeadOffset) || brushPoint2.Contains(brushHeadOffset) || brushPoint3.Contains(brushHeadOffset)) {
                         brushSfx.IsLooped = true;
                         brushSfx.Play();
@@ -330,7 +330,7 @@ public class PetCare : LevelInterface
                 } else if(currentStage == GameStage.NailTrim) {
 
                     //infer that if nail clipping stage, they are holding trimmers
-                    if(GameHandler._allowAudio) {
+                    if(GameHandler._allowAudio && !GameHandler.muted) {
                         snipSfx.Play();
                     }
                     //check if use has successfully entered input
@@ -445,8 +445,10 @@ public class PetCare : LevelInterface
 
             //no game has been started
             if(currentStage == GameStage.Idle) { //no stage running
-                if(GameHandler._allowAudio) {
+                if(GameHandler._allowAudio && !GameHandler.muted) {
                     catPurr.Play();
+                } else {
+                    catPurr.Pause();
                 }
             } else if(currentStage == GameStage.NailTrim) { //nail trimming
                 if(nailGoal.GetCompletion()) {

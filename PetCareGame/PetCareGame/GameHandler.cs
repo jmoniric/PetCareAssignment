@@ -80,6 +80,7 @@ public class GameHandler : Game
     private bool _isResizing;
 
     public static bool _allowAudio = true;
+    public static bool muted = false;
 
     
     public GameHandler()
