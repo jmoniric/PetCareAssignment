@@ -28,7 +28,6 @@ public class GameHandler : Game
     private SpriteBatch _spriteBatch;
     private DisplayManager _displayManager;
     public SaveFile saveFile;
-    private const string PATH = "stats.json";
 
     private Button _petCareButton;
     private Vector2 _petCareButtonPosition;
@@ -388,13 +387,11 @@ public class GameHandler : Game
                 _slidingLevel.CleanupProcesses();
                 ((LevelInterface)_slidingLevel).UnloadLevel(_slidingAssets);
                 break;
-            
             default:
                 break;
         }
         CurrentState = GameState.MainMenu;
     }
-
 
     // Draws Button's in the current main menu's textures and hitbox
     private void DrawMainMenuButtons(){
@@ -414,14 +411,4 @@ public class GameHandler : Game
         _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
     }
 
-    public void Save(SaveFile saved){
-        // string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        string serializedText = JsonSerializer.Serialize<SaveFile>(saved);
-        File.WriteAllText(PATH, serializedText);
-    }
-
-    private SaveFile Load(){
-        var fileContents = File.ReadAllText(PATH);
-        return JsonSerializer.Deserialize<SaveFile>(fileContents);
-    }
 }
