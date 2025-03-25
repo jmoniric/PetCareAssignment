@@ -8,6 +8,7 @@ namespace PetCareGame;
 public class Goal {
     private int targetValue;
     private int currentValue = 0;
+    private bool isComplete = false;
 
     public Goal(int targetValue) {
         this.targetValue = targetValue;
@@ -24,6 +25,7 @@ public class Goal {
     public bool Increment(int value) {
         currentValue += value;
         if(currentValue >= targetValue) {
+            isComplete = true;
             return true;
         }
         return false;
@@ -44,5 +46,13 @@ public class Goal {
             pos,
             colour
         );
+    }
+
+    public bool GetCompletion() {
+        return isComplete;
+    }
+
+    public void SetCompletion(bool state) {
+        isComplete = state;
     }
 }

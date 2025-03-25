@@ -7,6 +7,11 @@ namespace PetCareGame;
 
 public class MinigameExplanation : LevelInterface
 {
+    public void CleanupProcesses()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void Dispose()
     {
         throw new System.NotImplementedException();

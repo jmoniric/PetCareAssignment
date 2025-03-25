@@ -24,6 +24,9 @@ public interface LevelInterface : IDisposable
     //input and update manager will get called
     public void LoadLevel();
 
+    //use this to clean up processes currently running; called before UnloadLeve()
+    public void CleanupProcesses();
+
     //Unloads assets for this specific minigame
     public void UnloadLevel(ContentManager _manager) {
         _manager.Unload();
