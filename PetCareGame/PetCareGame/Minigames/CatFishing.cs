@@ -31,9 +31,19 @@ public class CatFishing : LevelInterface
         
     }
 
+    public void LoadData()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void LoadLevel()
     {
         
+    }
+
+    public void SaveData()
+    {
+        throw new System.NotImplementedException();
     }
 
     public void Update(GameTime gameTime)

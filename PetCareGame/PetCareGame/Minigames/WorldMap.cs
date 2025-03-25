@@ -32,7 +32,17 @@ public class WorldMap : LevelInterface
         throw new System.NotImplementedException();
     }
 
+    public void LoadData()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void LoadLevel()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void SaveData()
     {
         throw new System.NotImplementedException();
     }

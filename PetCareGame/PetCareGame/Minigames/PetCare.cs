@@ -429,6 +429,8 @@ public class PetCare : LevelInterface
         gameInputGauge = new ProgressGauge(new Rectangle(350, 20, 300, 60), 0, 30, 15, ProgressGauge.GaugeType.HitInRange, false);
         progressGauge = new ProgressGauge(new Rectangle(350, 20, 300, 60), 0, 10, 0, ProgressGauge.GaugeType.Progress, false);
         startButtonBounds = new Rectangle(startButtonPos.X, startButtonPos.Y, 250, 72);
+
+        //add statement to not force instructions if played before
     }
 
     public void Update(GameTime gameTime)
@@ -575,5 +577,15 @@ public class PetCare : LevelInterface
         hotspot3Frame = 0;
 
         tempermentGauge.SetCurrentValue(8);
+    }
+
+    public void SaveData()
+    {
+        
+    }
+
+    public void LoadData()
+    {
+        
     }
 }

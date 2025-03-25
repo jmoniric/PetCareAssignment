@@ -137,6 +137,16 @@ public class SlidingGame : LevelInterface
 
     }
 
+    public void LoadData()
+    {
+        
+    }
+
+    public void SaveData()
+    {
+        
+    }
+
     public void Update(GameTime gameTime)
     {
 

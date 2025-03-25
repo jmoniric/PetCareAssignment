@@ -56,6 +56,11 @@ public class MinigameExplanation : LevelInterface
         throw new System.NotImplementedException();
     }
 
+    public void LoadData()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void LoadLevel()
     {
         /***
@@ -65,6 +70,11 @@ public class MinigameExplanation : LevelInterface
         ***/
 
         //delete me when you have code in here \|/
+        throw new System.NotImplementedException();
+    }
+
+    public void SaveData()
+    {
         throw new System.NotImplementedException();
     }
 
