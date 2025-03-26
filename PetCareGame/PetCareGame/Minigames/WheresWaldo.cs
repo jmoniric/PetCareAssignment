@@ -161,6 +161,16 @@ namespace PetCareGame
         public void Dispose()
         {
         }
+
+        public void SaveData()
+        {
+            
+        }
+
+        public void LoadData()
+        {
+            
+        }
     }
 }
 

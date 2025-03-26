@@ -31,4 +31,8 @@ public interface LevelInterface : IDisposable
     public void UnloadLevel(ContentManager _manager) {
         _manager.Unload();
     }
+
+    public void SaveData();
+
+    public void LoadData();
 }

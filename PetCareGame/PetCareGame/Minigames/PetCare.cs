@@ -307,7 +307,7 @@ public class PetCare : LevelInterface
                     hsCooldown3 = gameTime.TotalGameTime.TotalSeconds;
                 }
 
-                if(GameHandler._allowAudio) {
+                if(GameHandler._allowAudio && !GameHandler.muted) {
                     if(brushPoint1.Contains(brushHeadOffset) || brushPoint2.Contains(brushHeadOffset) || brushPoint3.Contains(brushHeadOffset)) {
                         brushSfx.IsLooped = true;
                         brushSfx.Play();
@@ -330,7 +330,7 @@ public class PetCare : LevelInterface
                 } else if(currentStage == GameStage.NailTrim) {
 
                     //infer that if nail clipping stage, they are holding trimmers
-                    if(GameHandler._allowAudio) {
+                    if(GameHandler._allowAudio && !GameHandler.muted) {
                         snipSfx.Play();
                     }
                     //check if use has successfully entered input
@@ -429,6 +429,8 @@ public class PetCare : LevelInterface
         gameInputGauge = new ProgressGauge(new Rectangle(350, 20, 300, 60), 0, 30, 15, ProgressGauge.GaugeType.HitInRange, false);
         progressGauge = new ProgressGauge(new Rectangle(350, 20, 300, 60), 0, 10, 0, ProgressGauge.GaugeType.Progress, false);
         startButtonBounds = new Rectangle(startButtonPos.X, startButtonPos.Y, 250, 72);
+
+        //add statement to not force instructions if played before
     }
 
     public void Update(GameTime gameTime)
@@ -445,8 +447,10 @@ public class PetCare : LevelInterface
 
             //no game has been started
             if(currentStage == GameStage.Idle) { //no stage running
-                if(GameHandler._allowAudio) {
+                if(GameHandler._allowAudio && !GameHandler.muted) {
                     catPurr.Play();
+                } else {
+                    catPurr.Pause();
                 }
             } else if(currentStage == GameStage.NailTrim) { //nail trimming
                 if(nailGoal.GetCompletion()) {
@@ -573,5 +577,15 @@ public class PetCare : LevelInterface
         hotspot3Frame = 0;
 
         tempermentGauge.SetCurrentValue(8);
+    }
+
+    public void SaveData()
+    {
+        
+    }
+
+    public void LoadData()
+    {
+        
     }
 }

@@ -77,7 +77,7 @@ namespace PetCareGame
                 {
                     if(GameHandler._relativeMousePos.Y >= Position.Y && GameHandler._relativeMousePos.Y <= (Position.Y + Dimensions.Y))
                     {
-                        if(GameHandler._allowAudio) {
+                        if(GameHandler._allowAudio && !GameHandler.muted) {
                             sfx.Play();
                         }
                         return true;
@@ -95,7 +95,7 @@ namespace PetCareGame
                 {
                     if(GameHandler._relativeMousePos.Y >= Position.Y && GameHandler._relativeMousePos.Y <= (Position.Y + Dimensions.Y))
                     {
-                        if(GameHandler._allowAudio) {
+                        if(GameHandler._allowAudio && !GameHandler.muted) {
                             GameHandler.selectSfx.Play();
                         }
                         return true;

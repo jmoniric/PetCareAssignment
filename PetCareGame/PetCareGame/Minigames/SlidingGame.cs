@@ -363,6 +363,16 @@ public class SlidingGame : LevelInterface
         frogMovingRight.Add(true); // Start moving right
     }
 
+    public void LoadData()
+    {
+        
+    }
+
+    public void SaveData()
+    {
+        
+    }
+
     public void Update(GameTime gameTime)
     {
         if (currentStage == GameStage.Run)
