@@ -59,9 +59,19 @@ namespace PetCareGame
                 timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
+            // I would recommend using the GameHandler's variable since that uses the OneShotMouseButton class
+            // MouseState mouseState = GameHandler._mouseState;
+            // or just call it directly for example
+            // if GameHandler._mouseState.LeftButton == Button.Pressed 
             MouseState mouseState = Mouse.GetState();
+
+            // use the following variables. The current mouse coords used by mouse state do not take into consideration the scaling
+            // GameHandler has a variable you can access that calculates the mouse's position relative to the scaling changes
+            // float mouseX = GameHandler._relativeMousePos.X;
+            // float mouseY = GameHandler._relativeMousePos.Y;
             int mouseX = mouseState.X;
             int mouseY = mouseState.Y;
+
 
             if (mouseState.LeftButton == ButtonState.Released)
             {
