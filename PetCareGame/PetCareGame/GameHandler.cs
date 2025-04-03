@@ -163,12 +163,15 @@ public class GameHandler : Game
         catAttack.Load(_coreAssets, "Sprites/Animal/attack", 3, 4);
         catWalk.Load(_coreAssets, "Sprites/Animal/walk", 7, 5);
 
-        try {
+        //tries to load audio assets; if device is missing audio drivers,
+        //marks global bool _allowAudio as false which prevents game from
+        //trying to call on audio that it can't handle or doesn't exist
+        try { 
             catPurr = _coreAssets.Load<SoundEffect>("Sounds/Animal/cat_purr");
             selectSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/select").CreateInstance();
             selectSfx.Volume = 0.2f;
             failSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/fail").CreateInstance();
-            failSfx.Volume = 0.2f;
+            failSfx.Volume = 0.4f;
             successSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/success").CreateInstance();
             successSfx.Volume = 0.2f;
         } catch (NoAudioHardwareException e) {

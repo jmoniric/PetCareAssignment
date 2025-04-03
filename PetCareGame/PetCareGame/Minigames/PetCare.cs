@@ -106,6 +106,9 @@ public class PetCare : LevelInterface
         Rectangle towel = new Rectangle(64,32,32,32);
         Rectangle brushHanging = new Rectangle(0,64,32,32);
         Rectangle brushHeld = new Rectangle(0,32,32,32);
+        Rectangle markX = new Rectangle(48,0,16,16);
+        Rectangle checkbox = new Rectangle(16,16,16,16);
+        Rectangle checkmark = new Rectangle(0,16,16,16);
 
         _graphics.GraphicsDevice.Clear(backgroundColour);
 
@@ -165,10 +168,20 @@ public class PetCare : LevelInterface
             spriteBatch.Draw(atlas, clipperBounds, clippers, Color.White, 0f, clippersOrigin, SpriteEffects.None, 1f);
         }
 
+        //if nail goal is completed, draw X over nail clippers to indicate disabled
+        if(nailGoal.GetCompletion()) {
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, clipperBounds, markX, Color.SlateGray);
+        }
+
         //draw brush when brushing stage not active: hanging
         brushBounds = new Rectangle(brushPos, new Point(96,96));
         if(currentStage != GameStage.Brushing) {//brush is held, use held sprite
             spriteBatch.Draw(atlas, brushBounds, brushHanging, Color.White, 0f, brushOrigin, SpriteEffects.None, 1f);
+        }
+
+        //if brush goal is completed, draw X over brush to indicate disabled
+        if(brushGoal) {
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, brushBounds, markX, Color.SlateGray);
         }
 
         //draw towel hook
@@ -239,12 +252,34 @@ public class PetCare : LevelInterface
 
             spriteBatch.Draw(atlas, brushBounds, brushHeld, Color.White, 0f, brushOrigin, SpriteEffects.None, 1f);
 
+            //use to draw the points for brush contact
             hotspot1.DrawFrame(spriteBatch, hotspot1Frame, new Vector2(410,295), SpriteEffects.None);
             hotspot2.DrawFrame(spriteBatch, hotspot2Frame, new Vector2(360,450), SpriteEffects.None);
             hotspot3.DrawFrame(spriteBatch, hotspot3Frame, new Vector2(430,410), SpriteEffects.None);
 
             //debug for brush head
             spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(brushHeadOffset, new Point(8,8)), Color.Lime);
+        }
+
+        //draw checklist on any stage but instructions mode
+        if(currentStage != GameStage.Instructions) {
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle(20, 525, 64, 64), checkbox, Color.White);
+            spriteBatch.DrawString(GameHandler.highPixel22, "Nails", new Vector2(100, 545), Color.White);
+            if(nailGoal.GetCompletion()) {
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle(20, 525, 64, 64), checkmark, Color.LimeGreen);
+            }
+
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle(240, 525, 64, 64), checkbox, Color.White);
+            spriteBatch.DrawString(GameHandler.highPixel22, "Brushing", new Vector2(320, 545), Color.White);
+            if(brushGoal) {
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle(240, 525, 64, 64), checkmark, Color.LimeGreen);
+            }
+
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle(520, 525, 64, 64), checkbox, Color.White);
+            spriteBatch.DrawString(GameHandler.highPixel22, "Bath", new Vector2(600, 545), Color.White);
+            if(false == true) {//put bath goal in here
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle(520, 525, 64, 64), checkmark, Color.LimeGreen);
+            }
         }
     }
 
@@ -287,7 +322,9 @@ public class PetCare : LevelInterface
 
         //handle input for different stages in here, switch between them below
         if(GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
-            //runs repeatedly while mouse is pressed
+            //runs repeatedly while mouse is pressed so you don't have to click
+            //over and over
+
             //Console.WriteLine(hsCooldown1 + 0.5 < gameTime.TotalGameTime.TotalSeconds);
             if(currentStage == GameStage.Brushing) {
                 if(brushPoint1.Contains(brushHeadOffset) && (hsCooldown1 + cooldownBuffer < gameTime.TotalGameTime.TotalSeconds)) {
@@ -313,7 +350,6 @@ public class PetCare : LevelInterface
                         brushSfx.Play();
                     }
                 }
-                
             }
             
             //runs only once after mouse pressed
@@ -339,7 +375,7 @@ public class PetCare : LevelInterface
                         catNailsBounds.Y < clipperBounds.Y && catNailsBounds.Y + catNailsBounds.Height > clipperBounds.Y) || 
                         (clipperBounds.X < catNailsBounds.X && clipperBounds.X + clipperBounds.Width > catNailsBounds.X &&
                         clipperBounds.Y < catNailsBounds.Y && clipperBounds.Y + clipperBounds.Height > catNailsBounds.Y)
-                    ){
+                    ) {
                         int returnState = gameInputGauge.CheckForSuccess();
                         if(returnState == 1) {
                             tempermentGauge.Increment();
@@ -347,11 +383,14 @@ public class PetCare : LevelInterface
                             if(nailGoal.Increment()) {
                                 //isComplete will be marked as true inside Goal
                                 nailGoal.SetCompletion(true);
+
+                                //returns to idle stage
                                 currentStage = GameStage.Idle;
                                 currentObject = ObjectHeld.None;                        
                                 clippersPos = new Point(650, 415);
                                 clippersOrigin = Vector2.Zero;
-                                Console.WriteLine("won");
+                                tempermentGauge.SetCurrentValue(8);
+                                Console.WriteLine("TRIMMING stage won, returning to IDLE");
                             }
                         } else if(returnState == -1) {
                             //returns false when unable to decrease anymore
@@ -360,6 +399,8 @@ public class PetCare : LevelInterface
                             }
                         }
                     }
+                } else if(currentStage == GameStage.Bath) {//handle input for bath level
+
                 }
 
 
@@ -369,15 +410,15 @@ public class PetCare : LevelInterface
 
                 //Activates gamestate based on object pressed
                 if(currentObject == ObjectHeld.None && currentStage == GameStage.Idle) {
-                    // Change _mouseState to relativeMousePos variable
-                    //bath stage
+                    //switch to bath stage
                     if(sprayBottleBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
                         currentObject = ObjectHeld.SprayBottle;
                         currentStage = GameStage.Bath;
                     } else if(towelBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
                         currentObject = ObjectHeld.Towel;
                         currentStage = GameStage.Bath;
-                    //nail clipping stage
+
+                    //switch to nail clipping stage
                     } else if(!nailGoal.GetCompletion() && clipperBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
                         //sets held object to nail clippers
                         currentObject = ObjectHeld.NailClippers;
@@ -385,8 +426,8 @@ public class PetCare : LevelInterface
                         currentStage = GameStage.NailTrim;
                         //shows input gauge
                         gameInputGauge.SetVisibility(true);
-                    //brushing stage
-                    } else if(brushBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
+                    //switch to brushing stage
+                    } else if(!brushGoal && brushBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
                         currentObject = ObjectHeld.Brush;
                         currentStage = GameStage.Brushing;
                     }
@@ -413,6 +454,7 @@ public class PetCare : LevelInterface
         hotspot2.Load(_manager, "Sprites/hotspot_gauge_32", 9, 1);
         hotspot3.Load(_manager, "Sprites/hotspot_gauge_32", 9, 1);
         
+        //to prevent crashes if audio driver is missing
         if(GameHandler._allowAudio) {
             catPurr = GameHandler.catPurr.CreateInstance();
             catPurr.IsLooped = true;
@@ -458,11 +500,19 @@ public class PetCare : LevelInterface
                 }
                 gameInputGauge.Update(gameTime);
             } else if(currentStage == GameStage.Brushing) { //brushing
-                if(progressGauge.CheckForSuccess() == 1) {
+                if(progressGauge.CheckForSuccess() == 1) { //marker has reached end, set goal to true
+                    //marks brush goal as complete
                     brushGoal = true;
+
+                    //returns to idle stage
                     progressGauge.SetVisibility(false);
+                    currentObject = ObjectHeld.None;
+                    currentStage = GameStage.Idle;
+                    brushPos = new Point(600,200);
+                    brushOrigin = Vector2.Zero;
+                    Console.WriteLine("BRUSH stage won, returning to IDLE");                    
                 }
-                if(!brushGoal) {
+                if(!brushGoal) { //brushing goal not reached
                     progressGauge.SetVisibility(true);
 
                     //handles decrementing hotspots
@@ -509,7 +559,6 @@ public class PetCare : LevelInterface
                         }
                         progressCooldown = gameTime.TotalGameTime.TotalSeconds;
                     }
-
                     progressGauge.Update(gameTime);
                 }
             }
