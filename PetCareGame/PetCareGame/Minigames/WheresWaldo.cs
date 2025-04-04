@@ -28,7 +28,7 @@ namespace PetCareGame
         private Vector2 checkPosition;
         private Vector2 xPosition;
 
-        public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
+        override public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
         {
             font = _coreAssets.Load<SpriteFont>("Fonts/courier_new_36");
             WaldoFirstDraft = _manager.Load<Texture2D>("Sprites/WaldoFirstDraft");
@@ -36,7 +36,7 @@ namespace PetCareGame
             redX = _manager.Load<Texture2D>("Sprites/RedX");
         }
 
-        public void LoadLevel()
+        override public void LoadLevel()
         {
             timer = 0f;
             incorrectGuesses = 0;
@@ -47,12 +47,7 @@ namespace PetCareGame
             waldoBoundingBox = new Rectangle(735, 570, 45, 20);
         }
 
-        public void UnloadLevel(ContentManager _manager)
-        {
-            _manager.Unload();
-        }
-
-        public void Update(GameTime gameTime)
+        override public void Update(GameTime gameTime)
         {
             if (!gameOver)
             {
@@ -116,14 +111,14 @@ namespace PetCareGame
         }
 
 
-        public void HandleInput(GameTime gameTime)
+        override public void HandleInput(GameTime gameTime)
         {
             if (gameOver && Keyboard.GetState().IsKeyDown(Keys.Space))
             {
                 LoadLevel();
             }
         }
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
+        override public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
         {
             _graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
@@ -164,20 +159,16 @@ namespace PetCareGame
             }
         }
 
-        public void CleanupProcesses()
+        override public void CleanupProcesses()
         {
         }
 
-        public void Dispose()
-        {
-        }
-
-        public void SaveData()
+        override public void SaveData()
         {
             
         }
 
-        public void LoadData()
+        override public void LoadData()
         {
             
         }

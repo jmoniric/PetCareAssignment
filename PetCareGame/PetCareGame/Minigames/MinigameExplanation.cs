@@ -7,17 +7,12 @@ namespace PetCareGame;
 
 public class MinigameExplanation : LevelInterface
 {
-    public void CleanupProcesses()
+    override public void CleanupProcesses()
     {
         throw new System.NotImplementedException();
     }
 
-    public void Dispose()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
+    override public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
     {
         /***
             This is called when your minigame is selected to be rendered.
@@ -30,7 +25,7 @@ public class MinigameExplanation : LevelInterface
         throw new System.NotImplementedException();
     }
 
-    public void HandleInput(GameTime gameTime)
+    override public void HandleInput(GameTime gameTime)
     {
         /***
             Handle the input for your game in here, from mouse clicks to keypresses.
@@ -41,7 +36,7 @@ public class MinigameExplanation : LevelInterface
         throw new System.NotImplementedException();
     }
 
-    public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
+    override public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
         /***
             Load your content specific to your minigame here.
@@ -56,12 +51,12 @@ public class MinigameExplanation : LevelInterface
         throw new System.NotImplementedException();
     }
 
-    public void LoadData()
+    override public void LoadData()
     {
         throw new System.NotImplementedException();
     }
 
-    public void LoadLevel()
+    override public void LoadLevel()
     {
         /***
             This class is in here just in case, but I think it may not be necessary.
@@ -73,12 +68,12 @@ public class MinigameExplanation : LevelInterface
         throw new System.NotImplementedException();
     }
 
-    public void SaveData()
+    override public void SaveData()
     {
         throw new System.NotImplementedException();
     }
 
-    public void Update(GameTime gameTime)
+    override public void Update(GameTime gameTime)
     {
         /***
             This is where your update logic should go. This should include animated

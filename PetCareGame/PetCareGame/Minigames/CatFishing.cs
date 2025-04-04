@@ -6,47 +6,42 @@ namespace PetCareGame;
 
 public class CatFishing : LevelInterface
 {
-    public void CleanupProcesses()
+    override public void CleanupProcesses()
     {
         throw new System.NotImplementedException();
     }
 
-    public void Dispose()
-    {
-        
-    }
-
-    public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
+    override public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
     {
         _graphics.GraphicsDevice.Clear(Color.DarkBlue);
     }
 
-    public void HandleInput(GameTime gameTime)
+    override public void HandleInput(GameTime gameTime)
     {
         
     }
 
-    public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
+    override public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
         
     }
 
-    public void LoadData()
+    override public void LoadData()
     {
         throw new System.NotImplementedException();
     }
 
-    public void LoadLevel()
+    override public void LoadLevel()
     {
         
     }
 
-    public void SaveData()
+    override public void SaveData()
     {
         throw new System.NotImplementedException();
     }
 
-    public void Update(GameTime gameTime)
+    override public void Update(GameTime gameTime)
     {
         
     }

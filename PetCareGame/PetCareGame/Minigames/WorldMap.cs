@@ -7,47 +7,42 @@ namespace PetCareGame;
 
 public class WorldMap : LevelInterface
 {
-    public void CleanupProcesses()
+    override public void CleanupProcesses()
     {
         throw new System.NotImplementedException();
     }
 
-    public void Dispose()
+    override public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
     {
         throw new System.NotImplementedException();
     }
 
-    public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
+    override public void HandleInput(GameTime gameTime)
     {
         throw new System.NotImplementedException();
     }
 
-    public void HandleInput(GameTime gameTime)
+    override public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
         throw new System.NotImplementedException();
     }
 
-    public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
+    override public void LoadData()
     {
         throw new System.NotImplementedException();
     }
 
-    public void LoadData()
+    override public void LoadLevel()
     {
         throw new System.NotImplementedException();
     }
 
-    public void LoadLevel()
+    override public void SaveData()
     {
         throw new System.NotImplementedException();
     }
 
-    public void SaveData()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void Update(GameTime gameTime)
+    override public void Update(GameTime gameTime)
     {
         throw new System.NotImplementedException();
     }

@@ -32,22 +32,17 @@ public class PauseMenu : LevelInterface
 
     private bool mouseDown = false;
 
-    public void CleanupProcesses()
+    override public void CleanupProcesses()
     {
         throw new NotImplementedException();
     }
     private bool isWarning = false;
 
-    public void Dispose()
-    {
-        throw new System.NotImplementedException();
-    }
-
     public PauseMenu(){
         
     }
 
-    public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
+    override public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
     {
         SpriteFont font = GameHandler.highPixel22;
         Rectangle atlasButton = new Rectangle(16,0,16,16);
@@ -119,7 +114,7 @@ public class PauseMenu : LevelInterface
         }
     }
 
-    public void HandleInput(GameTime gameTime)
+    override public void HandleInput(GameTime gameTime)
     {
         if(GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
             if(!mouseDown) {
@@ -151,7 +146,7 @@ public class PauseMenu : LevelInterface
         }
     }
 
-    public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
+    override public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
         saveButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(saveButtonBounds.Width,saveButtonBounds.Height), saveButtonPos, "Save", 38, true);
         mainMenuButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(mmButtonBounds.Width,mmButtonBounds.Height), mmButtonPos, "Main Menu", 39, true);
@@ -161,7 +156,7 @@ public class PauseMenu : LevelInterface
         noButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(noButtonBounds.Width, noButtonBounds.Height), noButtonPos, "No", 43, false);
     }
 
-    public void LoadLevel()
+    override public void LoadLevel()
     {
         //creates hitboxes that are used for drawing and checking clicks for buttons
         saveButtonBounds = new Rectangle((int)saveButtonPos.X, (int)saveButtonPos.Y, 200, 48);
@@ -172,7 +167,7 @@ public class PauseMenu : LevelInterface
         noButtonBounds = new Rectangle((int)noButtonPos.X, (int)noButtonPos.Y, 100, 48);
     }
 
-    public void Update(GameTime gameTime)
+    override public void Update(GameTime gameTime)
     {
         HandleInput(gameTime);
         SetButtonVisibility();
@@ -198,12 +193,12 @@ public class PauseMenu : LevelInterface
         }
     }
 
-    public void SaveData()
+    override public void SaveData()
     {
         throw new NotImplementedException();
     }
 
-    public void LoadData()
+    override public void LoadData()
     {
         throw new NotImplementedException();
     }

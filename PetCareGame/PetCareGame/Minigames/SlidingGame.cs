@@ -69,7 +69,7 @@ public class SlidingGame : LevelInterface
 
 
 
-    public void CleanupProcesses()
+    override public void CleanupProcesses()
     {
 
         catPos = new Vector2(400, 305);
@@ -84,14 +84,7 @@ public class SlidingGame : LevelInterface
 
     }
 
-    public void Dispose()
-    {
-
-    }
-
-
-
-    public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
+    override public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
     {
         Rectangle grass = new Rectangle(16, 0, 16, 16);
         Rectangle chestRect = new Rectangle(0, 0, 32, 32);
@@ -247,7 +240,7 @@ public class SlidingGame : LevelInterface
 
 
 
-    public void HandleInput(GameTime gameTime)
+    override public void HandleInput(GameTime gameTime)
     {
         isMoving = false;
         KeyboardState keyboardState = Keyboard.GetState();
@@ -338,7 +331,7 @@ public class SlidingGame : LevelInterface
         // Update chest bounds to match its new position
         chestBounds = new Rectangle(chestPos.X, chestPos.Y, 64, 64);
     }
-    public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
+    override public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
 
         atlas = _manager.Load<Texture2D>("Sprites/petcare_slidetextureatlas");
@@ -355,7 +348,7 @@ public class SlidingGame : LevelInterface
 
     }
 
-    public void LoadLevel()
+    override public void LoadLevel()
     {
         startButtonBounds = new Rectangle(startButtonPos.X, startButtonPos.Y, 250, 72);
 
@@ -363,17 +356,17 @@ public class SlidingGame : LevelInterface
         frogMovingRight.Add(true); // Start moving right
     }
 
-    public void LoadData()
+    override public void LoadData()
     {
         
     }
 
-    public void SaveData()
+    override public void SaveData()
     {
         
     }
 
-    public void Update(GameTime gameTime)
+    override public void Update(GameTime gameTime)
     {
         if (currentStage == GameStage.Run)
         {
@@ -421,6 +414,5 @@ public class SlidingGame : LevelInterface
                 }
             }
         }
-
     }
 }

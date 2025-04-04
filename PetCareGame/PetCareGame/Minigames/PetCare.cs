@@ -89,12 +89,7 @@ public class PetCare : LevelInterface
     private SoundEffectInstance snipSfx;
     private SoundEffectInstance brushSfx;
 
-    public void Dispose()
-    {
-        
-    }
-
-    public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
+    override public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
     {
         Rectangle floor = new Rectangle(0, 0, 32, 32);
         Rectangle floorFiller = new Rectangle(0, 12, 16, 16);
@@ -283,7 +278,7 @@ public class PetCare : LevelInterface
         }
     }
 
-    public void HandleInput(GameTime gameTime)
+    override public void HandleInput(GameTime gameTime)
     {
         //makes cat face in mouse's direction
         //if(GameHandler.relativeMousePos.X > 400) {
@@ -441,7 +436,7 @@ public class PetCare : LevelInterface
         }
     }
 
-    public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
+    override public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
         //loads cat in at bigger scale for my game
         //GameHandler.catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 5f, 0.5f);
@@ -464,7 +459,7 @@ public class PetCare : LevelInterface
         }        
     }
 
-    public void LoadLevel()
+    override public void LoadLevel()
     {
         //create gauges
         tempermentGauge = new ProgressGauge(new Rectangle(25, 20, 300, 60), 0, 16, 8, ProgressGauge.GaugeType.GoodBad, true);
@@ -475,7 +470,7 @@ public class PetCare : LevelInterface
         //add statement to not force instructions if played before
     }
 
-    public void Update(GameTime gameTime)
+    override public void Update(GameTime gameTime)
     {
         //game is paused
         if(GameHandler.isPaused) {
@@ -597,7 +592,7 @@ public class PetCare : LevelInterface
         }
     }
 
-    public void CleanupProcesses()
+    override public void CleanupProcesses()
     {
         catPos = new Vector2(400, 305);
         sprayBottlePos = new Point(64, 385);
@@ -628,12 +623,12 @@ public class PetCare : LevelInterface
         tempermentGauge.SetCurrentValue(8);
     }
 
-    public void SaveData()
+    override public void SaveData()
     {
         
     }
 
-    public void LoadData()
+    override public void LoadData()
     {
         
     }
