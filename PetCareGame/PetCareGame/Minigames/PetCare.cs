@@ -26,6 +26,7 @@ public class PetCare : LevelInterface
         Brushing
     }
     private Vector2 catPos = new Vector2(400, 305);
+    private Rectangle catBounds;
     private Color backgroundColour = new Color(197, 118, 38);
     private Texture2D atlas;
     private Texture2D particleTex;
@@ -33,7 +34,7 @@ public class PetCare : LevelInterface
     private Point sprayBottlePos = new Point(64, 385);
     private Vector2 sprayBottleOrigin = Vector2.Zero;
     private Rectangle sprayBottleBounds;
-    private float sprayBottleRot = 0f;
+    private Rectangle jumpBounds = new Rectangle(530,100,150,450);
 
     private Point clippersPos = new Point(650, 415);
     private Vector2 clippersOrigin = Vector2.Zero;
@@ -50,8 +51,6 @@ public class PetCare : LevelInterface
     private Point brushHeadOffset;
 
     private bool mouseDown = false;
-
-    private bool faceRight = true;
     
     private List<Particle> particles = new List<Particle>();
 
@@ -88,6 +87,7 @@ public class PetCare : LevelInterface
     private SoundEffectInstance catPurr;
     private SoundEffectInstance snipSfx;
     private SoundEffectInstance brushSfx;
+    private SoundEffectInstance spraySfx;
 
     public void Dispose()
     {
@@ -130,28 +130,26 @@ public class PetCare : LevelInterface
 
         //draw cat
 
-        //cat attack
-        if(tempermentGauge.GetValue() <= 0) {
-            GameHandler.catAttack.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 6f);
-        //cat irritated
-        } else if(tempermentGauge.GetValue() <= 4) {
-            GameHandler.catIrritated.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 6f);
-        //cat idle
-        } else if(tempermentGauge.GetValue() > 4){
-            GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 6f);
+        if(currentStage == GameStage.Bath) {
+            GameHandler.catRun.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 6f);
+        } else {
+            //cat attack
+            if(tempermentGauge.GetValue() <= 0) {
+                GameHandler.catAttack.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 6f);
+            //cat irritated
+            } else if(tempermentGauge.GetValue() <= 4) {
+                GameHandler.catIrritated.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 6f);
+            //cat idle
+            } else if(tempermentGauge.GetValue() > 4){
+                GameHandler.catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 6f);
+            }
         }
+        
 
         //bounding box of spray bottle
         sprayBottleBounds = new Rectangle(sprayBottlePos, new Point(96, 96));
 
-        //if object is held and is on right side of screen, rotate and flip sprite so it points at cat
-        if(currentObject == ObjectHeld.SprayBottle && faceRight) {
-            spriteBatch.Draw(atlas, sprayBottleBounds, sprayBottle, Color.White, sprayBottleRot + 270f, sprayBottleOrigin, SpriteEffects.FlipVertically, 1f);
-        
-        //otherwise render with original rotation calculated in HandleInput
-        } else {
-            spriteBatch.Draw(atlas, sprayBottleBounds, sprayBottle, Color.White, sprayBottleRot, sprayBottleOrigin, SpriteEffects.None, 1f);
-        }
+        spriteBatch.Draw(atlas, sprayBottleBounds, sprayBottle, Color.White, 0f, sprayBottleOrigin, SpriteEffects.None, 1f);
 
         //render water particles
         for(int i = 0; i < particles.Count; i++) {
@@ -259,6 +257,12 @@ public class PetCare : LevelInterface
 
             //debug for brush head
             spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(brushHeadOffset, new Point(8,8)), Color.Lime);
+        } else if(currentStage == GameStage.Bath) {
+            //debug for cat bounds
+            /*
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, jumpBounds, Color.Green);
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, catBounds, Color.Red);
+            */
         }
 
         //draw checklist on any stage but instructions mode
@@ -285,30 +289,12 @@ public class PetCare : LevelInterface
 
     public void HandleInput(GameTime gameTime)
     {
-        //makes cat face in mouse's direction
-        //if(GameHandler.relativeMousePos.X > 400) {
-        if(GameHandler._relativeMousePos.X > 400) {
-            faceRight = true;
-        } else {
-            faceRight = false;
-        }
-
-        //orientates held spray bottle to point at cat
-        if(currentObject == ObjectHeld.SprayBottle) {
-            sprayBottleRot = Particle.PointAtSprite(sprayBottlePos.X, sprayBottlePos.Y, (int)catPos.X, (int)catPos.Y);
-        }
 
 
         //Console.WriteLine(cooldown.Milliseconds);
         //sprays water particles
         if(currentObject == ObjectHeld.SprayBottle && GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
-            /*Console.WriteLine(cooldown.Add(cooldownBuffer).Millisecond);
-            Console.WriteLine(DateTime.Now.Millisecond);
-            if(cooldown.Add(cooldownBuffer).Millisecond <= DateTime.Now.Millisecond) {*/
-
-                //particles.Add(new Particle((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y, (int)catPos.X, (int)catPos.Y, 20, 10, 10, particleTex));
-                particles.Add(new Particle((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y, (int)catPos.X, (int)catPos.Y, 20, 10, 10, particleTex));
-            //}
+            
         }
 
         //closes clipper when used  
@@ -400,7 +386,24 @@ public class PetCare : LevelInterface
                         }
                     }
                 } else if(currentStage == GameStage.Bath) {//handle input for bath level
+                    if(currentObject == ObjectHeld.SprayBottle) {
+                        int y = (int)GameHandler._relativeMousePos.Y;
+                        if(y > 450) {
+                            y = 450;
+                        } else if(y < 210) {
+                            y = 210;
+                        }
+                        particles.Add(new Particle(
+                            new Point(100, y-60),
+                            new Point(16, 8),
+                            14,
+                            GameHandler.plainWhiteTexture)
+                        );
 
+                        if(GameHandler._allowAudio && !GameHandler.muted) {
+                            spraySfx.Play();
+                        }
+                    }
                 }
 
 
@@ -460,6 +463,7 @@ public class PetCare : LevelInterface
             catPurr.IsLooped = true;
             snipSfx = _manager.Load<SoundEffect>("Sounds/snip").CreateInstance();
             brushSfx = _manager.Load<SoundEffect>("Sounds/brush").CreateInstance();
+            spraySfx = _manager.Load<SoundEffect>("Sounds/spray").CreateInstance();
             brushSfx.IsLooped = true;
         }        
     }
@@ -561,15 +565,39 @@ public class PetCare : LevelInterface
                     }
                     progressGauge.Update(gameTime);
                 }
+            } else if(currentStage == GameStage.Bath) {
+                catPos.X += 10;
+                catPos.Y -= 4;
+                if(catPos.X >= 950) {
+                    catPos.X = -150;
+                    catPos.Y = 305;
+                }
+                catBounds = new Rectangle((int)(catPos.X-50), (int)(catPos.Y-20), 100, 200);
+
+                int index = 0;
+                while (index < particles.Count) {
+                    particles[index].Update(gameTime);
+                    if(particles[index].CheckToDestroy(catBounds)) {
+                        particles.RemoveAt(index);
+                    } else {
+                        index++;
+                    }
+                }
             }
 
             //spray bottle held
             if(currentObject == ObjectHeld.SprayBottle) {
-                sprayBottlePos = new Point((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y);
-                
-                //makes spray bottle snap to mouse and change origin
-                
-                sprayBottleOrigin = new Vector2(16, 16);
+                int y = (int)GameHandler._relativeMousePos.Y;
+
+                if(y > 450) {
+                    y = 450;
+                } else if(y < 210) {
+                    y = 210;
+                }
+                sprayBottlePos = new Point(64, y);
+
+                sprayBottleOrigin = new Vector2(0,20);
+
             } else if(currentObject == ObjectHeld.NailClippers) {
                 clippersPos = new Point((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y);
                 
@@ -584,16 +612,6 @@ public class PetCare : LevelInterface
                 brushOrigin = new Vector2(28, 10);
                 brushHeadOffset = new Point((int)GameHandler._relativeMousePos.X - 55, (int)GameHandler._relativeMousePos.Y + 20);
             }
-
-            int index = 0;
-            while (index < particles.Count) {
-                particles[index].Update(gameTime);
-                if(particles[index].CheckToDestroy(5)) {
-                    particles.RemoveAt(index);
-                } else {
-                    index++;
-                }
-            }
         }
     }
 
@@ -602,7 +620,6 @@ public class PetCare : LevelInterface
         catPos = new Vector2(400, 305);
         sprayBottlePos = new Point(64, 385);
         sprayBottleOrigin = Vector2.Zero;
-        sprayBottleRot = 0f;
 
         clippersPos = new Point(650, 415);
         clippersOrigin = Vector2.Zero;
@@ -615,7 +632,6 @@ public class PetCare : LevelInterface
         brushOrigin = Vector2.Zero;
 
         mouseDown = false;
-        faceRight = true;
         
         currentObject = ObjectHeld.None;
         currentStage = GameStage.Instructions;

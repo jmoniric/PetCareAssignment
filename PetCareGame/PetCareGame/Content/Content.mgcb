@@ -308,6 +308,12 @@
 /processorParam:Quality=Best
 /build:PetcareGame/Sounds/snip.wav
 
+#begin PetcareGame/Sounds/spray.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:PetcareGame/Sounds/spray.wav
+
 #begin PetcareGame/Sprites/hotspot_gauge_32.png
 /importer:TextureImporter
 /processor:TextureProcessor

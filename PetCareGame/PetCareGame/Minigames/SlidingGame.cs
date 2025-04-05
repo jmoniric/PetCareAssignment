@@ -345,8 +345,12 @@ public class SlidingGame : LevelInterface
 
         frog = _manager.Load<Texture2D>("Sprites/FrogGreen_Hop");
 
+        //calling this again loads these assets again, but they have already been loaded in GameHandler
+        
+        /***
         GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         GameHandler.catWalk.Load(_coreAssets, "Sprites/Animal/walk", 7, 5);
+        ***/
         chest = _manager.Load<Texture2D>("Sprites/treasure_atlas");
         startButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(250, 72), new Vector2(startButtonPos.X, startButtonPos.Y), "Start", 42, true);
 
