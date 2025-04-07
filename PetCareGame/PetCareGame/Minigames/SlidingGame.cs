@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace PetCareGame;
 
@@ -56,6 +57,7 @@ public class SlidingGame : LevelInterface
 
 
     //frog (s) (end)
+    private SoundEffectInstance peacefulTrack;
 
     enum GameStage
     {
@@ -64,6 +66,9 @@ public class SlidingGame : LevelInterface
 
         Completion
     }
+
+    private Point goalTilePos;
+
 
     private bool mouseDown = false;
 
@@ -98,17 +103,19 @@ public class SlidingGame : LevelInterface
         _graphics.GraphicsDevice.Clear(backgroundColour);
 
 
-        Rectangle centerTextureSource = new Rectangle(32, 32, 16, 16);
+        Rectangle centerTextureSource = new Rectangle(32, 16, 16, 16);
         Rectangle openchestTextureSource = new Rectangle(0, 32, 32, 32);
 
 
 
-        int centerX = ((GameHandler.windowWidth - 64) / 2) - 185;
-        int centerY = ((GameHandler.windowHeight - 64) / 2) - 190;
+        int objectiveX = goalTilePos.X;
+        int objectiveY = goalTilePos.Y;
 
 
 
         Rectangle textureSource = new Rectangle(16, 32, 16, 16);
+
+        Rectangle flowersRect = new Rectangle(0, 16, 16, 16);
 
 
         chestBounds = new Rectangle(chestPos.X, chestPos.Y, 64, 64);
@@ -117,7 +124,7 @@ public class SlidingGame : LevelInterface
         int tolerance = 35;
 
         // Check if the chest is close enough to the center position (within tolerance)
-        bool isOverlapping = Math.Abs(chestPos.X - centerX) <= tolerance && Math.Abs(chestPos.Y - centerY) <= tolerance;
+        bool isOverlapping = Math.Abs(chestPos.X - objectiveX) <= tolerance && Math.Abs(chestPos.Y - objectiveY) <= tolerance;
 
 
         if (currentStage == GameStage.Instructions)
@@ -163,9 +170,48 @@ public class SlidingGame : LevelInterface
             {
                 for (int v = 0; v < 16; v++)
                 {
-                    spriteBatch.Draw(atlas, new Rectangle(h * 128, v * 128, 128, 128), grass, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+                    // Compute screen position for the tile
+                    int x = h * 64;
+                    int y = v * 64;
+
+                    // Draw the grass first
+                    spriteBatch.Draw(atlas, new Rectangle(x, y, 64, 64), grass, Color.White);
+
+                    // Draw overlay tile on every other tile (checkerboard pattern)
+                    if ((h + v) % 2 == 0) // Alternating pattern
+                    {
+                        spriteBatch.Draw(atlas, new Rectangle(x, y, 64, 64), flowersRect, Color.White);
+                    }
                 }
+
             }
+
+            if (isOverlapping)
+            {
+
+                chestPos = new Point(400, 350);
+
+                // Generate a random position within screen bounds
+                Random rand = new Random();
+                int tileSize = 64;
+                float newX = rand.Next(10, GameHandler.windowWidth - 100);
+                float newY = rand.Next(10, GameHandler.windowHeight - 100);
+
+                goalTilePos = new Point(
+                rand.Next(1, (GameHandler.windowWidth / tileSize) - 1) * tileSize,
+                rand.Next(1, (GameHandler.windowHeight / tileSize) - 1) * tileSize
+   );
+
+                frogPositions.Add(new Vector2(newX, newY));
+                frogMovingRight.Add(rand.Next(2) == 0); // Randomly choose left or right direction
+
+            }
+            else
+            {
+                spriteBatch.Draw(atlas, new Rectangle(objectiveX, objectiveY, 64, 64), centerTextureSource, Color.White);
+                spriteBatch.Draw(chest, chestBounds, chestRect, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+            }
+
 
             for (int i = 0; i < frogPositions.Count; i++)
             {
@@ -178,25 +224,7 @@ public class SlidingGame : LevelInterface
                 spriteBatch.Draw(frog, destinationRect, sourceRect, Color.White, 0f, Vector2.Zero, frogDirection, 0f);
             }
 
-            if (isOverlapping)
-            {
 
-                chestPos = new Point(400, 350);
-
-                // Generate a random position within screen bounds
-                Random rand = new Random();
-                float newX = rand.Next(10, GameHandler.windowWidth - 100);
-                float newY = rand.Next(10, GameHandler.windowHeight - 100);
-
-                frogPositions.Add(new Vector2(newX, newY));
-                frogMovingRight.Add(rand.Next(2) == 0); // Randomly choose left or right direction
-
-            }
-            else
-            {
-                spriteBatch.Draw(atlas, new Rectangle(centerX, centerY, 64, 64), centerTextureSource, Color.White);
-                spriteBatch.Draw(chest, chestBounds, chestRect, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
-            }
 
             if (isMoving)
             {
@@ -251,16 +279,30 @@ public class SlidingGame : LevelInterface
     {
         isMoving = false;
         KeyboardState keyboardState = Keyboard.GetState();
-        MouseState mouseState = Mouse.GetState();
+        // MouseState mouseState = Mouse.GetState();
         float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        // Define the cat's bounding box
-        Rectangle catBounds = new Rectangle((int)catPos.X, (int)catPos.Y, 64, 64);
+
+        Rectangle catBounds = new Rectangle((int)catPos.X, (int)catPos.Y, 32, 32);
 
         int tileSize = 64;
 
+        if (GameHandler._allowAudio && !GameHandler.muted && currentStage == GameStage.Run)
+        {
+            {
+                peacefulTrack.IsLooped = true;
+                peacefulTrack.Play();
+            }
+        }
+
+        if (currentStage == GameStage.Completion)
+        {
+            peacefulTrack.IsLooped = false;
+            peacefulTrack.Stop(true);
+        }
+
         // Cat movement logic
-        if (keyboardState.IsKeyDown(Keys.Left))
+        if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
         {
             Rectangle newBounds = new Rectangle((int)(catPos.X - 300 * elapsed), (int)catPos.Y, 64, 64);
             if (newBounds.Intersects(chestBounds)) chestPos.X -= tileSize;
@@ -269,7 +311,7 @@ public class SlidingGame : LevelInterface
             faceRight = false;
             isMoving = true;
         }
-        if (keyboardState.IsKeyDown(Keys.Right))
+        if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
         {
             Rectangle newBounds = new Rectangle((int)(catPos.X + 300 * elapsed), (int)catPos.Y, 64, 64);
             if (newBounds.Intersects(chestBounds)) chestPos.X += tileSize;
@@ -278,7 +320,7 @@ public class SlidingGame : LevelInterface
             faceRight = true;
             isMoving = true;
         }
-        if (keyboardState.IsKeyDown(Keys.Up))
+        if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
         {
             Rectangle newBounds = new Rectangle((int)catPos.X, (int)(catPos.Y - 300 * elapsed), 64, 64);
             if (newBounds.Intersects(chestBounds)) chestPos.Y -= tileSize;
@@ -286,7 +328,7 @@ public class SlidingGame : LevelInterface
 
             isMoving = true;
         }
-        if (keyboardState.IsKeyDown(Keys.Down))
+        if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
         {
             Rectangle newBounds = new Rectangle((int)catPos.X, (int)(catPos.Y + 300 * elapsed), 64, 64);
             if (newBounds.Intersects(chestBounds)) chestPos.Y += tileSize;
@@ -295,31 +337,39 @@ public class SlidingGame : LevelInterface
             isMoving = true;
         }
 
+        //In case of chest softlock
+
+        if (keyboardState.IsKeyDown(Keys.R))
+        {
+            catPos = new Vector2(300, 305); // Reset to starting position
+            chestPos = new Point(400, 350); // Reset chest position
+        }
+
         // Mouse Input for Start Button
         if (currentStage == GameStage.Instructions)
         {
-            if (mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
+            if (GameHandler._mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
             {
-                if (startButtonBounds.Contains(mouseState.Position))
+                if (startButtonBounds.Contains(GameHandler._mouseState.Position))
                 {
                     currentStage = GameStage.Run;
                     Console.WriteLine("Game Started!");
                 }
                 mouseDown = true;
             }
-            else if (mouseState.LeftButton == ButtonState.Released)
+            else if (GameHandler._mouseState.LeftButton == ButtonState.Released)
             {
                 mouseDown = false;
             }
 
-            
+
         }
 
         if (currentStage == GameStage.Completion)
         {
-            if (mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
+            if (GameHandler._mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
             {
-                if (startButtonBounds.Contains(mouseState.Position))
+                if (startButtonBounds.Contains(GameHandler._mouseState.Position))
                 {
                     currentStage = GameStage.Run;
                     frogPositions.Clear();
@@ -327,13 +377,20 @@ public class SlidingGame : LevelInterface
                 }
                 mouseDown = true;
             }
-            else if (mouseState.LeftButton == ButtonState.Released)
+            else if (GameHandler._mouseState.LeftButton == ButtonState.Released)
             {
                 mouseDown = false;
             }
 
-            
+
         }
+
+        // Ensure the cat and chest positions are within the screen bounds
+        catPos.X = MathHelper.Clamp(catPos.X, 0, GameHandler.windowWidth - tileSize);
+        catPos.Y = MathHelper.Clamp(catPos.Y, 0, GameHandler.windowHeight - tileSize);
+
+        chestPos.X = MathHelper.Clamp(chestPos.X, 0, GameHandler.windowWidth - tileSize);
+        chestPos.Y = MathHelper.Clamp(chestPos.Y, 0, GameHandler.windowHeight - tileSize);
 
         // Update chest bounds to match its new position
         chestBounds = new Rectangle(chestPos.X, chestPos.Y, 64, 64);
@@ -345,32 +402,63 @@ public class SlidingGame : LevelInterface
 
         frog = _manager.Load<Texture2D>("Sprites/FrogGreen_Hop");
 
+        //calling this again loads these assets again, but they have already been loaded in GameHandler
+        
+        /***
         GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         GameHandler.catWalk.Load(_coreAssets, "Sprites/Animal/walk", 7, 5);
+        ***/
         chest = _manager.Load<Texture2D>("Sprites/treasure_atlas");
         startButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(250, 72), new Vector2(startButtonPos.X, startButtonPos.Y), "Start", 42, true);
 
         frameWidth = frog.Width / frameCount;
         frameHeight = frog.Height;
 
+        peacefulTrack = _manager.Load<SoundEffect>("Sounds/peacefulTrack").CreateInstance();
+
     }
 
     public void LoadLevel()
     {
+        //Start Button
         startButtonBounds = new Rectangle(startButtonPos.X, startButtonPos.Y, 250, 72);
 
-        frogPositions.Add(new Vector2(600, 500));
+        //Goal position
+        int tileSize = 64;
+        int tilesX = GameHandler.windowWidth / tileSize;
+        int tilesY = GameHandler.windowHeight / tileSize;
+
+        Random rand = new Random();
+        Point chosenTile;
+
+        do
+        {
+            int x = rand.Next(tilesX);
+            int y = rand.Next(tilesY);
+            chosenTile = new Point(x, y);
+        } while ((chosenTile.X + chosenTile.Y) % 2 != 0); // Make sure it lands on a checkerboard tile
+
+        goalTilePos = new Point(chosenTile.X * tileSize, chosenTile.Y * tileSize);
+
+
+
+        //Frog Logic
+        frogPositions.Add(new Vector2(300, 150));
+        new Vector2(200, 150);
+
         frogMovingRight.Add(true); // Start moving right
+
+
     }
 
     public void LoadData()
     {
-        
+
     }
 
     public void SaveData()
     {
-        
+
     }
 
     public void Update(GameTime gameTime)
@@ -387,8 +475,17 @@ public class SlidingGame : LevelInterface
 
             // Define chest and cat bounds for collision detection
             Rectangle chestBounds = new Rectangle(chestPos.X, chestPos.Y, 64, 64);
-            
-             Rectangle catBounds = new Rectangle((int)catPos.X, (int)catPos.Y, 64, 64);
+
+            Rectangle catBounds = new Rectangle((int)catPos.X, (int)catPos.Y, 64, 64);
+
+            if (isMoving)
+            {
+                GameHandler.catWalk.UpdateFrame((float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+            else
+            {
+                GameHandler.catIdle.UpdateFrame((float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
 
 
             for (int i = 0; i < frogPositions.Count; i++)
@@ -410,13 +507,13 @@ public class SlidingGame : LevelInterface
                 if (frogMovingRight[i])
                 {
                     frogPositions[i] += new Vector2(frogSpeed * elapsed, 0);
-                    if (frogPositions[i].X >= GameHandler.windowWidth - 64) 
+                    if (frogPositions[i].X >= GameHandler.windowWidth - 64)
                         frogMovingRight[i] = false;
                 }
                 else
                 {
                     frogPositions[i] -= new Vector2(frogSpeed * elapsed, 0);
-                    if (frogPositions[i].X <= 0) 
+                    if (frogPositions[i].X <= 0)
                         frogMovingRight[i] = true;
                 }
             }

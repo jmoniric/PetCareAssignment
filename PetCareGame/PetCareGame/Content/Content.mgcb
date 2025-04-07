@@ -308,6 +308,12 @@
 /processorParam:Quality=Best
 /build:PetcareGame/Sounds/snip.wav
 
+#begin PetcareGame/Sounds/spray.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:PetcareGame/Sounds/spray.wav
+
 #begin PetcareGame/Sprites/hotspot_gauge_32.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -331,6 +337,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:PetcareGame/Sprites/petcare_textureatlas.png
+
+#begin SlidingGame/Sounds/peacefulTrack.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SlidingGame/Sounds/peacefulTrack.wav
 
 #begin SlidingGame/Sounds/placeholder.xml
 /importer:XmlImporter

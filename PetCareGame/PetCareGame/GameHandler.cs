@@ -65,6 +65,7 @@ public class GameHandler : Game
     public static AnimatedTexture catIrritated = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static AnimatedTexture catAttack = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static AnimatedTexture catWalk = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
+    public static AnimatedTexture catRun = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static SoundEffect catPurr;
     public static SoundEffectInstance selectSfx;
     public static SoundEffectInstance failSfx;
@@ -165,14 +166,18 @@ public class GameHandler : Game
         catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         catIrritated.Load(_coreAssets, "Sprites/Animal/irritated", 4, 6);
         catAttack.Load(_coreAssets, "Sprites/Animal/attack", 3, 4);
-        catWalk.Load(_coreAssets, "Sprites/Animal/walk", 7, 5);
+        catWalk.Load(_coreAssets, "Sprites/Animal/walk", 7, 15);
+        catRun.Load(_coreAssets, "Sprites/Animal/run", 7, 15);
 
-        try {
+        //tries to load audio assets; if device is missing audio drivers,
+        //marks global bool _allowAudio as false which prevents game from
+        //trying to call on audio that it can't handle or doesn't exist
+        try { 
             catPurr = _coreAssets.Load<SoundEffect>("Sounds/Animal/cat_purr");
             selectSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/select").CreateInstance();
             selectSfx.Volume = 0.2f;
             failSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/fail").CreateInstance();
-            failSfx.Volume = 0.2f;
+            failSfx.Volume = 0.4f;
             successSfx = _coreAssets.Load<SoundEffect>("Sounds/UI/success").CreateInstance();
             successSfx.Volume = 0.2f;
         } catch (NoAudioHardwareException e) {
@@ -290,11 +295,15 @@ public class GameHandler : Game
     {
         var mousePosition = new Vector2(_mouseState.X, _mouseState.Y);
         _relativeMousePos = Vector2.Transform(mousePosition, Matrix.Invert(_displayManager._scaleMatrix));
-
-        float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        catIdle.UpdateFrame(elapsed);
-        catIrritated.UpdateFrame(elapsed);
-        catAttack.UpdateFrame(elapsed);
+        
+        if(!isPaused) {
+            float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            catIdle.UpdateFrame(elapsed);
+            catIrritated.UpdateFrame(elapsed);
+            catAttack.UpdateFrame(elapsed);
+            catWalk.UpdateFrame(elapsed);
+            catRun.UpdateFrame(elapsed);
+        }
 
         HandleInput(gameTime);
 
