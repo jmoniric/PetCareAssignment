@@ -288,13 +288,15 @@ public class GameHandler : Game
     {
         var mousePosition = new Vector2(_mouseState.X, _mouseState.Y);
         _relativeMousePos = Vector2.Transform(mousePosition, Matrix.Invert(_displayManager._scaleMatrix));
-
-        float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        catIdle.UpdateFrame(elapsed);
-        catIrritated.UpdateFrame(elapsed);
-        catAttack.UpdateFrame(elapsed);
-        catWalk.UpdateFrame(elapsed);
-        catRun.UpdateFrame(elapsed);
+        
+        if(!isPaused) {
+            float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            catIdle.UpdateFrame(elapsed);
+            catIrritated.UpdateFrame(elapsed);
+            catAttack.UpdateFrame(elapsed);
+            catWalk.UpdateFrame(elapsed);
+            catRun.UpdateFrame(elapsed);
+        }
 
         HandleInput(gameTime);
 

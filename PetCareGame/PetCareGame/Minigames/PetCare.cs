@@ -35,6 +35,19 @@ public class PetCare : LevelInterface
     private Vector2 sprayBottleOrigin = Vector2.Zero;
     private Rectangle sprayBottleBounds;
     private Rectangle jumpBounds = new Rectangle(530,100,150,450);
+    private Rectangle jumpGate = new Rectangle(100,100,50,450);
+    private bool isJumping = false;
+    private bool allowJump = false;
+    private bool waiting = false;
+    private double jumpCooldown = 0;
+    private int jumpCooldownDuration;
+    private int jumpFrame = 2;
+
+    private Random rand = new Random();
+    
+    //use this to alternate between the 3 possible heights cat can jump to
+    private int jumpIndex = 0;
+    private int prevJumpIndex = -1;
 
     private Point clippersPos = new Point(650, 415);
     private Vector2 clippersOrigin = Vector2.Zero;
@@ -72,6 +85,7 @@ public class PetCare : LevelInterface
     private AnimatedTexture hotspot1 = new AnimatedTexture(new Vector2(16,16), 0f, 2f, 1f);
     private AnimatedTexture hotspot2 = new AnimatedTexture(new Vector2(16,16), 0f, 2f, 1f);
     private AnimatedTexture hotspot3 = new AnimatedTexture(new Vector2(16,16), 0f, 2f, 1f);
+    private AnimatedTexture catJump = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     private double hsCooldown1 = 0;
     private double hsCooldown2 = 0;
     private double hsCooldown3 = 0;
@@ -131,7 +145,11 @@ public class PetCare : LevelInterface
         //draw cat
 
         if(currentStage == GameStage.Bath) {
-            GameHandler.catRun.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 6f);
+            if(isJumping) {
+                catJump.DrawFrame(spriteBatch, jumpFrame, catPos, SpriteEffects.None, 6f);
+            } else {
+                GameHandler.catRun.DrawFrame(spriteBatch, catPos, SpriteEffects.None, 6f);
+            }
         } else {
             //cat attack
             if(tempermentGauge.GetValue() <= 0) {
@@ -262,6 +280,7 @@ public class PetCare : LevelInterface
             /*
             spriteBatch.Draw(GameHandler.plainWhiteTexture, jumpBounds, Color.Green);
             spriteBatch.Draw(GameHandler.plainWhiteTexture, catBounds, Color.Red);
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, jumpGate, Color.Blue);
             */
         }
 
@@ -285,6 +304,8 @@ public class PetCare : LevelInterface
                 spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle(520, 525, 64, 64), checkmark, Color.LimeGreen);
             }
         }
+
+        spriteBatch.DrawString(GameHandler.highPixel22, catPos.ToString(), new Vector2(0,60), Color.Black);
     }
 
     public void HandleInput(GameTime gameTime)
@@ -396,7 +417,7 @@ public class PetCare : LevelInterface
                         particles.Add(new Particle(
                             new Point(100, y-60),
                             new Point(16, 8),
-                            14,
+                            16,
                             GameHandler.plainWhiteTexture)
                         );
 
@@ -456,6 +477,7 @@ public class PetCare : LevelInterface
         hotspot1.Load(_manager, "Sprites/hotspot_gauge_32", 9, 1);
         hotspot2.Load(_manager, "Sprites/hotspot_gauge_32", 9, 1);
         hotspot3.Load(_manager, "Sprites/hotspot_gauge_32", 9, 1);
+        catJump.Load(_coreAssets, "Sprites/Animal/jump", 7, 15);
         
         //to prevent crashes if audio driver is missing
         if(GameHandler._allowAudio) {
@@ -566,11 +588,71 @@ public class PetCare : LevelInterface
                     progressGauge.Update(gameTime);
                 }
             } else if(currentStage == GameStage.Bath) {
-                catPos.X += 10;
-                catPos.Y -= 4;
+                if(isJumping && !waiting) {
+                    catPos.X += 6;
+                } else if(!waiting) {
+                    catPos.X += 10;
+                //cooldown expires
+                } else if(waiting && (jumpCooldown + jumpCooldownDuration) < gameTime.TotalGameTime.TotalSeconds) {
+                    waiting = false;
+                }
+                //prepares for jump and decides height
+                if(jumpGate.Contains(catPos)) {
+                    
+                    //jumpIndex 0 means no jump
+                    if(jumpIndex != 0) {
+                        allowJump = true;
+                    }
+                }
+
+                //move back to left side of screen
                 if(catPos.X >= 950) {
                     catPos.X = -150;
                     catPos.Y = 305;
+                    jumpFrame = 2;
+                    isJumping = false;
+                    waiting = true;
+
+                    //prevents from receiving the same value multiple times in a row
+                    do {
+                        jumpIndex = (int)rand.NextInt64(0,3);
+                    } while(jumpIndex == prevJumpIndex);
+                    Console.WriteLine(jumpIndex);
+                    //updates previous index with most recent index
+                    prevJumpIndex = jumpIndex;
+
+                    jumpCooldown = gameTime.TotalGameTime.TotalSeconds;
+                    jumpCooldownDuration = (int)rand.NextInt64(1,6);
+                }
+                if(catPos.X >= 405 && allowJump) {
+                    isJumping = true;
+                    catPos.Y = 305;
+                }
+
+                if(isJumping) {
+                    switch(jumpIndex) {
+                        case 1:
+                            catPos.Y = (int)GetJumpY(catPos.X, 150);
+                            break;
+                        case 2:
+                            catPos.Y = (int)GetJumpY(catPos.X, 20);
+                            break;
+                    }
+                    //sets back to running state once it's on ground again
+                    if(catPos.Y > 304) {
+                        isJumping = false;
+                    }
+                }
+
+                //controls jump animation frames
+                if(catPos.X >= 750) {
+                    jumpFrame = 6;
+                } else if(catPos.X >= 700) {
+                    jumpFrame = 5;
+                } else if(catPos.X >= 650) {
+                    jumpFrame = 4;
+                } else if(catPos.X >= 600) {
+                    jumpFrame = 3;
                 }
                 catBounds = new Rectangle((int)(catPos.X-50), (int)(catPos.Y-20), 100, 200);
 
@@ -615,11 +697,32 @@ public class PetCare : LevelInterface
         }
     }
 
+    private float GetJumpY(float posX, float destHeight) {
+        float destX = 600f;
+        int jumpStart = 400;
+        int groundLevel = 305;
+        float a = (groundLevel - destHeight) / MathF.Pow(jumpStart - destX, 2);
+        float y = a * MathF.Pow(posX - destX, 2) + destHeight;
+
+        
+        if(y >= groundLevel) {
+            return groundLevel;
+        } 
+
+        
+        return y;
+    }
+
     public void CleanupProcesses()
     {
         catPos = new Vector2(400, 305);
         sprayBottlePos = new Point(64, 385);
         sprayBottleOrigin = Vector2.Zero;
+        isJumping = false;
+        allowJump = false;
+        waiting = false;
+        jumpFrame = 2;
+        prevJumpIndex = -1;
 
         clippersPos = new Point(650, 415);
         clippersOrigin = Vector2.Zero;
