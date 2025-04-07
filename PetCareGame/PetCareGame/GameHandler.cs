@@ -63,6 +63,7 @@ public class GameHandler : Game
     public static AnimatedTexture catIrritated = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static AnimatedTexture catAttack = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static AnimatedTexture catWalk = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
+    public static AnimatedTexture catRun = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static SoundEffect catPurr;
     public static SoundEffectInstance selectSfx;
     public static SoundEffectInstance failSfx;
@@ -161,7 +162,8 @@ public class GameHandler : Game
         catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         catIrritated.Load(_coreAssets, "Sprites/Animal/irritated", 4, 6);
         catAttack.Load(_coreAssets, "Sprites/Animal/attack", 3, 4);
-        catWalk.Load(_coreAssets, "Sprites/Animal/walk", 7, 5);
+        catWalk.Load(_coreAssets, "Sprites/Animal/walk", 7, 15);
+        catRun.Load(_coreAssets, "Sprites/Animal/run", 7, 15);
 
         //tries to load audio assets; if device is missing audio drivers,
         //marks global bool _allowAudio as false which prevents game from
@@ -291,6 +293,8 @@ public class GameHandler : Game
         catIdle.UpdateFrame(elapsed);
         catIrritated.UpdateFrame(elapsed);
         catAttack.UpdateFrame(elapsed);
+        catWalk.UpdateFrame(elapsed);
+        catRun.UpdateFrame(elapsed);
 
         HandleInput(gameTime);
 
