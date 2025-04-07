@@ -17,6 +17,7 @@ public class GameHandler : Game
     public enum GameState
     {
         MainMenu,
+        Overworld,
         PetCareGame,
         WaldoGame,
         FishingGame,
@@ -27,6 +28,7 @@ public class GameHandler : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private DisplayManager _displayManager;
+    private MainMenuScreen _mainMenu;
     public SaveFile saveFile;
 
     private Button _petCareButton;
@@ -53,7 +55,7 @@ public class GameHandler : Game
     static ContentManager _waldoAssets;
     static ContentManager _fishingAssets;
     static ContentManager _petcareAssets;
-
+    
     public static bool isPaused = false;
 
     public static int windowHeight = 600;
@@ -127,6 +129,8 @@ public class GameHandler : Game
         // TODO: Add your initialization logic here
         _displayManager = new(this, _graphics, GraphicsDevice);
         _displayManager.UpdateScreenScaleMatrix();
+
+        _mainMenu = new MainMenuScreen();
 
         _petCareButtonPosition = new Vector2(100, 100);
         _waldoButtonPosition = new Vector2(164, 100);
@@ -261,7 +265,10 @@ public class GameHandler : Game
         } else {
             switch(CurrentState) {
                 case GameState.MainMenu:
-                    //handle the input for main menu directly here
+                    _mainMenu.HandleInput(gameTime, this);
+                    break;
+                case GameState.Overworld:
+                    
                     break;
                 case GameState.PetCareGame:
                     _petCareLevel.HandleInput(gameTime);
@@ -300,7 +307,8 @@ public class GameHandler : Game
         switch(CurrentState) {
             case GameState.MainMenu:
                 //handle the update for main menu directly here
-                SetVisiblity(true);
+                _mainMenu.Update(gameTime, this);
+                //SetVisiblity(true);
                 break;
             case GameState.PetCareGame:
                 _petCareLevel.Update(gameTime);
@@ -327,8 +335,12 @@ public class GameHandler : Game
 
         switch(CurrentState) {
             case GameState.MainMenu:
-                DrawMainMenuButtons();
+                _mainMenu.Draw(gameTime, _spriteBatch, _graphics);
+                // DrawMainMenuButtons();
                 //Rectangle pauseDestination = new Rectangle((int)pausePos.X, (int)pausePos.Y, pauseButton.CellWidth, pauseButton.CellHeight);
+                break;
+            case GameState.Overworld:
+                DrawMainMenuButtons();
                 break;
             case GameState.PetCareGame:
                 _petCareLevel.Draw(gameTime, _spriteBatch, _graphics);
@@ -363,7 +375,7 @@ public class GameHandler : Game
     }
 
     //hide or show visiblity of items in here
-    public void SetVisiblity(bool isVisible) {
+    private void SetVisiblity(bool isVisible) {
         _petCareButton.Visible = isVisible;
         _fishingButton.Visible = isVisible;
         _waldoButton.Visible = isVisible;
@@ -396,7 +408,7 @@ public class GameHandler : Game
     }
 
     // Draws Button's in the current main menu's textures and hitbox
-    private void DrawMainMenuButtons(){
+    public void DrawMainMenuButtons(){
         Rectangle sourceRectangle = new Rectangle(0, 0, _petCareButton.CellWidth, _petCareButton.CellHeight);
         Rectangle sourceRectangle1 = new Rectangle(0, 0, _waldoButton.CellWidth, _waldoButton.CellHeight);
         Rectangle sourceRectangle2 = new Rectangle(0, 0, _slidingButton.CellWidth, _slidingButton.CellHeight);
@@ -413,4 +425,8 @@ public class GameHandler : Game
         _spriteBatch.Draw(_fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
     }
 
+    public void Quit()
+    {
+        this.Exit();
+    }
 }

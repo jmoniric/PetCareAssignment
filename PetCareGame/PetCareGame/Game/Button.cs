@@ -54,6 +54,7 @@ namespace PetCareGame
                 Texture = _staticTexture;
             }
         }
+        
         public bool CheckIfButtonWasClicked()
         {
             if(Visible) 
