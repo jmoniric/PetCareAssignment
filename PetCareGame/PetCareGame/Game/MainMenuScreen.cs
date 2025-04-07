@@ -12,15 +12,15 @@ namespace PetCareGame
         private Button _continueButton;
         private Button _quitButton;
 
-        private Vector2 continueButtonPos = new Vector2(310, 155);
-        private Vector2 newGameButtonPos = new Vector2(310, 210);
-        private Vector2 quitButtonPos = new Vector2(310, 265);
+        private Vector2 _continueButtonPos = new Vector2(310, 155);
+        private Vector2 _newGameButtonPos = new Vector2(310, 210);
+        private Vector2 _quitButtonPos = new Vector2(310, 265);
 
-        private Rectangle newGameButtonBounds;
-        private Rectangle continueButtonBounds;
-        private Rectangle quitButtonBounds;
+        private Rectangle _newGameButtonBounds;
+        private Rectangle _continueButtonBounds;
+        private Rectangle _quitButtonBounds;
 
-        private bool mouseDown = false;
+        private bool _mouseDown = false;
 
         public static bool fileExists;
 
@@ -57,29 +57,31 @@ namespace PetCareGame
             //draw "Pet Care"
             spriteBatch.DrawString(GameHandler.highPixel36, "Pet Care", new Vector2(240, 100), Color.White);
 
+            // if save file exist draw continue normally
+            // if not draw continue faded or darker
             //draw continue button
-            spriteBatch.Draw(GameHandler.coreTextureAtlas, continueButtonBounds, atlasButton, Color.White);
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, _continueButtonBounds, atlasButton, Color.White);
             //draw "Continue"
-            spriteBatch.DrawString(font, "Continue", new Vector2(330, continueButtonPos.Y + 15), Color.Black);
+            spriteBatch.DrawString(font, "Continue", new Vector2(330, _continueButtonPos.Y + 15), Color.Black);
 
             //draw new game button
-            spriteBatch.Draw(GameHandler.coreTextureAtlas, newGameButtonBounds, atlasButton, Color.White);
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, _newGameButtonBounds, atlasButton, Color.White);
             //draw "New Game"
-            spriteBatch.DrawString(font, "New Game", new Vector2(330, newGameButtonPos.Y + 15), Color.Black);
+            spriteBatch.DrawString(font, "New Game", new Vector2(330, _newGameButtonPos.Y + 15), Color.Black);
 
             //draw quit button
-            spriteBatch.Draw(GameHandler.coreTextureAtlas, quitButtonBounds, atlasButton, Color.White);
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, _quitButtonBounds, atlasButton, Color.White);
             //draw "Quit Game"
-            spriteBatch.DrawString(font, "Quit Game", new Vector2(330, quitButtonPos.Y + 15), Color.Black);
+            spriteBatch.DrawString(font, "Quit Game", new Vector2(330, _quitButtonPos.Y + 15), Color.Black);
         }
 
         public void HandleInput(GameTime gameTime, GameHandler game)
         {
             if (GameHandler._mouseState.LeftButton == ButtonState.Pressed)
             {
-                if (!mouseDown)
+                if (!_mouseDown)
                 {
-                    mouseDown = true;
+                    _mouseDown = true;
 
                     if (_newGameButton.CheckIfSelectButtonWasClicked())
                     {
@@ -100,30 +102,13 @@ namespace PetCareGame
             }
             else if (GameHandler._mouseState.LeftButton == ButtonState.Released)
             {
-                mouseDown = false;
+                _mouseDown = false;
             }
         }
 
         public void Update(GameTime gameTime, GameHandler game)
-        {
-            LoadContent();
-            LoadLevel();
+        {   
             HandleInput(gameTime, game);
-        }
-
-        private void LoadContent()
-        {
-            _newGameButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(newGameButtonBounds.Width, newGameButtonBounds.Height), newGameButtonPos, "New Game", 33, true);
-            _continueButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(continueButtonBounds.Width, continueButtonBounds.Height), continueButtonPos, "Continue Game", 34, true);
-            _quitButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(quitButtonBounds.Width, quitButtonBounds.Height), quitButtonPos, "Quit Game", 35, true);
-        }
-        
-        public void LoadLevel()
-        {
-            //creates hitboxes that are used for drawing and checking clicks for buttons
-            continueButtonBounds = new Rectangle((int)continueButtonPos.X, (int)continueButtonPos.Y, 200, 48);
-            newGameButtonBounds = new Rectangle((int)newGameButtonPos.X, (int)newGameButtonPos.Y, 200, 48);
-            quitButtonBounds = new Rectangle((int)quitButtonPos.X, (int)quitButtonPos.Y, 200, 48);
         }
 
         private void SetButtonVisibility(bool isVisible)
@@ -143,7 +128,18 @@ namespace PetCareGame
             throw new NotImplementedException();
         }
 
-        public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
+        public void LoadLevel()
+        {
+            //creates hitboxes that are used for drawing and checking clicks for buttons
+            _continueButtonBounds = new Rectangle((int)_continueButtonPos.X, (int)_continueButtonPos.Y, 200, 48);
+            _newGameButtonBounds = new Rectangle((int)_newGameButtonPos.X, (int)_newGameButtonPos.Y, 200, 48);
+            _quitButtonBounds = new Rectangle((int)_quitButtonPos.X, (int)_quitButtonPos.Y, 200, 48);
+            _newGameButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(_newGameButtonBounds.Width, _newGameButtonBounds.Height), _newGameButtonPos, "New Game", 33, true);
+            _continueButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(_continueButtonBounds.Width, _continueButtonBounds.Height), _continueButtonPos, "Continue Game", 34, true);
+            _quitButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(_quitButtonBounds.Width, _quitButtonBounds.Height), _quitButtonPos, "Quit Game", 35, true);
+        }
+
+        public void LoadContent(ContentManager manager, ContentManager coreAssets)
         {
             throw new NotImplementedException();
         }
