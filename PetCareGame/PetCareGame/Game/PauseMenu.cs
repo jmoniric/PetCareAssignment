@@ -129,7 +129,8 @@ public class PauseMenu : LevelInterface
                 //call save function here :3
                 } else if(mainMenuButton.CheckIfSelectButtonWasClicked()) {
                     isWarning = true;
-                    SetButtonVisibility();          
+                    SetButtonVisibility();
+                    Overworld.SetVisiblity(true);
                 } else if(saveQuitButton.CheckIfSelectButtonWasClicked()) {
                     //call save function, then quit game
                 } else if(resumeButton.CheckIfSelectButtonWasClicked()) {

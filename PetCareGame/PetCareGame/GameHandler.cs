@@ -30,14 +30,6 @@ public class GameHandler : Game
     private DisplayManager _displayManager;
     public SaveFile saveFile;
 
-    // private Button _petCareButton;
-    // private Vector2 _petCareButtonPosition;
-    // private Button _waldoButton;
-    // private Vector2 _waldoButtonPosition;
-    // private Button _slidingButton;
-    // private Vector2 _slidingButtonPosition;
-    // private Button _fishingButton;
-    // private Vector2 _fishingButtonPosition;
     private Button pauseButton;
     private Vector2 pausePos;
 
@@ -194,7 +186,7 @@ public class GameHandler : Game
             {
                 _mouseLeftPressed = true;
             }
-            else if (pauseButton.CheckIfSelectButtonWasClicked() && !isPaused)
+            else if (pauseButton.CheckIfSelectButtonWasClicked() && !isPaused && CurrentState != GameState.MainMenu)
             {
                 pauseButton.Clicked();
                 isPaused = true;

@@ -9,15 +9,15 @@ namespace PetCareGame
     public class Overworld : LevelInterface
     {
 
-        private Button _petCareButton;
+        private static Button _petCareButton;
         private Vector2 _petCareButtonPosition;
-        private Button _waldoButton;
+        private static Button _waldoButton;
         private Vector2 _waldoButtonPosition;
-        private Button _slidingButton;
+        private static Button _slidingButton;
         private Vector2 _slidingButtonPosition;
-        private Button _fishingButton;
+        private static Button _fishingButton;
         private Vector2 _fishingButtonPosition;
-        private Button pauseButton;
+        private static Button pauseButton;
 
         private PetCare PetCareLevel { get; set; }
         private CatFishing FishingLevel { get; set; }
@@ -39,7 +39,6 @@ namespace PetCareGame
 
         public void HandleInput(GameTime gameTime)
         {
-
             //for now, loading the next minigame will be handeled via the four buttons
             //but in the future, there will be conditional logic to allow for whether a
             //minigame should be loaded, whether the button is enabled, etc
@@ -94,7 +93,7 @@ namespace PetCareGame
         }
 
         //hide or show visiblity of items in here
-        private void SetVisiblity(bool isVisible)
+        public static void SetVisiblity(bool isVisible)
         {
             _petCareButton.Visible = isVisible;
             _fishingButton.Visible = isVisible;
