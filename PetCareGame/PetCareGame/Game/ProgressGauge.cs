@@ -130,7 +130,9 @@ public class ProgressGauge {
     }
 
     public void SetCurrentValue(int value) {
-        currentValue = value;
+        if(value >= minValue && value <= maxValue) {
+            currentValue = value;
+        }
     }
     
     public void SetVisibility(bool isVisible) {
@@ -168,6 +170,12 @@ public class ProgressGauge {
 
     public void HandleInput() {
         
+    }
+
+    public void UpdateParameters(int minValue, int maxValue, int currentValue) {
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        this.currentValue = currentValue;
     }
 
     public int CheckForSuccess() {

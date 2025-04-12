@@ -28,8 +28,15 @@ public class Particle {
         pos.X += (int)(1 * velMult);
     }
 
-    //returns true if the particle's origin is within the margins surrounding the original target coords
-    public bool CheckToDestroy(Rectangle target) {
-        return target.Contains(pos) || pos.X > 800;
+    //returns 1 if particle is out of bounds
+    //returns 2 if particle collides with specified target
+    //returns 0 if it fails prev conditions
+    public int CheckToDestroy(Rectangle target) {
+        if(pos.X > 800) {
+            return 1;
+        } else if(target.Contains(pos)) {
+            return 2;
+        }
+        return 0;
     }
 }

@@ -15,6 +15,7 @@ public class PauseMenu : LevelInterface
     private Button resumeButton;
     private Button yesButton;
     private Button noButton;
+    private Button muteButton;
 
     private Vector2 saveButtonPos = new Vector2(310, 155);//55px spacing
     private Vector2 mmButtonPos = new Vector2(310, 210);
@@ -22,6 +23,7 @@ public class PauseMenu : LevelInterface
     private Vector2 resumeButtonPos = new Vector2(310, 345);
     private Vector2 yesButtonPos = new Vector2(250, 250);
     private Vector2 noButtonPos = new Vector2(400, 250);
+    private Vector2 muteButtonPos = new Vector2(170, 150);
 
     private Rectangle saveButtonBounds;
     private Rectangle mmButtonBounds;
@@ -29,6 +31,7 @@ public class PauseMenu : LevelInterface
     private Rectangle resumeButtonBounds;
     private Rectangle yesButtonBounds;
     private Rectangle noButtonBounds;
+    private Rectangle muteButtonBounds;
 
     private bool mouseDown = false;
 
@@ -51,6 +54,8 @@ public class PauseMenu : LevelInterface
     {
         SpriteFont font = GameHandler.highPixel22;
         Rectangle atlasButton = new Rectangle(16,0,16,16);
+        Rectangle atlasAudioButton = new Rectangle(32,16,16,16);
+        Rectangle atlasXMark = new Rectangle(48,0,16,16);
 
         GameHandler.highPixel22.LineSpacing = 29;
 
@@ -116,6 +121,14 @@ public class PauseMenu : LevelInterface
             spriteBatch.Draw(GameHandler.coreTextureAtlas, resumeButtonBounds, atlasButton, Color.White);
             //draw "Resume"
             spriteBatch.DrawString(font, "Resume", new Vector2(350, resumeButtonPos.Y + 15), Color.Black);
+
+            //draw mute button
+            if(GameHandler._allowAudio) {
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, muteButtonBounds, atlasAudioButton, Color.White);
+                if(GameHandler.muted) {
+                    spriteBatch.Draw(GameHandler.coreTextureAtlas, muteButtonBounds, atlasXMark, Color.Red);
+                }
+            }
         }
     }
 
@@ -135,7 +148,9 @@ public class PauseMenu : LevelInterface
                     //call save function, then quit game
                 } else if(resumeButton.CheckIfSelectButtonWasClicked()) {
                     GameHandler.isPaused = false;
-                } else if(isWarning) {
+                } else if(muteButton.CheckIfSelectButtonWasClicked()) {
+                    GameHandler.muted = !GameHandler.muted;
+                }else if(isWarning) {
                     if (yesButton.CheckIfSelectButtonWasClicked())
                     {
                         GameHandler.UnloadCurrentLevel();
@@ -160,6 +175,10 @@ public class PauseMenu : LevelInterface
         resumeButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(320,64), resumeButtonPos, "Resume", 41, true);
         yesButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(yesButtonBounds.Width, yesButtonBounds.Height), yesButtonPos, "Yes", 42, false);
         noButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(noButtonBounds.Width, noButtonBounds.Height), noButtonPos, "No", 43, false);
+        muteButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(muteButtonBounds.Width, muteButtonBounds.Height), muteButtonPos, "Mute", 44, true);
+        if(!GameHandler._allowAudio) {
+            muteButton.Visible = false;
+        }
     }
 
     public void LoadLevel()
@@ -171,6 +190,8 @@ public class PauseMenu : LevelInterface
         resumeButtonBounds = new Rectangle((int)resumeButtonPos.X, (int)resumeButtonPos.Y, 200, 48);
         yesButtonBounds = new Rectangle((int)yesButtonPos.X, (int)yesButtonPos.Y, 100, 48);
         noButtonBounds = new Rectangle((int)noButtonPos.X, (int)noButtonPos.Y, 100, 48);
+        muteButtonBounds = new Rectangle((int)muteButtonPos.X, (int)muteButtonPos.Y, 64, 64);
+        //170,150
     }
 
     public void Update(GameTime gameTime)
@@ -189,7 +210,7 @@ public class PauseMenu : LevelInterface
             yesButton.Visible = true;
             noButton.Visible = true;
         }
-        else{
+        else {
             saveButton.Visible = true;
             mainMenuButton.Visible = true;
             saveQuitButton.Visible = true;

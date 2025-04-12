@@ -34,11 +34,12 @@ public class PetCare : LevelInterface
     private Point sprayBottlePos = new Point(64, 385);
     private Vector2 sprayBottleOrigin = Vector2.Zero;
     private Rectangle sprayBottleBounds;
-    private Rectangle jumpBounds = new Rectangle(530,100,150,450);
+    private Rectangle jumpBounds = new Rectangle(530,100,150,400);
     private Rectangle jumpGate = new Rectangle(100,100,50,450);
     private bool isJumping = false;
     private bool allowJump = false;
     private bool waiting = false;
+    private double sprayCooldown = 0;
     private double jumpCooldown = 0;
     private int jumpCooldownDuration;
     private int jumpFrame = 2;
@@ -78,6 +79,7 @@ public class PetCare : LevelInterface
 
     private Goal nailGoal = new Goal(10);
     private bool brushGoal = false;
+    private Goal bathGoal = new Goal(5);
 
     private Rectangle brushPoint1 = new Rectangle(385, 270, 50, 50);
     private Rectangle brushPoint2 = new Rectangle(340, 420, 40, 60);
@@ -123,6 +125,7 @@ public class PetCare : LevelInterface
         Rectangle markX = new Rectangle(48,0,16,16);
         Rectangle checkbox = new Rectangle(16,16,16,16);
         Rectangle checkmark = new Rectangle(0,16,16,16);
+        Rectangle sprayZone = new Rectangle(0,96,32,32);
 
         _graphics.GraphicsDevice.Clear(backgroundColour);
 
@@ -134,6 +137,10 @@ public class PetCare : LevelInterface
             for(int v = 0; v < 4; v++) {
                 spriteBatch.Draw(atlas, new Rectangle(h*128, v*128, 128, 128), wall, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
             }
+        }
+
+        if(currentStage == GameStage.Bath) {
+            spriteBatch.Draw(atlas, jumpBounds, sprayZone, Color.Green);
         }
 
         //draw flooring
@@ -276,9 +283,10 @@ public class PetCare : LevelInterface
             //debug for brush head
             spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(brushHeadOffset, new Point(8,8)), Color.Lime);
         } else if(currentStage == GameStage.Bath) {
+            progressGauge.Draw(gameTime, spriteBatch);
             //debug for cat bounds
             /*
-            spriteBatch.Draw(GameHandler.plainWhiteTexture, jumpBounds, Color.Green);
+            //spriteBatch.Draw(GameHandler.plainWhiteTexture, jumpBounds, Color.Green);
             spriteBatch.Draw(GameHandler.plainWhiteTexture, catBounds, Color.Red);
             spriteBatch.Draw(GameHandler.plainWhiteTexture, jumpGate, Color.Blue);
             */
@@ -407,7 +415,9 @@ public class PetCare : LevelInterface
                         }
                     }
                 } else if(currentStage == GameStage.Bath) {//handle input for bath level
-                    if(currentObject == ObjectHeld.SprayBottle) {
+                    if(currentObject == ObjectHeld.SprayBottle &&
+                    sprayCooldown + 0.5 < gameTime.TotalGameTime.TotalSeconds) {
+                        sprayCooldown = gameTime.TotalGameTime.TotalSeconds;
                         int y = (int)GameHandler._relativeMousePos.Y;
                         if(y > 450) {
                             y = 450;
@@ -417,7 +427,7 @@ public class PetCare : LevelInterface
                         particles.Add(new Particle(
                             new Point(100, y-60),
                             new Point(16, 8),
-                            16,
+                            20,
                             GameHandler.plainWhiteTexture)
                         );
 
@@ -438,9 +448,7 @@ public class PetCare : LevelInterface
                     if(sprayBottleBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
                         currentObject = ObjectHeld.SprayBottle;
                         currentStage = GameStage.Bath;
-                    } else if(towelBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
-                        currentObject = ObjectHeld.Towel;
-                        currentStage = GameStage.Bath;
+                        progressGauge.UpdateParameters(0,5,0);
 
                     //switch to nail clipping stage
                     } else if(!nailGoal.GetCompletion() && clipperBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
@@ -454,6 +462,7 @@ public class PetCare : LevelInterface
                     } else if(!brushGoal && brushBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
                         currentObject = ObjectHeld.Brush;
                         currentStage = GameStage.Brushing;
+                        progressGauge.UpdateParameters(0,10,0);
                     }
                 }
             }
@@ -513,13 +522,17 @@ public class PetCare : LevelInterface
         } else {
             tempermentGauge.Update(gameTime);
 
-            //no game has been started
-            if(currentStage == GameStage.Idle) { //no stage running
+            if(currentStage != GameStage.Instructions) {
                 if(GameHandler._allowAudio && !GameHandler.muted) {
                     catPurr.Play();
                 } else {
                     catPurr.Pause();
                 }
+            }
+            
+            //no game has been started
+            if(currentStage == GameStage.Idle) { //no stage running
+                
             } else if(currentStage == GameStage.NailTrim) { //nail trimming
                 if(nailGoal.GetCompletion()) {
                     gameInputGauge.SetVisibility(false);
@@ -588,6 +601,11 @@ public class PetCare : LevelInterface
                     progressGauge.Update(gameTime);
                 }
             } else if(currentStage == GameStage.Bath) {
+                progressGauge.SetVisibility(true);
+                //makes progress gauge reflect goal value
+                progressGauge.SetCurrentValue(bathGoal.GetCurrentValue());
+                progressGauge.Update(gameTime);
+
                 if(isJumping && !waiting) {
                     catPos.X += 6;
                 } else if(!waiting) {
@@ -659,7 +677,18 @@ public class PetCare : LevelInterface
                 int index = 0;
                 while (index < particles.Count) {
                     particles[index].Update(gameTime);
-                    if(particles[index].CheckToDestroy(catBounds)) {
+                    if(particles[index].CheckToDestroy(catBounds) == 1 ||
+                    particles[index].CheckToDestroy(catBounds) == 2) {
+                        //increments goal if stage is Bath, particle hits cat
+                        //and cat is within spray zone
+                        if(particles[index].CheckToDestroy(catBounds) == 2 &&
+                        currentStage == GameStage.Bath &&
+                        jumpBounds.Intersects(catBounds)) {
+                            bathGoal.Increment();
+                            if(GameHandler._allowAudio && !GameHandler.muted) {
+                                GameHandler.successSfx.Play();
+                            }
+                        }
                         particles.RemoveAt(index);
                     } else {
                         index++;
