@@ -150,6 +150,7 @@ public class PauseMenu : LevelInterface
                     GameHandler.isPaused = false;
                 } else if(muteButton.CheckIfSelectButtonWasClicked()) {
                     GameHandler.muted = !GameHandler.muted;
+                    Console.WriteLine("Mute toggled");
                 }else if(isWarning) {
                     if (yesButton.CheckIfSelectButtonWasClicked())
                     {
