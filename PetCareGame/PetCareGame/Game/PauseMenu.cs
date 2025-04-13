@@ -16,6 +16,7 @@ public class PauseMenu : LevelInterface
     private Button yesButton;
     private Button noButton;
     private Button muteButton;
+    private Button resetWindowButton;
 
     private Vector2 saveButtonPos = new Vector2(310, 155);//55px spacing
     private Vector2 mmButtonPos = new Vector2(310, 210);
@@ -24,6 +25,7 @@ public class PauseMenu : LevelInterface
     private Vector2 yesButtonPos = new Vector2(250, 250);
     private Vector2 noButtonPos = new Vector2(400, 250);
     private Vector2 muteButtonPos = new Vector2(170, 150);
+    private Vector2 resetButtonPos = new Vector2(170, 250);
 
     private Rectangle saveButtonBounds;
     private Rectangle mmButtonBounds;
@@ -32,6 +34,7 @@ public class PauseMenu : LevelInterface
     private Rectangle yesButtonBounds;
     private Rectangle noButtonBounds;
     private Rectangle muteButtonBounds;
+    private Rectangle resetButtonBounds;
 
     private bool mouseDown = false;
 
@@ -56,6 +59,7 @@ public class PauseMenu : LevelInterface
         Rectangle atlasButton = new Rectangle(16,0,16,16);
         Rectangle atlasAudioButton = new Rectangle(32,16,16,16);
         Rectangle atlasXMark = new Rectangle(48,0,16,16);
+        Rectangle atlasResetButton = new Rectangle(48,16,16,16);
 
         GameHandler.highPixel22.LineSpacing = 29;
 
@@ -129,6 +133,8 @@ public class PauseMenu : LevelInterface
                     spriteBatch.Draw(GameHandler.coreTextureAtlas, muteButtonBounds, atlasXMark, Color.Red);
                 }
             }
+
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, resetButtonBounds, atlasResetButton, Color.White);
         }
     }
 
@@ -151,7 +157,10 @@ public class PauseMenu : LevelInterface
                 } else if(muteButton.CheckIfSelectButtonWasClicked()) {
                     GameHandler.muted = !GameHandler.muted;
                     Console.WriteLine("Mute toggled");
-                }else if(isWarning) {
+                } else if(resetWindowButton.CheckIfSelectButtonWasClicked()) {
+                    GameHandler._displayManager.SetResolution(800, 600);
+                    GameHandler._displayManager.UpdateScreenScaleMatrix();
+                } else if(isWarning) {
                     if (yesButton.CheckIfSelectButtonWasClicked())
                     {
                         GameHandler.UnloadCurrentLevel();
@@ -177,6 +186,7 @@ public class PauseMenu : LevelInterface
         yesButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(yesButtonBounds.Width, yesButtonBounds.Height), yesButtonPos, "Yes", 42, false);
         noButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(noButtonBounds.Width, noButtonBounds.Height), noButtonPos, "No", 43, false);
         muteButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(muteButtonBounds.Width, muteButtonBounds.Height), muteButtonPos, "Mute", 44, true);
+        resetWindowButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(resetButtonBounds.Width, resetButtonBounds.Height), resetButtonPos, "Reset Window", 45, true);
         if(!GameHandler._allowAudio) {
             muteButton.Visible = false;
         }
@@ -192,7 +202,7 @@ public class PauseMenu : LevelInterface
         yesButtonBounds = new Rectangle((int)yesButtonPos.X, (int)yesButtonPos.Y, 100, 48);
         noButtonBounds = new Rectangle((int)noButtonPos.X, (int)noButtonPos.Y, 100, 48);
         muteButtonBounds = new Rectangle((int)muteButtonPos.X, (int)muteButtonPos.Y, 64, 64);
-        //170,150
+        resetButtonBounds = new Rectangle((int)resetButtonPos.X, (int)resetButtonPos.Y, 64, 64);
     }
 
     public void Update(GameTime gameTime)
