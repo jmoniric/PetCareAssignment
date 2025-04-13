@@ -125,7 +125,7 @@ public class ProgressGauge {
         return false;
     }
 
-    public int GetValue() {
+    public int GetCurrentValue() {
         return currentValue;
     }
 
