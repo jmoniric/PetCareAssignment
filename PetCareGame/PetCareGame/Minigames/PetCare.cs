@@ -40,6 +40,7 @@ public class PetCare : LevelInterface
     private bool allowJump = false;
     private bool waiting = false;
     private bool finalLap = false;
+    private bool failState = false;
     private double sprayCooldown = 0;
     private double jumpCooldown = 0;
     private int jumpCooldownDuration;
@@ -174,15 +175,7 @@ public class PetCare : LevelInterface
         }
         
 
-        //bounding box of spray bottle
-        sprayBottleBounds = new Rectangle(sprayBottlePos, new Point(96, 96));
-
-        spriteBatch.Draw(atlas, sprayBottleBounds, sprayBottle, Color.White, 0f, sprayBottleOrigin, SpriteEffects.None, 1f);
-
-        //render water particles
-        for(int i = 0; i < particles.Count; i++) {
-            particles[i].Draw(gameTime, spriteBatch, _graphics, Color.SkyBlue);
-        }
+        
 
         //bounding box of clippers
         clipperBounds = new Rectangle(clippersPos, new Point(72, 72));
@@ -213,8 +206,25 @@ public class PetCare : LevelInterface
         //draw towel hook
         spriteBatch.Draw(atlas, new Rectangle(75,150,96,96), towelHook, Color.White);
         
+        //draw towel
         towelBounds = new Rectangle(towelPos, new Point(128,128));
         spriteBatch.Draw(atlas, towelBounds, towel, Color.White, 0f, towelOrigin, SpriteEffects.None, 1f);
+
+        //bounding box of spray bottle
+        sprayBottleBounds = new Rectangle(sprayBottlePos, new Point(96, 96));
+
+        //draw spray bottle
+        spriteBatch.Draw(atlas, sprayBottleBounds, sprayBottle, Color.White, 0f, sprayBottleOrigin, SpriteEffects.None, 1f);
+        //if spray goal is completed, draw X over spray bottle to indicate disabled
+        //also checks that gamestage isn't still bath to prevent X from being drawn on section transition
+        if(sprayGoal.GetCompletion() && currentStage != GameStage.BathWashing) {
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, sprayBottleBounds, markX, Color.SlateGray);
+        }
+
+        //render water particles
+        for(int i = 0; i < particles.Count; i++) {
+            particles[i].Draw(gameTime, spriteBatch, _graphics, Color.SkyBlue);
+        }
 
         //draw toolbar background
         spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(0,0, 800, 150), new Color(45,45,45,150));
@@ -268,6 +278,11 @@ public class PetCare : LevelInterface
             //calls draw for input gauge - will only draw if isVisible == true
             gameInputGauge.Draw(gameTime, spriteBatch);
             nailGoal.DrawOutput(spriteBatch, GameHandler.highPixel22, new Vector2(355, 120), Color.Black, "Nails");
+
+            if(failState) {
+                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(160,155,500,100), Color.Black);
+                spriteBatch.DrawString(GameHandler.highPixel22, "The cat is angry!\nPress [SPACEBAR] to restart", new Vector2(175,170), Color.Red);
+            }
         } else if(currentStage == GameStage.Brushing) {
             /*** //debug for brush zones
             spriteBatch.Draw(GameHandler.plainWhiteTexture, brushPoint1, Color.Red);
@@ -283,15 +298,24 @@ public class PetCare : LevelInterface
             hotspot2.DrawFrame(spriteBatch, hotspot2Frame, new Vector2(360,450), SpriteEffects.None);
             hotspot3.DrawFrame(spriteBatch, hotspot3Frame, new Vector2(430,410), SpriteEffects.None);
 
+            if(failState) {
+                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(160,155,500,100), Color.Black);
+                spriteBatch.DrawString(GameHandler.highPixel22, "Brushed too hard!\nPress [SPACEBAR] to restart", new Vector2(175,170), Color.Red);
+            }
+
             //debug for brush head
             spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(brushHeadOffset, new Point(8,8)), Color.Lime);
         } else if(currentStage == GameStage.BathWashing) {
             progressGauge.Draw(gameTime, spriteBatch);
             //print remaining water count
-            spriteBatch.DrawString(GameHandler.highPixel22, "Water: " + water, new Vector2(400,85), Color.Black);
+            spriteBatch.DrawString(GameHandler.highPixel22, "Water: " + water, new Vector2(620,115), Color.Black);
             //print progress count
             spriteBatch.DrawString(GameHandler.highPixel22, "Sprays: " + sprayGoal.GetCurrentValue() + "/5", new Vector2(400,115), Color.Black);
 
+            if(failState) {
+                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(160,155,500,100), Color.Black);
+                spriteBatch.DrawString(GameHandler.highPixel22, "Ran out of water!\nPress [SPACEBAR] to restart", new Vector2(175,170), Color.Red);
+            }
             //debug for cat bounds
             /*
             //spriteBatch.Draw(GameHandler.plainWhiteTexture, jumpBounds, Color.Green);
@@ -332,19 +356,35 @@ public class PetCare : LevelInterface
 
     public void HandleInput(GameTime gameTime)
     {
-
-
-        //Console.WriteLine(cooldown.Milliseconds);
-        //sprays water particles
-        if(currentObject == ObjectHeld.SprayBottle && GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
-            
-        }
-
-        //closes clipper when used  
-        if(currentObject == ObjectHeld.NailClippers && GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
-            clippersUse = true;
-        } else {
+        if(!failState) {
+            //closes clipper when used  
+            if(currentObject == ObjectHeld.NailClippers && GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
+                clippersUse = true;
+            } else {
+                clippersUse = false;
+            }
+        } else { //opens clippers if failstate triggers while mouse down
             clippersUse = false;
+        }
+        
+
+        if(failState && Keyboard.GetState().IsKeyDown(Keys.Space)) {
+            if(currentStage == GameStage.BathWashing) {
+                CleanupProcesses();
+                currentStage = GameStage.BathWashing;
+                currentObject = ObjectHeld.SprayBottle;
+            } else if(currentStage == GameStage.NailTrim) {
+                nailGoal.ResetGoal();
+                CleanupProcesses();
+                currentStage = GameStage.NailTrim;
+                currentObject = ObjectHeld.NailClippers;
+            } else if(currentStage == GameStage.Brushing) {
+                brushGoal = false;
+                progressGauge.SetCurrentValue(0);
+                CleanupProcesses();
+                currentStage = GameStage.Brushing;
+                currentObject = ObjectHeld.Brush;
+            }
         }
 
         double cooldownBuffer = 0.25;
@@ -355,7 +395,7 @@ public class PetCare : LevelInterface
             //over and over
 
             //Console.WriteLine(hsCooldown1 + 0.5 < gameTime.TotalGameTime.TotalSeconds);
-            if(currentStage == GameStage.Brushing) {
+            if(currentStage == GameStage.Brushing && !failState) {
                 if(brushPoint1.Contains(brushHeadOffset) && (hsCooldown1 + cooldownBuffer < gameTime.TotalGameTime.TotalSeconds)) {
                     if(hotspot1Frame < 8) {
                         hotspot1Frame++;
@@ -391,8 +431,8 @@ public class PetCare : LevelInterface
                     if(startButton.CheckIfSelectButtonWasClicked()) {
                         currentStage = GameStage.Idle;
                     }
-                //if game stage is nail trimming
-                } else if(currentStage == GameStage.NailTrim) {
+                //if game stage is nail trimming and not in fail limbo state
+                } else if(currentStage == GameStage.NailTrim && !failState) {
 
                     //infer that if nail clipping stage, they are holding trimmers
                     if(GameHandler._allowAudio && !GameHandler.muted) {
@@ -424,11 +464,12 @@ public class PetCare : LevelInterface
                         } else if(returnState == -1) {
                             //returns false when unable to decrease anymore
                             if(!tempermentGauge.Decrement(2)) {
-                                nailGoal.ResetGoal();
+                                //failState = true;
                             }
                         }
                     }
-                } else if(currentStage == GameStage.BathWashing) {//handle input for bath level
+                //handle input for bath level only if not in fail limbo
+                } else if(currentStage == GameStage.BathWashing && !failState) {
                     if((sprayCooldown + 0.5) < gameTime.TotalGameTime.TotalSeconds) {
                         sprayCooldown = gameTime.TotalGameTime.TotalSeconds;
                         int y = (int)GameHandler._relativeMousePos.Y;
@@ -556,7 +597,12 @@ public class PetCare : LevelInterface
                 if(nailGoal.GetCompletion()) {
                     gameInputGauge.SetVisibility(false);
                 }
-                gameInputGauge.Update(gameTime);
+                if(tempermentGauge.GetCurrentValue() == 0) {
+                    failState = true;
+                }
+                if(!failState) {
+                    gameInputGauge.Update(gameTime);
+                }
             } else if(currentStage == GameStage.Brushing) { //brushing
                 if(progressGauge.CheckForSuccess() == 1) { //marker has reached end, set goal to true
                     //marks brush goal as complete
@@ -570,7 +616,7 @@ public class PetCare : LevelInterface
                     brushOrigin = Vector2.Zero;
                     Console.WriteLine("BRUSH stage won, returning to IDLE");                    
                 }
-                if(!brushGoal) { //brushing goal not reached
+                if(!brushGoal && !failState) { //brushing goal not reached
                     progressGauge.SetVisibility(true);
 
                     //handles decrementing hotspots
@@ -589,17 +635,26 @@ public class PetCare : LevelInterface
                         hsCooldown3 = gameTime.TotalGameTime.TotalSeconds;
                     }
 
-                    //handles temperment meter
+                    // HANDLES TEMPERMENT METER //
+
+                    //pushing any hotspot to red fails
                     if(hotspot1Frame == 8 || hotspot2Frame == 8 || hotspot3Frame == 8) {
                         tempermentGauge.SetCurrentValue(0);
+                        failState = true;
+
+                    //pushing any hotspot to yellow causes drastic decrease
                     } else if (hotspot1Frame >= 6 || hotspot2Frame >= 6 || hotspot3Frame >= 6) {
                         tempermentGauge.SetCurrentValue(4);
+
+                    //all hotspots are green, increment
                     } else if(
                         hotspot1Frame >= 3 && hotspot1Frame < 6 &&
                         hotspot2Frame >= 3 && hotspot2Frame < 6 &&
                         hotspot3Frame >= 3 && hotspot3Frame < 6
                     ) {
                         tempermentGauge.SetCurrentValue(14);
+
+                    //one or more hotspots are gray
                     } else {
                         tempermentGauge.SetCurrentValue(8);
                     }
@@ -621,6 +676,9 @@ public class PetCare : LevelInterface
                 }
             } else if(currentStage == GameStage.BathWashing) {
                 progressGauge.SetVisibility(true);
+                if(water <= 0) {
+                    failState = true;
+                }
                 //makes progress gauge reflect goal value
                 progressGauge.SetCurrentValue(sprayGoal.GetCurrentValue());
 
@@ -629,91 +687,106 @@ public class PetCare : LevelInterface
                 }
                 progressGauge.Update(gameTime);
 
-                if(isJumping && !waiting) {
-                    catPos.X += 6;
-                } else if(!waiting) {
-                    catPos.X += 10;
+                //stops updates when in fail limbo
+                if(!failState) {
+                    if(isJumping && !waiting) {
+                        catPos.X += 6;
+                    } else if(!waiting) {
+                        catPos.X += 10;
 
-                    //executes after last spray and transitions to part 2 of minigame
-                    if(finalLap && catPos.X >= 400) {
-                        allowJump = false;
-                        catPos = new Vector2(400, 305);
-                        currentObject = ObjectHeld.Towel;
-                        sprayBottlePos = new Point(64, 385);
-                        sprayBottleOrigin = Vector2.Zero;
+                        //executes after last spray and transitions to part 2 of minigame
+                        if(finalLap && catPos.X >= 400) {
+                            allowJump = false;
+                            catPos = new Vector2(400, 305);
+                            currentObject = ObjectHeld.Towel;
+                            sprayBottlePos = new Point(64, 385);
+                            sprayBottleOrigin = Vector2.Zero;
 
-                        currentStage = GameStage.BathDrying;
+                            currentStage = GameStage.BathDrying;
+                        }
+
+                    //cooldown expires
+                    } else if(waiting && (jumpCooldown + jumpCooldownDuration) < gameTime.TotalGameTime.TotalSeconds) {
+                        waiting = false;
+                    }
+                    //sets jump state based on jump index
+                    if(jumpGate.Contains(catPos)) {
+                        
+                        //spray portion completed, prepares to transition to 2nd portion
+                        if(sprayGoal.GetCompletion()) {
+                            finalLap = true;
+
+                        //jumpIndex 0 means no jump
+                        }  else if(jumpIndex != 0) {
+                            allowJump = true;
+                        }
                     }
 
-                //cooldown expires
-                } else if(waiting && (jumpCooldown + jumpCooldownDuration) < gameTime.TotalGameTime.TotalSeconds) {
-                    waiting = false;
-                }
-                //sets jump state based on jump index
-                if(jumpGate.Contains(catPos)) {
-                    
-                    //spray portion completed, prepares to transition to 2nd portion
-                    if(sprayGoal.GetCompletion()) {
-                        finalLap = true;
-
-                    //jumpIndex 0 means no jump
-                    }  else if(jumpIndex != 0) {
-                        allowJump = true;
-                    }
-                }
-
-                //move back to left side of screen
-                if(catPos.X >= 950) {
-                    catPos.X = -150;
-                    catPos.Y = 305;
-                    jumpFrame = 2;
-                    isJumping = false;
-                    waiting = true;
-
-                    //prevents from receiving the same value multiple times in a row
-                    do {
-                        jumpIndex = (int)rand.NextInt64(0,3);
-                    } while(jumpIndex == prevJumpIndex);
-                    Console.WriteLine(jumpIndex);
-                    //updates previous index with most recent index
-                    prevJumpIndex = jumpIndex;
-
-                    jumpCooldown = gameTime.TotalGameTime.TotalSeconds;
-                    jumpCooldownDuration = (int)rand.NextInt64(1,6);
-                }
-                if(catPos.X >= 405 && allowJump) {
-                    isJumping = true;
-                    catPos.Y = 305;
-                }
-
-                if(isJumping) {
-                    switch(jumpIndex) {
-                        case 1:
-                            catPos.Y = (int)GetJumpY(catPos.X, 150);
-                            break;
-                        case 2:
-                            catPos.Y = (int)GetJumpY(catPos.X, 20);
-                            break;
-                    }
-                    //sets back to running state once it's on ground again
-                    if(catPos.Y > 304) {
+                    //move back to left side of screen
+                    if(catPos.X >= 950) {
+                        //moves cat back to left side and on floor
+                        catPos.X = -150;
+                        catPos.Y = 305;
+                        //resets animation frame
+                        jumpFrame = 2;
+                        //is currently not jumping
                         isJumping = false;
+                        //is waiting until next run cycle
+                        waiting = true;
+
+                        //prevents from receiving the same value multiple times in a row
+                        do {
+                            jumpIndex = (int)rand.NextInt64(0,3);
+                        } while(jumpIndex == prevJumpIndex);
+                        
+                        //Console.WriteLine(jumpIndex); //prints out the index used for next jump
+                        //updates previous index with most recent index
+                        prevJumpIndex = jumpIndex;
+
+                        jumpCooldown = gameTime.TotalGameTime.TotalSeconds;
+                        jumpCooldownDuration = (int)rand.NextInt64(1,6);
                     }
-                }
+                    //allows cat to jump when reaching specified jump position
+                    if(catPos.X >= 405 && allowJump) {
+                        isJumping = true;
+                        catPos.Y = 305;
+                    }
 
-                //controls jump animation frames
-                if(catPos.X >= 750) {
-                    jumpFrame = 6;
-                } else if(catPos.X >= 700) {
-                    jumpFrame = 5;
-                } else if(catPos.X >= 650) {
-                    jumpFrame = 4;
-                } else if(catPos.X >= 600) {
-                    jumpFrame = 3;
-                }
-                catBounds = new Rectangle((int)(catPos.X-50), (int)(catPos.Y-20), 100, 200);
+                    if(isJumping) {
+                        //handles the two different jump heights
+                        //case 0 is not included because cat does not jump at index 0
+                        switch(jumpIndex) {
+                            case 1:
+                                catPos.Y = (int)GetJumpY(catPos.X, 150);
+                                break;
+                            case 2:
+                                catPos.Y = (int)GetJumpY(catPos.X, 20);
+                                break;
+                        }
+                        //sets back to running state once it's on ground again
+                        if(catPos.Y > 304) {
+                            isJumping = false;
+                        }
+                    }
 
+                    //controls jump animation frames
+                    if(catPos.X >= 750) {
+                        jumpFrame = 6;
+                    } else if(catPos.X >= 700) {
+                        jumpFrame = 5;
+                    } else if(catPos.X >= 650) {
+                        jumpFrame = 4;
+                    } else if(catPos.X >= 600) {
+                        jumpFrame = 3;
+                    }
+
+                    //calculates collision box for cat using offsets
+                    catBounds = new Rectangle((int)(catPos.X-50), (int)(catPos.Y-20), 100, 200);
+                }
+                
                 int index = 0;
+                //cycles through list of existing particles, destroying them if they meet
+                //destruction criteria and incrementing goal if they meet success criteria
                 while (index < particles.Count) {
                     particles[index].Update(gameTime);
                     if(particles[index].CheckToDestroy(catBounds) == 1 ||
@@ -728,15 +801,18 @@ public class PetCare : LevelInterface
                                 GameHandler.successSfx.Play();
                             }
                         }
+                        //removes the particle at said index but doesn't increment index
+                        //since the next particle in list now moves to current index
                         particles.RemoveAt(index);
                     } else {
+                        //increments if no particle was removed
                         index++;
                     }
                 }
             }
 
-            //spray bottle held
-            if(currentObject == ObjectHeld.SprayBottle) {
+            //spray bottle held and not in fail limbo state
+            if(currentObject == ObjectHeld.SprayBottle && !failState) {
                 int y = (int)GameHandler._relativeMousePos.Y;
 
                 //keeps bottle within appropriate vertical range
@@ -749,7 +825,7 @@ public class PetCare : LevelInterface
 
                 sprayBottleOrigin = new Vector2(0,20);
 
-            } else if(currentObject == ObjectHeld.NailClippers) {
+            } else if(currentObject == ObjectHeld.NailClippers && !failState) {
                 clippersPos = new Point((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y);
                 
                 //snaps clippers to mouse and changes origin
@@ -766,6 +842,8 @@ public class PetCare : LevelInterface
         }
     }
 
+    //calculates the Y position of the cat, given its X pos and desired peak height
+    //used for relatively fluid jump movements
     private float GetJumpY(float posX, float destHeight) {
         float destX = 600f;
         int jumpStart = 400;
@@ -773,6 +851,7 @@ public class PetCare : LevelInterface
         float a = (groundLevel - destHeight) / MathF.Pow(jumpStart - destX, 2);
         float y = a * MathF.Pow(posX - destX, 2) + destHeight;
 
+        //prevents cat from falling through floor
         if(y >= groundLevel) {
             return groundLevel;
         } 
@@ -780,6 +859,8 @@ public class PetCare : LevelInterface
         return y;
     }
 
+    //resets all variables that stages use to allow player to come back and resume without
+    //games breaking. will not reset goals once completed
     public void CleanupProcesses()
     {
         catPos = new Vector2(400, 305);
@@ -791,7 +872,15 @@ public class PetCare : LevelInterface
         jumpFrame = 2;
         prevJumpIndex = -1;
         finalLap = false;
+        failState = false;
         water = 16;
+
+        //resets the goals for the bath stage only if both sections weren't completed
+        //will not preserve progress if only part 1 was completed
+        if(!(sprayGoal.GetCompletion() && dryGoal.GetCompletion())) {
+            sprayGoal.ResetGoal();
+            dryGoal.ResetGoal();
+        }
 
         clippersPos = new Point(650, 415);
         clippersOrigin = Vector2.Zero;

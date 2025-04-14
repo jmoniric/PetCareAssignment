@@ -33,6 +33,7 @@ public class Goal {
 
     public void ResetGoal() {
         currentValue = 0;
+        isComplete = false;
     }
 
     public int GetCurrentValue() {
