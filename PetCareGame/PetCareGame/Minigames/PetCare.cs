@@ -682,14 +682,15 @@ public class PetCare : LevelInterface
                 //makes progress gauge reflect goal value
                 progressGauge.SetCurrentValue(sprayGoal.GetCurrentValue());
 
-                if(sprayGoal.GetCurrentValue() == 5) {
+
+                if(sprayGoal.GetCompletion()) {
                     sprayGoal.SetCompletion(true);
                 }
                 progressGauge.Update(gameTime);
 
                 //stops updates when in fail limbo
                 if(!failState) {
-                    if(isJumping && !waiting) {
+                    if(catPos.X >= 405 && !waiting) {
                         catPos.X += 6;
                     } else if(!waiting) {
                         catPos.X += 10;
@@ -702,6 +703,7 @@ public class PetCare : LevelInterface
                             sprayBottlePos = new Point(64, 385);
                             sprayBottleOrigin = Vector2.Zero;
 
+                            Console.WriteLine("BATHWASHING complete, progressing to BATHDRYING");
                             currentStage = GameStage.BathDrying;
                         }
 
