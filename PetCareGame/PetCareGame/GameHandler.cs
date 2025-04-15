@@ -28,14 +28,15 @@ public class GameHandler : Game
 
     private GraphicsDeviceManager graphics;
     private SpriteBatch spriteBatch;
-    public static DisplayManager displayManager;
     public SaveFile saveFile;
 
     private Button pauseButton;
+
     private Vector2 pausePos;
+    public static Vector2 relativeMousePos;
+    public static Vector2 baseScreenSize = new Vector2(800, 600);
 
     public static MouseState mouseState;
-    public static bool mouseLeftPressed;
 
     private static PetCare petCareLevel = new PetCare();
     private static CatFishing fishingLevel = new CatFishing();
@@ -44,22 +45,20 @@ public class GameHandler : Game
     public static Overworld overworldLevel;
     private static PauseMenu pauseMenu = new PauseMenu();
     private static MainMenuScreen mainMenu = new MainMenuScreen();
+    public static DisplayManager displayManager;
+
     public static ContentManager coreAssets;
     public static ContentManager slidingAssets;
     public static ContentManager waldoAssets;
     public static ContentManager fishingAssets;
     public static ContentManager petcareAssets;
     
-    public static bool isPaused = false;
-
-    public static int windowHeight = 600;
-    public static int windowWidth = 800;
-    public static Vector2 relativeMousePos;
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static AnimatedTexture catIrritated = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static AnimatedTexture catAttack = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static AnimatedTexture catWalk = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
     public static AnimatedTexture catRun = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
+
     public static SoundEffect catPurr;
     public static SoundEffectInstance selectSfx;
     public static SoundEffectInstance failSfx;
@@ -75,14 +74,15 @@ public class GameHandler : Game
     public static SpriteFont highPixel22;
     public static SpriteFont highPixel36;
 
-    public static Vector2 baseScreenSize = new Vector2(800, 600);
-
     private bool isResizing;
-
     public static bool allowAudio = true;
     public static bool muted = false;
+    public static bool isPaused = false;
+    public static bool mouseLeftPressed;
 
-    
+    public static int windowHeight = 600;
+    public static int windowWidth = 800;
+
     public GameHandler()
     {
         graphics = new GraphicsDeviceManager(this);
