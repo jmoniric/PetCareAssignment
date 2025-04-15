@@ -10,8 +10,10 @@ namespace PetCareGame
     {
         private SpriteFont font;
         private Texture2D WaldoFirstDraft;
-        private Texture2D greenCheck;
-        private Texture2D redX;
+        private Texture2D coreTextureAtlas;
+
+        private Rectangle markXRect = new Rectangle(48, 0, 16, 16);      
+        private Rectangle checkmarkRect = new Rectangle(0, 16, 16, 16);  
 
         private bool showCheck = false;
         private bool showX = false;
@@ -23,17 +25,15 @@ namespace PetCareGame
         private bool mouseReleased = true;
         private float timeVisible = 0f;
         private const float timeToDisappear = 5f;
+        private float xTimeVisible = 0f;
 
         private Rectangle waldoBoundingBox;
-        private Vector2 checkPosition;
-        private Vector2 xPosition;
 
         public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
         {
             font = _coreAssets.Load<SpriteFont>("Fonts/courier_new_36");
             WaldoFirstDraft = _manager.Load<Texture2D>("Sprites/WaldoFirstDraft");
-            greenCheck = _manager.Load<Texture2D>("Sprites/GreenCheck");
-            redX = _manager.Load<Texture2D>("Sprites/RedX");
+            coreTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
         }
 
         public void LoadLevel()
@@ -44,7 +44,9 @@ namespace PetCareGame
             showCheck = false;
             showX = false;
             timeVisible = 0f;
-            waldoBoundingBox = new Rectangle(735, 570, 45, 20);
+            xTimeVisible = 0f;
+
+            waldoBoundingBox = new Rectangle(728, 545, 70, 40);
         }
 
         public void UnloadLevel(ContentManager _manager)
@@ -59,19 +61,10 @@ namespace PetCareGame
                 timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
-            // I would recommend using the GameHandler's variable since that uses the OneShotMouseButton class
-            // MouseState mouseState = GameHandler._mouseState;
-            // or just call it directly for example
-            // if GameHandler._mouseState.LeftButton == Button.Pressed 
+            float mouseX = GameHandler._relativeMousePos.X;
+            float mouseY = GameHandler._relativeMousePos.Y;
+
             MouseState mouseState = Mouse.GetState();
-
-            // use the following variables. The current mouse coords used by mouse state do not take into consideration the scaling
-            // GameHandler has a variable you can access that calculates the mouse's position relative to the scaling changes
-            // float mouseX = GameHandler._relativeMousePos.X;
-            // float mouseY = GameHandler._relativeMousePos.Y;
-            int mouseX = mouseState.X;
-            int mouseY = mouseState.Y;
-
 
             if (mouseState.LeftButton == ButtonState.Released)
             {
@@ -81,11 +74,11 @@ namespace PetCareGame
             if (mouseState.LeftButton == ButtonState.Pressed && mouseReleased && !gameOver)
             {
                 mouseReleased = false;
-                if (waldoBoundingBox.Contains(mouseX, mouseY))
+
+                if (waldoBoundingBox.Contains((int)mouseX, (int)mouseY))
                 {
                     showCheck = true;
                     showX = false;
-                    checkPosition = new Vector2(mouseX, mouseY);
                     gameOver = true;
                     score++;
                     timeVisible = timeToDisappear;
@@ -93,14 +86,23 @@ namespace PetCareGame
                 else
                 {
                     showCheck = false;
-                    showX = true;
-                    xPosition = new Vector2(mouseX, mouseY);
+
+                    if (incorrectGuesses < maxIncorrectGuesses - 1)
+                    {
+                        showX = true;
+                        xTimeVisible = timeToDisappear;
+                    }
+                    else
+                    {
+                        showX = false;
+                    }
+
                     incorrectGuesses++;
+
                     if (incorrectGuesses >= maxIncorrectGuesses)
                     {
                         gameOver = true;
                     }
-                    timeVisible = timeToDisappear;
                 }
             }
 
@@ -111,10 +113,17 @@ namespace PetCareGame
             else
             {
                 showCheck = false;
+            }
+
+            if (xTimeVisible > 0)
+            {
+                xTimeVisible -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            else
+            {
                 showX = false;
             }
         }
-
 
         public void HandleInput(GameTime gameTime)
         {
@@ -123,6 +132,7 @@ namespace PetCareGame
                 LoadLevel();
             }
         }
+
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
         {
             _graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -141,48 +151,58 @@ namespace PetCareGame
                 spriteBatch.DrawString(font, "Error: Waldo Image Not Loaded", new Vector2(10, 50), Color.Red);
             }
 
-            //spriteBatch.DrawString(font, $"Mouse: {Mouse.GetState().X}, {Mouse.GetState().Y}", new Vector2(10, 10), Color.White);
-            //spriteBatch.DrawString(font, $"Time: {timer:F2} sec", new Vector2(10, 30), Color.White);
-           // spriteBatch.DrawString(font, $"Score: {score}", new Vector2(10, 50), Color.White);
-           spriteBatch.DrawString(font, $"Incorrect Guesses: {incorrectGuesses}/{maxIncorrectGuesses}", new Vector2(10, 70), Color.Red);
+            string incorrectGuessesText = $"Incorrect Guesses: {incorrectGuesses}/{maxIncorrectGuesses}";
+            Vector2 incorrectGuessesSize = font.MeasureString(incorrectGuessesText);
+            Rectangle incorrectGuessesRect = new Rectangle(0, 0, (int)screenWidth, (int)(incorrectGuessesSize.Y + 10));
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, incorrectGuessesRect, Color.Gray);
+            spriteBatch.DrawString(font, incorrectGuessesText, new Vector2(10, 5), Color.Black);
 
-            if (showCheck && greenCheck != null)
+            if (showCheck || showX)
             {
-                spriteBatch.Draw(greenCheck, checkPosition, null, Color.White, 0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
-            }
+                Rectangle sourceRect = showCheck ? checkmarkRect : markXRect;
+                Color tint = showCheck ? Color.LimeGreen : Color.Red;
 
-            if (showX && redX != null)
-            {
-                spriteBatch.Draw(redX, xPosition, null, Color.White, 0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
+                float iconScale = 4f;
+                float iconWidth = sourceRect.Width * iconScale;
+                float iconHeight = sourceRect.Height * iconScale;
+
+                Vector2 iconPosition = new Vector2(
+                    (screenWidth - iconWidth) / 2,
+                    screenHeight / 2 + 80
+                );
+
+                spriteBatch.Draw(coreTextureAtlas, iconPosition, sourceRect, tint, 0f, Vector2.Zero, iconScale, SpriteEffects.None, 0f);
             }
 
             if (gameOver)
             {
                 string message = incorrectGuesses >= maxIncorrectGuesses ? "Game Over! Too many incorrect guesses." : "You found Waldo!";
-                spriteBatch.DrawString(font, message, new Vector2(screenWidth / 2 - 100, screenHeight / 2 - 50), Color.Green);
-                spriteBatch.DrawString(font, "Press Space to Restart", new Vector2(screenWidth / 2 - 100, screenHeight / 2 - 20), Color.White);
+                string restartMsg = "Press Space to Restart";
+
+                // Make the font smaller for the game over message
+                float scaleFactor = 0.5f; // Scale factor to make the text smaller
+
+                Vector2 messageSize = font.MeasureString(message) * scaleFactor;
+                Vector2 restartSize = font.MeasureString(restartMsg) * scaleFactor;
+
+                Vector2 messagePosition = new Vector2((screenWidth - messageSize.X) / 2, screenHeight / 2 - 50);
+                Vector2 restartPosition = new Vector2((screenWidth - restartSize.X) / 2, screenHeight / 2 + 12);
+
+                // Draw smaller background rectangles for the messages
+                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle((int)messagePosition.X - 10, (int)messagePosition.Y - 5, (int)(messageSize.X + 20), (int)(messageSize.Y + 10)), Color.Gray);
+                spriteBatch.DrawString(font, message, messagePosition, Color.Black, 0f, Vector2.Zero, scaleFactor, SpriteEffects.None, 0f);
+
+                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle((int)restartPosition.X - 10, (int)restartPosition.Y - 5, (int)(restartSize.X + 20), (int)(restartSize.Y + 10)), Color.Gray);
+                spriteBatch.DrawString(font, restartMsg, restartPosition, Color.Black, 0f, Vector2.Zero, scaleFactor, SpriteEffects.None, 0f);
             }
         }
 
-        public void CleanupProcesses()
-        {
-        }
+        public void CleanupProcesses() { }
 
-        public void Dispose()
-        {
-        }
+        public void Dispose() { }
 
-        public void SaveData()
-        {
-            
-        }
+        public void SaveData() { }
 
-        public void LoadData()
-        {
-            
-        }
+        public void LoadData() { }
     }
 }
-
-
-

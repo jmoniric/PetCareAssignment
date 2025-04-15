@@ -28,7 +28,7 @@ public class GameHandler : Game
 
     private GraphicsDeviceManager graphics;
     private SpriteBatch spriteBatch;
-    private DisplayManager displayManager;
+    public static DisplayManager displayManager;
     public SaveFile saveFile;
 
     private Button pauseButton;

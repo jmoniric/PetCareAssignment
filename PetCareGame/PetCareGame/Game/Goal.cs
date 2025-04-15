@@ -33,6 +33,7 @@ public class Goal {
 
     public void ResetGoal() {
         currentValue = 0;
+        isComplete = false;
     }
 
     public int GetCurrentValue() {
@@ -49,7 +50,12 @@ public class Goal {
     }
 
     public bool GetCompletion() {
-        return isComplete;
+        //returns true if marked as complete by code
+        if(isComplete) {
+            return true;
+        }
+        //otherwise, returns true only if currentVal equals targetVal
+        return currentValue == targetValue;
     }
 
     public void SetCompletion(bool state) {
