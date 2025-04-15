@@ -138,7 +138,7 @@ namespace PetCareGame
             fishingButtonPosition = new Vector2(292, 100);
 
             petCareButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGameClicked"),
-                                    new Point(64, 33), petCareButtonPosition, "Pet Care Minigame", 33, true);
+                                                new Point(64, 33), petCareButtonPosition, "Pet Care Minigame", 33, true);
             waldoButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGameClicked"),
                                                 new Point(64, 33), waldoButtonPosition, "Where's Waldo Minigame", 34, true);
             slidingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/SlideMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/SlideMiniGameClicked"),
