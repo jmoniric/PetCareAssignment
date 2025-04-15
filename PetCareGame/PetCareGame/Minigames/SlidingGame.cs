@@ -287,7 +287,7 @@ public class SlidingGame : LevelInterface
 
         int tileSize = 64;
 
-        if (GameHandler._allowAudio && !GameHandler.muted && currentStage == GameStage.Run)
+        if (GameHandler.allowAudio && !GameHandler.muted && currentStage == GameStage.Run)
         {
             {
                 peacefulTrack.IsLooped = true;
@@ -348,16 +348,16 @@ public class SlidingGame : LevelInterface
         // Mouse Input for Start Button
         if (currentStage == GameStage.Instructions)
         {
-            if (GameHandler._mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
+            if (GameHandler.mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
             {
-                if (startButtonBounds.Contains(GameHandler._mouseState.Position))
+                if (startButtonBounds.Contains(GameHandler.mouseState.Position))
                 {
                     currentStage = GameStage.Run;
                     Console.WriteLine("Game Started!");
                 }
                 mouseDown = true;
             }
-            else if (GameHandler._mouseState.LeftButton == ButtonState.Released)
+            else if (GameHandler.mouseState.LeftButton == ButtonState.Released)
             {
                 mouseDown = false;
             }
@@ -367,9 +367,9 @@ public class SlidingGame : LevelInterface
 
         if (currentStage == GameStage.Completion)
         {
-            if (GameHandler._mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
+            if (GameHandler.mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
             {
-                if (startButtonBounds.Contains(GameHandler._mouseState.Position))
+                if (startButtonBounds.Contains(GameHandler.mouseState.Position))
                 {
                     currentStage = GameStage.Run;
                     frogPositions.Clear();
@@ -377,7 +377,7 @@ public class SlidingGame : LevelInterface
                 }
                 mouseDown = true;
             }
-            else if (GameHandler._mouseState.LeftButton == ButtonState.Released)
+            else if (GameHandler.mouseState.LeftButton == ButtonState.Released)
             {
                 mouseDown = false;
             }

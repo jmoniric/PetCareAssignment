@@ -59,9 +59,9 @@ namespace PetCareGame
         {
             if(Visible) 
             {
-                if(GameHandler._relativeMousePos.X >= Position.X && GameHandler._relativeMousePos.X <= (Position.X + Dimensions.X))
+                if(GameHandler.relativeMousePos.X >= Position.X && GameHandler.relativeMousePos.X <= (Position.X + Dimensions.X))
                 {
-                    if(GameHandler._relativeMousePos.Y >= Position.Y && GameHandler._relativeMousePos.Y <= (Position.Y + Dimensions.Y))
+                    if(GameHandler.relativeMousePos.Y >= Position.Y && GameHandler.relativeMousePos.Y <= (Position.Y + Dimensions.Y))
                     {
                         return true;
                     }
@@ -74,11 +74,11 @@ namespace PetCareGame
         {
             if(Visible) 
             {
-                if(GameHandler._relativeMousePos.X >= Position.X && GameHandler._relativeMousePos.X <= (Position.X + Dimensions.X))
+                if(GameHandler.relativeMousePos.X >= Position.X && GameHandler.relativeMousePos.X <= (Position.X + Dimensions.X))
                 {
-                    if(GameHandler._relativeMousePos.Y >= Position.Y && GameHandler._relativeMousePos.Y <= (Position.Y + Dimensions.Y))
+                    if(GameHandler.relativeMousePos.Y >= Position.Y && GameHandler.relativeMousePos.Y <= (Position.Y + Dimensions.Y))
                     {
-                        if(GameHandler._allowAudio && !GameHandler.muted) {
+                        if(GameHandler.allowAudio && !GameHandler.muted) {
                             sfx.Play();
                         }
                         return true;
@@ -92,11 +92,11 @@ namespace PetCareGame
         {
             if(Visible) 
             {
-                if(GameHandler._relativeMousePos.X >= Position.X && GameHandler._relativeMousePos.X <= (Position.X + Dimensions.X))
+                if(GameHandler.relativeMousePos.X >= Position.X && GameHandler.relativeMousePos.X <= (Position.X + Dimensions.X))
                 {
-                    if(GameHandler._relativeMousePos.Y >= Position.Y && GameHandler._relativeMousePos.Y <= (Position.Y + Dimensions.Y))
+                    if(GameHandler.relativeMousePos.Y >= Position.Y && GameHandler.relativeMousePos.Y <= (Position.Y + Dimensions.Y))
                     {
-                        if(GameHandler._allowAudio && !GameHandler.muted) {
+                        if(GameHandler.allowAudio && !GameHandler.muted) {
                             GameHandler.selectSfx.Play();
                         }
                         return true;
