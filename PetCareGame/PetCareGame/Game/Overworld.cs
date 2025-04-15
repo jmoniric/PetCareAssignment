@@ -14,7 +14,7 @@ namespace PetCareGame
         private static Button slidingButton;
         private static Button fishingButton;
         private static Button pauseButton;
-        
+
         private Vector2 slidingButtonPosition;
         private Vector2 waldoButtonPosition;
         private Vector2 fishingButtonPosition;
