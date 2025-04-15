@@ -25,7 +25,7 @@ namespace PetCareGame
         private WheresWaldo WaldoLevel { get; set; }
         private SlidingGame SlidingLevel { get; set; }
         private PauseMenu PauseMenu { get; set; }
-        private ContentManager _coreAssets { get; set; }
+        private ContentManager coreAssets { get; set; }
 
         public Overworld(PetCare pet, WheresWaldo waldo, SlidingGame sliding, PauseMenu pauseMenu, Button pauseB)
         {
@@ -33,7 +33,7 @@ namespace PetCareGame
             WaldoLevel = waldo;
             SlidingLevel = sliding;
             PauseMenu = pauseMenu;
-            _coreAssets = GameHandler.coreAssets;
+            coreAssets = GameHandler.coreAssets;
             pauseButton = pauseB;
             LoadLevel();
         }
@@ -52,7 +52,7 @@ namespace PetCareGame
                     pauseButton.Clicked();
                     GameHandler.isPaused = true;
                     PauseMenu.LoadLevel();
-                    PauseMenu.LoadContent(null, _coreAssets);
+                    PauseMenu.LoadContent(null, coreAssets);
                     //prevents checking of other buttons while in pause menu
                 }
                 else if (!GameHandler.isPaused)
@@ -62,7 +62,7 @@ namespace PetCareGame
                         SetVisiblity(false); //hides buttons to prevent them from being pressed again
                         petCareButton.Clicked();
                         GameHandler.CurrentState = GameHandler.GameState.PetCareGame;
-                        PetCareLevel.LoadContent(GameHandler.petcareAssets, _coreAssets);
+                        PetCareLevel.LoadContent(GameHandler.petcareAssets, coreAssets);
                         PetCareLevel.LoadLevel();
                     }
                     else if (waldoButton.CheckIfSelectButtonWasClicked())
@@ -70,7 +70,7 @@ namespace PetCareGame
                         SetVisiblity(false);
                         waldoButton.Clicked();
                         GameHandler.CurrentState = GameHandler.GameState.WaldoGame;
-                        WaldoLevel.LoadContent(GameHandler.waldoAssets, _coreAssets);
+                        WaldoLevel.LoadContent(GameHandler.waldoAssets, coreAssets);
                         WaldoLevel.LoadLevel();
                     }
                     else if (slidingButton.CheckIfSelectButtonWasClicked())
@@ -78,7 +78,7 @@ namespace PetCareGame
                         SetVisiblity(false);
                         slidingButton.Clicked();
                         GameHandler.CurrentState = GameHandler.GameState.SlidingGame;
-                        SlidingLevel.LoadContent(GameHandler.slidingAssets, _coreAssets);
+                        SlidingLevel.LoadContent(GameHandler.slidingAssets, coreAssets);
                         SlidingLevel.LoadLevel();
                     }
                     else if (fishingButton.CheckIfSelectButtonWasClicked())
@@ -86,7 +86,7 @@ namespace PetCareGame
                         SetVisiblity(false);
                         fishingButton.Clicked();
                         GameHandler.CurrentState = GameHandler.GameState.FishingGame;
-                        FishingLevel.LoadContent(GameHandler.fishingAssets, _coreAssets);
+                        FishingLevel.LoadContent(GameHandler.fishingAssets, coreAssets);
                         FishingLevel.LoadLevel();
                     }
                 }
@@ -137,13 +137,13 @@ namespace PetCareGame
             slidingButtonPosition = new Vector2(228, 100);
             fishingButtonPosition = new Vector2(292, 100);
 
-            petCareButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGameClicked"),
+            petCareButton = new Button(coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGame"), coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGameClicked"),
                                                 new Point(64, 33), petCareButtonPosition, "Pet Care Minigame", 33, true);
-            waldoButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGameClicked"),
+            waldoButton = new Button(coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGame"), coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGameClicked"),
                                                 new Point(64, 33), waldoButtonPosition, "Where's Waldo Minigame", 34, true);
-            slidingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/SlideMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/SlideMiniGameClicked"),
+            slidingButton = new Button(coreAssets.Load<Texture2D>("Sprites/Buttons/SlideMiniGame"), coreAssets.Load<Texture2D>("Sprites/Buttons/SlideMiniGameClicked"),
                                                 new Point(64, 33), slidingButtonPosition, "Sliding Minigame", 35, true);
-            fishingButton = new Button(_coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGame"), _coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGameClicked"),
+            fishingButton = new Button(coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGame"), coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGameClicked"),
                                                 new Point(64, 33), fishingButtonPosition, "Fishing Minigame", 36, true);
         }
 

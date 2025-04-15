@@ -162,7 +162,7 @@ public class GameHandler : Game
             Console.WriteLine("No audio drivers found, disabling audio");
             Console.WriteLine(e.StackTrace);
         }
-
+        
         coreTextureAtlas = coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
         gaugeTextureAtlas = coreAssets.Load<Texture2D>("Sprites/gauge_atlas");
         pauseButton = new Button(coreTextureAtlas, coreTextureAtlas, new Point(48,48), pausePos, "Pause", 37, true);
@@ -280,7 +280,6 @@ public class GameHandler : Game
                 mainMenu.Draw(gameTime, spriteBatch, graphics);
                 break;
             case GameState.Overworld:
-                //DrawMainMenuButtons();
                 overworldLevel.Draw(gameTime, spriteBatch, graphics);
                 break;
             case GameState.PetCareGame:
