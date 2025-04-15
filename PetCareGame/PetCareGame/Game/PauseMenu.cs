@@ -121,7 +121,7 @@ public class PauseMenu : LevelInterface
 
     public void HandleInput(GameTime gameTime)
     {
-        if(GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
+        if(GameHandler.mouseState.LeftButton == ButtonState.Pressed) {
             if(!mouseDown) {
                 mouseDown = true;
 
@@ -147,7 +147,7 @@ public class PauseMenu : LevelInterface
                     } 
                 }
             }
-        } else if(GameHandler._mouseState.LeftButton == ButtonState.Released) {
+        } else if(GameHandler.mouseState.LeftButton == ButtonState.Released) {
             mouseDown = false;
         }
     }

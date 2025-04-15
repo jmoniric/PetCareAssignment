@@ -314,12 +314,12 @@ public class PetCare : LevelInterface
 
         //Console.WriteLine(cooldown.Milliseconds);
         //sprays water particles
-        if(currentObject == ObjectHeld.SprayBottle && GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
+        if(currentObject == ObjectHeld.SprayBottle && GameHandler.mouseState.LeftButton == ButtonState.Pressed) {
             
         }
 
         //closes clipper when used  
-        if(currentObject == ObjectHeld.NailClippers && GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
+        if(currentObject == ObjectHeld.NailClippers && GameHandler.mouseState.LeftButton == ButtonState.Pressed) {
             clippersUse = true;
         } else {
             clippersUse = false;
@@ -328,7 +328,7 @@ public class PetCare : LevelInterface
         double cooldownBuffer = 0.25;
 
         //handle input for different stages in here, switch between them below
-        if(GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
+        if(GameHandler.mouseState.LeftButton == ButtonState.Pressed) {
             //runs repeatedly while mouse is pressed so you don't have to click
             //over and over
 
@@ -351,7 +351,7 @@ public class PetCare : LevelInterface
                     hsCooldown3 = gameTime.TotalGameTime.TotalSeconds;
                 }
 
-                if(GameHandler._allowAudio && !GameHandler.muted) {
+                if(GameHandler.allowAudio && !GameHandler.muted) {
                     if(brushPoint1.Contains(brushHeadOffset) || brushPoint2.Contains(brushHeadOffset) || brushPoint3.Contains(brushHeadOffset)) {
                         brushSfx.IsLooped = true;
                         brushSfx.Play();
@@ -373,7 +373,7 @@ public class PetCare : LevelInterface
                 } else if(currentStage == GameStage.NailTrim) {
 
                     //infer that if nail clipping stage, they are holding trimmers
-                    if(GameHandler._allowAudio && !GameHandler.muted) {
+                    if(GameHandler.allowAudio && !GameHandler.muted) {
                         snipSfx.Play();
                     }
                     //check if use has successfully entered input
@@ -408,7 +408,7 @@ public class PetCare : LevelInterface
                     }
                 } else if(currentStage == GameStage.Bath) {//handle input for bath level
                     if(currentObject == ObjectHeld.SprayBottle) {
-                        int y = (int)GameHandler._relativeMousePos.Y;
+                        int y = (int)GameHandler.relativeMousePos.Y;
                         if(y > 450) {
                             y = 450;
                         } else if(y < 210) {
@@ -421,7 +421,7 @@ public class PetCare : LevelInterface
                             GameHandler.plainWhiteTexture)
                         );
 
-                        if(GameHandler._allowAudio && !GameHandler.muted) {
+                        if(GameHandler.allowAudio && !GameHandler.muted) {
                             spraySfx.Play();
                         }
                     }
@@ -435,15 +435,15 @@ public class PetCare : LevelInterface
                 //Activates gamestate based on object pressed
                 if(currentObject == ObjectHeld.None && currentStage == GameStage.Idle) {
                     //switch to bath stage
-                    if(sprayBottleBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
+                    if(sprayBottleBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
                         currentObject = ObjectHeld.SprayBottle;
                         currentStage = GameStage.Bath;
-                    } else if(towelBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
+                    } else if(towelBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
                         currentObject = ObjectHeld.Towel;
                         currentStage = GameStage.Bath;
 
                     //switch to nail clipping stage
-                    } else if(!nailGoal.GetCompletion() && clipperBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
+                    } else if(!nailGoal.GetCompletion() && clipperBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
                         //sets held object to nail clippers
                         currentObject = ObjectHeld.NailClippers;
                         //sets game stage to nail trimming
@@ -451,15 +451,15 @@ public class PetCare : LevelInterface
                         //shows input gauge
                         gameInputGauge.SetVisibility(true);
                     //switch to brushing stage
-                    } else if(!brushGoal && brushBounds.Contains(GameHandler._relativeMousePos.X, GameHandler._relativeMousePos.Y)) {
+                    } else if(!brushGoal && brushBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
                         currentObject = ObjectHeld.Brush;
                         currentStage = GameStage.Brushing;
                     }
                 }
             }
-        } else if(GameHandler._mouseState.LeftButton == ButtonState.Released) {
+        } else if(GameHandler.mouseState.LeftButton == ButtonState.Released) {
             mouseDown = false;
-            if(GameHandler._allowAudio) {
+            if(GameHandler.allowAudio) {
                 brushSfx.IsLooped = false;
             }
         }
@@ -480,7 +480,7 @@ public class PetCare : LevelInterface
         catJump.Load(_coreAssets, "Sprites/Animal/jump", 7, 15);
         
         //to prevent crashes if audio driver is missing
-        if(GameHandler._allowAudio) {
+        if(GameHandler.allowAudio) {
             catPurr = GameHandler.catPurr.CreateInstance();
             catPurr.IsLooped = true;
             snipSfx = _manager.Load<SoundEffect>("Sounds/snip").CreateInstance();
@@ -505,7 +505,7 @@ public class PetCare : LevelInterface
     {
         //game is paused
         if(GameHandler.isPaused) {
-            if(GameHandler._allowAudio) {
+            if(GameHandler.allowAudio) {
                 catPurr.Pause();
             }
 
@@ -515,7 +515,7 @@ public class PetCare : LevelInterface
 
             //no game has been started
             if(currentStage == GameStage.Idle) { //no stage running
-                if(GameHandler._allowAudio && !GameHandler.muted) {
+                if(GameHandler.allowAudio && !GameHandler.muted) {
                     catPurr.Play();
                 } else {
                     catPurr.Pause();
@@ -669,7 +669,7 @@ public class PetCare : LevelInterface
 
             //spray bottle held
             if(currentObject == ObjectHeld.SprayBottle) {
-                int y = (int)GameHandler._relativeMousePos.Y;
+                int y = (int)GameHandler.relativeMousePos.Y;
 
                 if(y > 450) {
                     y = 450;
@@ -681,18 +681,18 @@ public class PetCare : LevelInterface
                 sprayBottleOrigin = new Vector2(0,20);
 
             } else if(currentObject == ObjectHeld.NailClippers) {
-                clippersPos = new Point((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y);
+                clippersPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
                 
                 //snaps clippers to mouse and changes origin
                 clippersOrigin = new Vector2(16, 8);
             } else if(currentObject == ObjectHeld.Towel) {
                 //snaps towel to mouse and changes origin
-                towelPos = new Point((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y);
+                towelPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
                 towelOrigin = new Vector2(16, 8);
             } else if(currentObject == ObjectHeld.Brush) {
-                brushPos = new Point((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y);
+                brushPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
                 brushOrigin = new Vector2(28, 10);
-                brushHeadOffset = new Point((int)GameHandler._relativeMousePos.X - 55, (int)GameHandler._relativeMousePos.Y + 20);
+                brushHeadOffset = new Point((int)GameHandler.relativeMousePos.X - 55, (int)GameHandler.relativeMousePos.Y + 20);
             }
         }
     }

@@ -8,19 +8,19 @@ namespace PetCareGame
 {
     public class MainMenuScreen : LevelInterface
     {
-        private Button _newGameButton;
-        private Button _continueButton;
-        private Button _quitButton;
+        private Button newGameButton;
+        private Button continueButton;
+        private Button quitButton;
 
-        private Vector2 _continueButtonPos = new Vector2(310, 155);
-        private Vector2 _newGameButtonPos = new Vector2(310, 210);
-        private Vector2 _quitButtonPos = new Vector2(310, 265);
+        private Vector2 continueButtonPos = new Vector2(310, 155);
+        private Vector2 newGameButtonPos = new Vector2(310, 210);
+        private Vector2 quitButtonPos = new Vector2(310, 265);
 
-        private Rectangle _newGameButtonBounds;
-        private Rectangle _continueButtonBounds;
-        private Rectangle _quitButtonBounds;
+        private Rectangle newGameButtonBounds;
+        private Rectangle continueButtonBounds;
+        private Rectangle quitButtonBounds;
 
-        private bool _mouseDown = false;
+        private bool mouseDown = false;
 
         public static bool fileExists;
 
@@ -60,49 +60,49 @@ namespace PetCareGame
             // if save file exist draw continue normally
             // if not draw continue faded or darker
             //draw continue button
-            spriteBatch.Draw(GameHandler.coreTextureAtlas, _continueButtonBounds, atlasButton, Color.White);
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, continueButtonBounds, atlasButton, Color.White);
             //draw "Continue"
-            spriteBatch.DrawString(font, "Continue", new Vector2(330, _continueButtonPos.Y + 15), Color.Black);
+            spriteBatch.DrawString(font, "Continue", new Vector2(330, continueButtonPos.Y + 15), Color.Black);
 
             //draw new game button
-            spriteBatch.Draw(GameHandler.coreTextureAtlas, _newGameButtonBounds, atlasButton, Color.White);
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, newGameButtonBounds, atlasButton, Color.White);
             //draw "New Game"
-            spriteBatch.DrawString(font, "New Game", new Vector2(330, _newGameButtonPos.Y + 15), Color.Black);
+            spriteBatch.DrawString(font, "New Game", new Vector2(330, newGameButtonPos.Y + 15), Color.Black);
 
             //draw quit button
-            spriteBatch.Draw(GameHandler.coreTextureAtlas, _quitButtonBounds, atlasButton, Color.White);
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, quitButtonBounds, atlasButton, Color.White);
             //draw "Quit Game"
-            spriteBatch.DrawString(font, "Quit Game", new Vector2(330, _quitButtonPos.Y + 15), Color.Black);
+            spriteBatch.DrawString(font, "Quit Game", new Vector2(330, quitButtonPos.Y + 15), Color.Black);
         }
 
         public void HandleInput(GameTime gameTime, GameHandler game)
         {
-            if (GameHandler._mouseState.LeftButton == ButtonState.Pressed)
+            if (GameHandler.mouseState.LeftButton == ButtonState.Pressed)
             {
-                if (!_mouseDown)
+                if (!mouseDown)
                 {
-                    _mouseDown = true;
+                    mouseDown = true;
 
-                    if (_newGameButton.CheckIfSelectButtonWasClicked())
+                    if (newGameButton.CheckIfSelectButtonWasClicked())
                     {
                         // start a new game with a fresh file
                         SetButtonVisibility(false);
                         GameHandler.CurrentState = GameHandler.GameState.Overworld;
                     }
-                    else if (_continueButton.CheckIfSelectButtonWasClicked())
+                    else if (continueButton.CheckIfSelectButtonWasClicked())
                     {
                         // logic for loading content from save file if available
                         SetButtonVisibility(false);
                     }
-                    else if (_quitButton.CheckIfSelectButtonWasClicked())
+                    else if (quitButton.CheckIfSelectButtonWasClicked())
                     {
                         game.Quit();
                     }
                 }
             }
-            else if (GameHandler._mouseState.LeftButton == ButtonState.Released)
+            else if (GameHandler.mouseState.LeftButton == ButtonState.Released)
             {
-                _mouseDown = false;
+                mouseDown = false;
             }
         }
 
@@ -113,9 +113,9 @@ namespace PetCareGame
 
         private void SetButtonVisibility(bool isVisible)
         {
-            _newGameButton.Visible = isVisible;
-            _continueButton.Visible = isVisible;
-            _quitButton.Visible = isVisible;
+            newGameButton.Visible = isVisible;
+            continueButton.Visible = isVisible;
+            quitButton.Visible = isVisible;
         }
 
         public void Update(GameTime gameTime)
@@ -131,12 +131,12 @@ namespace PetCareGame
         public void LoadLevel()
         {
             //creates hitboxes that are used for drawing and checking clicks for buttons
-            _continueButtonBounds = new Rectangle((int)_continueButtonPos.X, (int)_continueButtonPos.Y, 200, 48);
-            _newGameButtonBounds = new Rectangle((int)_newGameButtonPos.X, (int)_newGameButtonPos.Y, 200, 48);
-            _quitButtonBounds = new Rectangle((int)_quitButtonPos.X, (int)_quitButtonPos.Y, 200, 48);
-            _newGameButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(_newGameButtonBounds.Width, _newGameButtonBounds.Height), _newGameButtonPos, "New Game", 33, true);
-            _continueButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(_continueButtonBounds.Width, _continueButtonBounds.Height), _continueButtonPos, "Continue Game", 34, true);
-            _quitButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(_quitButtonBounds.Width, _quitButtonBounds.Height), _quitButtonPos, "Quit Game", 35, true);
+            continueButtonBounds = new Rectangle((int)continueButtonPos.X, (int)continueButtonPos.Y, 200, 48);
+            newGameButtonBounds = new Rectangle((int)newGameButtonPos.X, (int)newGameButtonPos.Y, 200, 48);
+            quitButtonBounds = new Rectangle((int)quitButtonPos.X, (int)quitButtonPos.Y, 200, 48);
+            newGameButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(newGameButtonBounds.Width, newGameButtonBounds.Height), newGameButtonPos, "New Game", 33, true);
+            continueButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(continueButtonBounds.Width, continueButtonBounds.Height), continueButtonPos, "Continue Game", 34, true);
+            quitButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(quitButtonBounds.Width, quitButtonBounds.Height), quitButtonPos, "Quit Game", 35, true);
         }
 
         public void LoadContent(ContentManager manager, ContentManager coreAssets)
