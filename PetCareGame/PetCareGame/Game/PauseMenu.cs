@@ -127,7 +127,7 @@ public class PauseMenu : LevelInterface
             spriteBatch.DrawString(font, "Resume", new Vector2(350, resumeButtonPos.Y + 15), Color.Black);
 
             //draw mute button
-            if(GameHandler._allowAudio) {
+            if(GameHandler.allowAudio) {
                 spriteBatch.Draw(GameHandler.coreTextureAtlas, muteButtonBounds, atlasAudioButton, Color.White);
                 if(GameHandler.muted) {
                     spriteBatch.Draw(GameHandler.coreTextureAtlas, muteButtonBounds, atlasXMark, Color.Red);
@@ -158,8 +158,8 @@ public class PauseMenu : LevelInterface
                     GameHandler.muted = !GameHandler.muted;
                     Console.WriteLine("Mute toggled");
                 } else if(resetWindowButton.CheckIfSelectButtonWasClicked()) {
-                    GameHandler._displayManager.SetResolution(800, 600);
-                    GameHandler._displayManager.UpdateScreenScaleMatrix();
+                    GameHandler.displayManager.SetResolution(800, 600);
+                    GameHandler.displayManager.UpdateScreenScaleMatrix();
                 } else if(isWarning) {
                     if (yesButton.CheckIfSelectButtonWasClicked())
                     {
@@ -187,7 +187,7 @@ public class PauseMenu : LevelInterface
         noButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(noButtonBounds.Width, noButtonBounds.Height), noButtonPos, "No", 43, false);
         muteButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(muteButtonBounds.Width, muteButtonBounds.Height), muteButtonPos, "Mute", 44, true);
         resetWindowButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(resetButtonBounds.Width, resetButtonBounds.Height), resetButtonPos, "Reset Window", 45, true);
-        if(!GameHandler._allowAudio) {
+        if(!GameHandler.allowAudio) {
             muteButton.Visible = false;
         }
     }

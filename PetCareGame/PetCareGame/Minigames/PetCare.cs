@@ -358,7 +358,7 @@ public class PetCare : LevelInterface
     {
         if(!failState) {
             //closes clipper when used  
-            if(currentObject == ObjectHeld.NailClippers && GameHandler._mouseState.LeftButton == ButtonState.Pressed) {
+            if(currentObject == ObjectHeld.NailClippers && GameHandler.mouseState.LeftButton == ButtonState.Pressed) {
                 clippersUse = true;
             } else {
                 clippersUse = false;
@@ -472,7 +472,7 @@ public class PetCare : LevelInterface
                 } else if(currentStage == GameStage.BathWashing && !failState) {
                     if((sprayCooldown + 0.5) < gameTime.TotalGameTime.TotalSeconds) {
                         sprayCooldown = gameTime.TotalGameTime.TotalSeconds;
-                        int y = (int)GameHandler._relativeMousePos.Y;
+                        int y = (int)GameHandler.relativeMousePos.Y;
                         //keeps particle within appropriate vertical range
                         if(y > 450) {
                             y = 450;
@@ -492,7 +492,7 @@ public class PetCare : LevelInterface
                         }
                         
 
-                        if(GameHandler._allowAudio && !GameHandler.muted) {
+                        if(GameHandler.allowAudio && !GameHandler.muted) {
                             spraySfx.Play();
                         }
                     }
@@ -583,7 +583,7 @@ public class PetCare : LevelInterface
             tempermentGauge.Update(gameTime);
 
             if(currentStage != GameStage.Instructions) {
-                if(GameHandler._allowAudio && !GameHandler.muted) {
+                if(GameHandler.allowAudio && !GameHandler.muted) {
                     catPurr.Play();
                 } else {
                     catPurr.Pause();
@@ -799,7 +799,7 @@ public class PetCare : LevelInterface
                         currentStage == GameStage.BathWashing &&
                         jumpBounds.Intersects(catBounds)) {
                             sprayGoal.Increment();
-                            if(GameHandler._allowAudio && !GameHandler.muted) {
+                            if(GameHandler.allowAudio && !GameHandler.muted) {
                                 GameHandler.successSfx.Play();
                             }
                         }
@@ -815,7 +815,7 @@ public class PetCare : LevelInterface
 
             //spray bottle held and not in fail limbo state
             if(currentObject == ObjectHeld.SprayBottle && !failState) {
-                int y = (int)GameHandler._relativeMousePos.Y;
+                int y = (int)GameHandler.relativeMousePos.Y;
 
                 //keeps bottle within appropriate vertical range
                 if(y > 450) {
@@ -828,7 +828,7 @@ public class PetCare : LevelInterface
                 sprayBottleOrigin = new Vector2(0,20);
 
             } else if(currentObject == ObjectHeld.NailClippers && !failState) {
-                clippersPos = new Point((int)GameHandler._relativeMousePos.X, (int)GameHandler._relativeMousePos.Y);
+                clippersPos = new Point((int)GameHandler.relativeMousePos.X, (int)GameHandler.relativeMousePos.Y);
                 
                 //snaps clippers to mouse and changes origin
                 clippersOrigin = new Vector2(16, 8);

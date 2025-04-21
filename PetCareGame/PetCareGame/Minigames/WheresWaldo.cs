@@ -61,8 +61,8 @@ namespace PetCareGame
                 timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
-            float mouseX = GameHandler._relativeMousePos.X;
-            float mouseY = GameHandler._relativeMousePos.Y;
+            float mouseX = GameHandler.relativeMousePos.X;
+            float mouseY = GameHandler.relativeMousePos.Y;
 
             MouseState mouseState = Mouse.GetState();
 
