@@ -11,11 +11,13 @@ namespace PetCareGame
         static MouseState currentMouseState;
         static MouseState previousMouseState;
 
-        public OneShotMouseButtons() {
+        public OneShotMouseButtons()
+        {
 
         }
 
-        public static MouseState GetState(){
+        public static MouseState GetState()
+        {
             previousMouseState = currentMouseState;
             currentMouseState = Mouse.GetState();
             return currentMouseState;
@@ -23,10 +25,12 @@ namespace PetCareGame
 
         public static bool IsPressed(bool left)
         {
-            if(left){
+            if (left)
+            {
                 return currentMouseState.LeftButton == ButtonState.Pressed;
             }
-            else{
+            else
+            {
                 return currentMouseState.RightButton == ButtonState.Pressed;
             }
         }
