@@ -9,6 +9,15 @@ namespace PetCareGame;
 
 public class PauseMenu : LevelInterface
 {
+    private enum PauseState
+    {
+        ExitWarning,
+        SavingWarning,
+        MainMenuWarning
+    }
+
+    private PauseState currentState;
+
     private Button saveButton;
     private Button mainMenuButton;
     private Button saveQuitButton;
@@ -49,17 +58,18 @@ public class PauseMenu : LevelInterface
         throw new System.NotImplementedException();
     }
 
-    public PauseMenu(){
-        
+    public PauseMenu()
+    {
+
     }
 
     public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
     {
         SpriteFont font = GameHandler.highPixel22;
-        Rectangle atlasButton = new Rectangle(16,0,16,16);
-        Rectangle atlasAudioButton = new Rectangle(32,16,16,16);
-        Rectangle atlasXMark = new Rectangle(48,0,16,16);
-        Rectangle atlasResetButton = new Rectangle(48,16,16,16);
+        Rectangle atlasButton = new Rectangle(16, 0, 16, 16);
+        Rectangle atlasAudioButton = new Rectangle(32, 16, 16, 16);
+        Rectangle atlasXMark = new Rectangle(48, 0, 16, 16);
+        Rectangle atlasResetButton = new Rectangle(48, 16, 16, 16);
 
         GameHandler.highPixel22.LineSpacing = 29;
 
@@ -71,7 +81,7 @@ public class PauseMenu : LevelInterface
                 (int)GameHandler.baseScreenSize.X,
                 (int)GameHandler.baseScreenSize.Y
             ),
-            new Rectangle(32,0,16,16),
+            new Rectangle(32, 0, 16, 16),
             Color.LightGray
         );
         //draw window
@@ -86,22 +96,23 @@ public class PauseMenu : LevelInterface
             atlasButton, Color.DimGray
         );
 
-        if(isWarning){
-            spriteBatch.DrawString(GameHandler.highPixel36, "Going to Main Menu", new Vector2(150, 100), Color.White);
-            // draw "Are you sure"
-            spriteBatch.DrawString(GameHandler.highPixel36, "Are you sure?", new Vector2(240, 170), Color.White);
-
-            // draw Yes button
-            spriteBatch.Draw(GameHandler.coreTextureAtlas, yesButtonBounds, atlasButton, Color.White);
-            // draw "Yes"
-            spriteBatch.DrawString(font, "Yes", new Vector2(270, yesButtonPos.Y + 15), Color.Black);
-
-            // draw No button
-            spriteBatch.Draw(GameHandler.coreTextureAtlas, noButtonBounds, atlasButton, Color.White);
-            // draw "no"
-            spriteBatch.DrawString(font, "No", new Vector2(420, noButtonPos.Y + 15), Color.Black);
+        if (isWarning)
+        {
+            switch (currentState)
+            {
+                case PauseState.ExitWarning:
+                    DrawWarning(spriteBatch, atlasButton, font, "Exiting Game", 0);
+                    break;
+                case PauseState.MainMenuWarning:
+                    DrawWarning(spriteBatch,atlasButton, font, "Going to Main Menu", 0);
+                    break;
+                case PauseState.SavingWarning:
+                    DrawWarning(spriteBatch, atlasButton, font, "Overwrite Existing\n     Save File", 25);
+                    break;
+            }
         }
-        else{
+        else
+        {
             //draw "Game Paused"
             spriteBatch.DrawString(GameHandler.highPixel36, "Game Paused", new Vector2(240, 100), Color.White);
 
@@ -127,9 +138,11 @@ public class PauseMenu : LevelInterface
             spriteBatch.DrawString(font, "Resume", new Vector2(350, resumeButtonPos.Y + 15), Color.Black);
 
             //draw mute button
-            if(GameHandler.allowAudio) {
+            if (GameHandler.allowAudio)
+            {
                 spriteBatch.Draw(GameHandler.coreTextureAtlas, muteButtonBounds, atlasAudioButton, Color.White);
-                if(GameHandler.muted) {
+                if (GameHandler.muted)
+                {
                     spriteBatch.Draw(GameHandler.coreTextureAtlas, muteButtonBounds, atlasXMark, Color.Red);
                 }
             }
@@ -140,54 +153,103 @@ public class PauseMenu : LevelInterface
 
     public void HandleInput(GameTime gameTime)
     {
-        if(GameHandler.mouseState.LeftButton == ButtonState.Pressed) {
-            if(!mouseDown) {
+        if (GameHandler.mouseState.LeftButton == ButtonState.Pressed)
+        {
+            if (!mouseDown)
+            {
                 mouseDown = true;
 
-                if(saveButton.CheckIfSelectButtonWasClicked()) {
-                //call save function here :3
-                } else if(mainMenuButton.CheckIfSelectButtonWasClicked()) {
+                if (saveButton.CheckIfSelectButtonWasClicked())
+                {
+                    currentState = PauseState.SavingWarning;
+                    isWarning = true;
+                }
+                else if (mainMenuButton.CheckIfSelectButtonWasClicked())
+                {
                     isWarning = true;
                     SetButtonVisibility();
                     Overworld.SetVisiblity(true);
-                } else if(saveQuitButton.CheckIfSelectButtonWasClicked()) {
-                    //call save function, then quit game
-                } else if(resumeButton.CheckIfSelectButtonWasClicked()) {
+                    currentState = PauseState.MainMenuWarning;
+                }
+                else if (saveQuitButton.CheckIfSelectButtonWasClicked())
+                {
+
+                }
+                else if (resumeButton.CheckIfSelectButtonWasClicked())
+                {
                     GameHandler.isPaused = false;
-                } else if(muteButton.CheckIfSelectButtonWasClicked()) {
+                }
+                else if (muteButton.CheckIfSelectButtonWasClicked())
+                {
                     GameHandler.muted = !GameHandler.muted;
                     Console.WriteLine("Mute toggled");
-                } else if(resetWindowButton.CheckIfSelectButtonWasClicked()) {
+                }
+                else if (resetWindowButton.CheckIfSelectButtonWasClicked())
+                {
                     GameHandler.displayManager.SetResolution(800, 600);
                     GameHandler.displayManager.UpdateScreenScaleMatrix();
-                } else if(isWarning) {
-                    if (yesButton.CheckIfSelectButtonWasClicked())
+                }
+                else if (isWarning)
+                {
+                    switch (currentState)
                     {
-                        GameHandler.UnloadCurrentLevel();
-                        GameHandler.CurrentState = GameHandler.GameState.MainMenu;
-                        GameHandler.isPaused = false;
-                        isWarning = false;
-                    } else if (noButton.CheckIfSelectButtonWasClicked()) {
-                        isWarning = false;
-                    } 
+                        case PauseState.ExitWarning:
+                            if (yesButton.CheckIfSelectButtonWasClicked())
+                            {
+                                Console.WriteLine("Game Exits here");
+                                isWarning = false;
+                            }
+                            else if (noButton.CheckIfSelectButtonWasClicked())
+                            {
+                                isWarning = false;
+                            }
+                            break;
+                        case PauseState.SavingWarning:
+                            if (yesButton.CheckIfSelectButtonWasClicked())
+                            {
+                                SaveFile.Save(GameHandler.saveFile);
+                                isWarning = false;
+                            }
+                            else if (noButton.CheckIfSelectButtonWasClicked())
+                            {
+                                isWarning = false;
+                            }
+                            break;
+                        case PauseState.MainMenuWarning:
+                            if (yesButton.CheckIfSelectButtonWasClicked())
+                            {
+                                GameHandler.UnloadCurrentLevel();
+                                GameHandler.CurrentState = GameHandler.GameState.MainMenu;
+                                GameHandler.isPaused = false;
+                                isWarning = false;
+                            }
+                            else if (noButton.CheckIfSelectButtonWasClicked())
+                            {
+                                isWarning = false;
+                            }
+                            break;
+                    }
                 }
             }
-        } else if(GameHandler.mouseState.LeftButton == ButtonState.Released) {
+        }
+        else if (GameHandler.mouseState.LeftButton == ButtonState.Released)
+        {
             mouseDown = false;
         }
     }
 
     public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
-        saveButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(saveButtonBounds.Width,saveButtonBounds.Height), saveButtonPos, "Save", 38, true);
-        mainMenuButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(mmButtonBounds.Width,mmButtonBounds.Height), mmButtonPos, "Main Menu", 39, true);
-        saveQuitButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(sqButtonBounds.Width,sqButtonBounds.Height), sqButtonPos, "Save and Quit Game", 40, true);
-        resumeButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(320,64), resumeButtonPos, "Resume", 41, true);
+        saveButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(saveButtonBounds.Width, saveButtonBounds.Height), saveButtonPos, "Save", 38, true);
+        mainMenuButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(mmButtonBounds.Width, mmButtonBounds.Height), mmButtonPos, "Main Menu", 39, true);
+        saveQuitButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(sqButtonBounds.Width, sqButtonBounds.Height), sqButtonPos, "Save and Quit Game", 40, true);
+        resumeButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(320, 64), resumeButtonPos, "Resume", 41, true);
         yesButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(yesButtonBounds.Width, yesButtonBounds.Height), yesButtonPos, "Yes", 42, false);
         noButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(noButtonBounds.Width, noButtonBounds.Height), noButtonPos, "No", 43, false);
         muteButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(muteButtonBounds.Width, muteButtonBounds.Height), muteButtonPos, "Mute", 44, true);
         resetWindowButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(resetButtonBounds.Width, resetButtonBounds.Height), resetButtonPos, "Reset Window", 45, true);
-        if(!GameHandler.allowAudio) {
+        if (!GameHandler.allowAudio)
+        {
             muteButton.Visible = false;
         }
     }
@@ -196,7 +258,7 @@ public class PauseMenu : LevelInterface
     {
         //creates hitboxes that are used for drawing and checking clicks for buttons
         saveButtonBounds = new Rectangle((int)saveButtonPos.X, (int)saveButtonPos.Y, 200, 48);
-        mmButtonBounds =  new Rectangle((int)mmButtonPos.X, (int)mmButtonPos.Y, 200, 48);
+        mmButtonBounds = new Rectangle((int)mmButtonPos.X, (int)mmButtonPos.Y, 200, 48);
         sqButtonBounds = new Rectangle((int)sqButtonPos.X, (int)sqButtonPos.Y, 200, 76);
         resumeButtonBounds = new Rectangle((int)resumeButtonPos.X, (int)resumeButtonPos.Y, 200, 48);
         yesButtonBounds = new Rectangle((int)yesButtonPos.X, (int)yesButtonPos.Y, 100, 48);
@@ -211,7 +273,18 @@ public class PauseMenu : LevelInterface
         SetButtonVisibility();
     }
 
-    public void SetButtonVisibility(){
+    public void SaveData()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void LoadData()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetButtonVisibility()
+    {
         if (isWarning)
         {
             saveButton.Visible = false;
@@ -221,7 +294,8 @@ public class PauseMenu : LevelInterface
             yesButton.Visible = true;
             noButton.Visible = true;
         }
-        else {
+        else
+        {
             saveButton.Visible = true;
             mainMenuButton.Visible = true;
             saveQuitButton.Visible = true;
@@ -231,13 +305,21 @@ public class PauseMenu : LevelInterface
         }
     }
 
-    public void SaveData()
+    public void DrawWarning(SpriteBatch spriteBatch, Rectangle atlasButton, SpriteFont font, String str, int extraSpacing)
     {
-        throw new NotImplementedException();
-    }
+        // draw str that is passed in
+        spriteBatch.DrawString(GameHandler.highPixel36, str, new Vector2(150, 100), Color.White);
+        // draw "Are you sure"
+        spriteBatch.DrawString(GameHandler.highPixel36, "Are you sure?", new Vector2(240, 170 + extraSpacing), Color.White);
 
-    public void LoadData()
-    {
-        throw new NotImplementedException();
+        // draw Yes button
+        spriteBatch.Draw(GameHandler.coreTextureAtlas, yesButtonBounds, atlasButton, Color.White);
+        // draw "Yes"
+        spriteBatch.DrawString(font, "Yes", new Vector2(270, yesButtonPos.Y + 15), Color.Black);
+
+        // draw No button
+        spriteBatch.Draw(GameHandler.coreTextureAtlas, noButtonBounds, atlasButton, Color.White);
+        // draw "no"
+        spriteBatch.DrawString(font, "No", new Vector2(420, noButtonPos.Y + 15), Color.Black);
     }
 }

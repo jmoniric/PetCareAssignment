@@ -16,7 +16,7 @@ namespace PetCareGame
 
         private const string PATH = @"stats.json";
 
-        public void Save(SaveFile saved)
+        public static void Save(SaveFile saved)
         {
             string serializedText = JsonSerializer.Serialize<SaveFile>(saved);
             File.WriteAllText(PATH, serializedText);

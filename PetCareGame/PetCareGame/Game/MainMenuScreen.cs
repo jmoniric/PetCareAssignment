@@ -54,7 +54,7 @@ namespace PetCareGame
             );
 
             //draw "Pet Care"
-            spriteBatch.DrawString(GameHandler.highPixel36, "Pet Care", new Vector2(240, 100), Color.White);
+            spriteBatch.DrawString(GameHandler.highPixel36, "Pet Care", new Vector2(290, 100), Color.White);
 
             // if save file exist draw continue normally
             // if not draw continue faded or darker
@@ -70,7 +70,7 @@ namespace PetCareGame
             }
 
             //draw "Continue"
-            spriteBatch.DrawString(font, "Continue", new Vector2(330, continueButtonPos.Y + 15), Color.Black);
+            spriteBatch.DrawString(font, "Continue", new Vector2(340, continueButtonPos.Y + 15), Color.Black);
 
             //draw new game button
             spriteBatch.Draw(GameHandler.coreTextureAtlas, newGameButtonBounds, atlasButton, Color.White);
@@ -101,7 +101,8 @@ namespace PetCareGame
                     {
                         // logic for loading content from save file if available
                         SetButtonVisibility(false);
-                        game.saveFile.Load();
+                        GameHandler.saveFile.Load();
+                        GameHandler.CurrentState = GameHandler.GameState.Overworld;
                     }
                     else if (quitButton.CheckIfSelectButtonWasClicked())
                     {
