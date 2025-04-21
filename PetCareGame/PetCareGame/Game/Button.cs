@@ -13,7 +13,7 @@ namespace PetCareGame
         Texture2D _staticTexture;
         Texture2D _clickedTexture;
 
-        public string Name{ get; set; }
+        public string Name { get; set; }
         public int ID { get; set; }
         public int AnimationTime { get; set; }
         public bool Visible { get; set; } = false;
@@ -40,13 +40,16 @@ namespace PetCareGame
             AnimationTime = 0;
         }
 
-        public void Clicked(){
+        public void Clicked()
+        {
             AnimationTime = 5;
             Texture = _clickedTexture;
         }
 
-        public void UpdateButton(){
-            if(AnimationTime > 0){
+        public void UpdateButton()
+        {
+            if (AnimationTime > 0)
+            {
                 AnimationTime--;
             }
             if (AnimationTime == 0)
@@ -54,14 +57,14 @@ namespace PetCareGame
                 Texture = _staticTexture;
             }
         }
-        
+
         public bool CheckIfButtonWasClicked()
         {
-            if(Visible) 
+            if (Visible)
             {
-                if(GameHandler.relativeMousePos.X >= Position.X && GameHandler.relativeMousePos.X <= (Position.X + Dimensions.X))
+                if (GameHandler.relativeMousePos.X >= Position.X && GameHandler.relativeMousePos.X <= (Position.X + Dimensions.X))
                 {
-                    if(GameHandler.relativeMousePos.Y >= Position.Y && GameHandler.relativeMousePos.Y <= (Position.Y + Dimensions.Y))
+                    if (GameHandler.relativeMousePos.Y >= Position.Y && GameHandler.relativeMousePos.Y <= (Position.Y + Dimensions.Y))
                     {
                         return true;
                     }
@@ -72,13 +75,14 @@ namespace PetCareGame
 
         public bool CheckIfButtonWasClicked(SoundEffectInstance sfx)
         {
-            if(Visible) 
+            if (Visible)
             {
-                if(GameHandler.relativeMousePos.X >= Position.X && GameHandler.relativeMousePos.X <= (Position.X + Dimensions.X))
+                if (GameHandler.relativeMousePos.X >= Position.X && GameHandler.relativeMousePos.X <= (Position.X + Dimensions.X))
                 {
-                    if(GameHandler.relativeMousePos.Y >= Position.Y && GameHandler.relativeMousePos.Y <= (Position.Y + Dimensions.Y))
+                    if (GameHandler.relativeMousePos.Y >= Position.Y && GameHandler.relativeMousePos.Y <= (Position.Y + Dimensions.Y))
                     {
-                        if(GameHandler.allowAudio && !GameHandler.muted) {
+                        if (GameHandler.allowAudio && !GameHandler.muted)
+                        {
                             sfx.Play();
                         }
                         return true;
@@ -90,13 +94,14 @@ namespace PetCareGame
 
         public bool CheckIfSelectButtonWasClicked()
         {
-            if(Visible) 
+            if (Visible)
             {
-                if(GameHandler.relativeMousePos.X >= Position.X && GameHandler.relativeMousePos.X <= (Position.X + Dimensions.X))
+                if (GameHandler.relativeMousePos.X >= Position.X && GameHandler.relativeMousePos.X <= (Position.X + Dimensions.X))
                 {
-                    if(GameHandler.relativeMousePos.Y >= Position.Y && GameHandler.relativeMousePos.Y <= (Position.Y + Dimensions.Y))
+                    if (GameHandler.relativeMousePos.Y >= Position.Y && GameHandler.relativeMousePos.Y <= (Position.Y + Dimensions.Y))
                     {
-                        if(GameHandler.allowAudio && !GameHandler.muted) {
+                        if (GameHandler.allowAudio && !GameHandler.muted)
+                        {
                             GameHandler.selectSfx.Play();
                         }
                         return true;

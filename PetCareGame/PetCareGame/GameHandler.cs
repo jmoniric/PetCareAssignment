@@ -23,7 +23,7 @@ public class GameHandler : Game
         FishingGame,
         SlidingGame
     }
-    
+
     public static GameState CurrentState = GameState.MainMenu;
 
     private GraphicsDeviceManager graphics;
@@ -52,12 +52,12 @@ public class GameHandler : Game
     public static ContentManager waldoAssets;
     public static ContentManager fishingAssets;
     public static ContentManager petcareAssets;
-    
-    public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
-    public static AnimatedTexture catIrritated = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
-    public static AnimatedTexture catAttack = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
-    public static AnimatedTexture catWalk = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
-    public static AnimatedTexture catRun = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
+
+    public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32, 16), 0f, 3f, 0.5f);
+    public static AnimatedTexture catIrritated = new AnimatedTexture(new Vector2(32, 16), 0f, 3f, 0.5f);
+    public static AnimatedTexture catAttack = new AnimatedTexture(new Vector2(32, 16), 0f, 3f, 0.5f);
+    public static AnimatedTexture catWalk = new AnimatedTexture(new Vector2(32, 16), 0f, 3f, 0.5f);
+    public static AnimatedTexture catRun = new AnimatedTexture(new Vector2(32, 16), 0f, 3f, 0.5f);
 
     public static SoundEffect catPurr;
     public static SoundEffectInstance selectSfx;
@@ -111,7 +111,7 @@ public class GameHandler : Game
 
     private void OnClientSizeChange(object sender, EventArgs e)
     {
-        if(!isResizing && Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
+        if (!isResizing && Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
         {
             isResizing = true;
             displayManager.UpdateScreenScaleMatrix();
@@ -128,7 +128,7 @@ public class GameHandler : Game
         saveFile = new SaveFile();
 
         mouseState = OneShotMouseButtons.GetState();
-        pausePos = new Vector2(750,10);
+        pausePos = new Vector2(750, 10);
         mouseLeftPressed = false;
 
         base.Initialize();
@@ -146,10 +146,21 @@ public class GameHandler : Game
         catWalk.Load(coreAssets, "Sprites/Animal/walk", 7, 15);
         catRun.Load(coreAssets, "Sprites/Animal/run", 7, 15);
 
+        coreTextureAtlas = coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
+        gaugeTextureAtlas = coreAssets.Load<Texture2D>("Sprites/gauge_atlas");
+        plainWhiteTexture = coreAssets.Load<Texture2D>("Sprites/plain_white");
+
+        //fonts
+        courierNew36 = coreAssets.Load<SpriteFont>("Fonts/courier_new_36");
+        courierNew52 = coreAssets.Load<SpriteFont>("Fonts/courier_new_52");
+        highPixel22 = coreAssets.Load<SpriteFont>("Fonts/high_pixel_22");
+        highPixel36 = coreAssets.Load<SpriteFont>("Fonts/high_pixel_36");
+
         //tries to load audio assets; if device is missing audio drivers,
         //marks global bool _allowAudio as false which prevents game from
         //trying to call on audio that it can't handle or doesn't exist
-        try { 
+        try
+        {
             catPurr = coreAssets.Load<SoundEffect>("Sounds/Animal/cat_purr");
             selectSfx = coreAssets.Load<SoundEffect>("Sounds/UI/select").CreateInstance();
             selectSfx.Volume = 0.2f;
@@ -157,28 +168,22 @@ public class GameHandler : Game
             failSfx.Volume = 0.4f;
             successSfx = coreAssets.Load<SoundEffect>("Sounds/UI/success").CreateInstance();
             successSfx.Volume = 0.2f;
-        } catch (NoAudioHardwareException e) {
+        }
+        catch (NoAudioHardwareException e)
+        {
             allowAudio = false;
             Console.WriteLine("No audio drivers found, disabling audio");
             Console.WriteLine(e.StackTrace);
         }
-        
-        coreTextureAtlas = coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
-        gaugeTextureAtlas = coreAssets.Load<Texture2D>("Sprites/gauge_atlas");
-        pauseButton = new Button(coreTextureAtlas, coreTextureAtlas, new Point(48,48), pausePos, "Pause", 37, true);
-        plainWhiteTexture = coreAssets.Load<Texture2D>("Sprites/plain_white");
-        
-        //fonts
-        courierNew36 = coreAssets.Load<SpriteFont>("Fonts/courier_new_36");
-        courierNew52 = coreAssets.Load<SpriteFont>("Fonts/courier_new_52");
-        highPixel22 = coreAssets.Load<SpriteFont>("Fonts/high_pixel_22");
-        highPixel36 = coreAssets.Load<SpriteFont>("Fonts/high_pixel_36");
+
+        pauseButton = new Button(coreTextureAtlas, coreTextureAtlas, new Point(48, 48), pausePos, "Pause", 37, true);
 
         overworldLevel = new Overworld(petCareLevel, waldoLevel, slidingLevel, pauseMenu, pauseButton);
 
     }
 
-    private void HandleInput(GameTime gameTime){
+    private void HandleInput(GameTime gameTime)
+    {
         mouseState = OneShotMouseButtons.GetState();
 
         if (mouseState.LeftButton == ButtonState.Pressed)
@@ -223,9 +228,10 @@ public class GameHandler : Game
     protected override void Update(GameTime gameTime)
     {
         var mousePosition = new Vector2(mouseState.X, mouseState.Y);
-        relativeMousePos = Vector2.Transform(mousePosition, Matrix.Invert(displayManager._scaleMatrix));
-        
-        if(!isPaused) {
+        relativeMousePos = Vector2.Transform(mousePosition, Matrix.Invert(displayManager.scaleMatrix));
+
+        if (!isPaused)
+        {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             catIdle.UpdateFrame(elapsed);
             catIrritated.UpdateFrame(elapsed);
@@ -239,15 +245,16 @@ public class GameHandler : Game
         //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
         //  Exit();
 
-        if (isPaused) {
+        if (isPaused)
+        {
             pauseMenu.Update(gameTime);
         }
-        switch(CurrentState) {
+        switch (CurrentState)
+        {
             case GameState.MainMenu:
                 //handle the update for main menu directly here
                 mainMenu.LoadLevel();
                 mainMenu.Update(gameTime, this);
-                //SetVisiblity(true);
                 break;
             case GameState.Overworld:
                 overworldLevel.Update(gameTime);
@@ -273,9 +280,10 @@ public class GameHandler : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp, transformMatrix: displayManager._scaleMatrix);
+        spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp, transformMatrix: displayManager.scaleMatrix);
 
-        switch(CurrentState) {
+        switch (CurrentState)
+        {
             case GameState.MainMenu:
                 mainMenu.Draw(gameTime, spriteBatch, graphics);
                 break;
@@ -297,17 +305,19 @@ public class GameHandler : Game
         }
 
         //draw pause button last
-        if(!isPaused && CurrentState != GameState.MainMenu) {
-            spriteBatch.Draw(pauseButton.Texture, new Rectangle(750,10,48,48), new Rectangle(0,0,16,16), Color.White);
+        if (!isPaused && CurrentState != GameState.MainMenu)
+        {
+            spriteBatch.Draw(pauseButton.Texture, new Rectangle(750, 10, 48, 48), new Rectangle(0, 0, 16, 16), Color.White);
         }
 
-        if(isPaused) {
+        if (isPaused)
+        {
             pauseMenu.Draw(gameTime, spriteBatch, graphics);
         }
 
         //FOR DEV PURPOSES: prints (X,Y) of mouse in top left corner
-        spriteBatch.DrawString(highPixel22, "("+ relativeMousePos.X + ", " + relativeMousePos.Y + ")", new Vector2(0, 20), Color.Black);
-        
+        spriteBatch.DrawString(highPixel22, "(" + relativeMousePos.X + ", " + relativeMousePos.Y + ")", new Vector2(0, 20), Color.Black);
+
         //end drawing
         spriteBatch.End();
 
@@ -315,8 +325,10 @@ public class GameHandler : Game
     }
 
     //allows level to cleanup and reset, then unloads its assets and sets state to main menu
-    public static void UnloadCurrentLevel() {
-        switch(CurrentState) {
+    public static void UnloadCurrentLevel()
+    {
+        switch (CurrentState)
+        {
             case GameState.PetCareGame:
                 petCareLevel.CleanupProcesses();
                 ((LevelInterface)petCareLevel).UnloadLevel(petcareAssets);

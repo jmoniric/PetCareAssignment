@@ -107,7 +107,7 @@ namespace PetCareGame
         }
 
         public void Update(GameTime gameTime, GameHandler game)
-        {   
+        {
             HandleInput(gameTime, game);
         }
 

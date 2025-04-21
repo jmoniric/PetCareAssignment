@@ -4,7 +4,8 @@ using System.Text.Json;
 
 namespace PetCareGame
 {
-    public class SaveFile{
+    public class SaveFile
+    {
         public static bool BathDone { get; set; }
         public static bool NailTrimDone { get; set; }
         public static bool BrushingDone { get; set; }
