@@ -287,19 +287,9 @@ public class SlidingGame : LevelInterface
 
         int tileSize = 64;
 
-        if (GameHandler.allowAudio && !GameHandler.muted && currentStage == GameStage.Run)
-        {
-            {
-                peacefulTrack.IsLooped = true;
-                peacefulTrack.Play();
-            }
-        }
-
-        if (currentStage == GameStage.Completion)
-        {
-            peacefulTrack.IsLooped = false;
-            peacefulTrack.Stop(true);
-        }
+        //this is where your music handling was
+        //moved it to update so it would obey pause and mute buttons
+        
 
         // Cat movement logic
         if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
@@ -463,6 +453,30 @@ public class SlidingGame : LevelInterface
 
     public void Update(GameTime gameTime)
     {
+        //this is your music handling code
+        if (GameHandler.allowAudio)
+        {
+            //music not muted, game stage is run (as you specified), and game is not paused
+            if(!GameHandler.musicMuted && currentStage == GameStage.Run && !GameHandler.isPaused)
+            {
+                peacefulTrack.IsLooped = true;
+                peacefulTrack.Play();
+            }
+            else //otherwise, pause soundtrack
+            {
+                peacefulTrack.Pause();
+            }
+
+            if (currentStage == GameStage.Completion)
+            {
+                peacefulTrack.IsLooped = false;
+                peacefulTrack.Stop(true);
+            }
+        }
+
+        
+
+
         if (currentStage == GameStage.Run)
         {
             // Update frog animation

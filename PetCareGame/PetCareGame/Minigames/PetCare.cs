@@ -152,6 +152,7 @@ public class PetCare : LevelInterface
         Rectangle checkbox = new Rectangle(16,16,16,16);
         Rectangle checkmark = new Rectangle(0,16,16,16);
         Rectangle sprayZone = new Rectangle(0,96,32,32);
+        Rectangle atlasAudioButton = new Rectangle(32, 16, 16, 16);
 
         _graphics.GraphicsDevice.Clear(backgroundColour);
         
@@ -709,7 +710,7 @@ public class PetCare : LevelInterface
             smallWin = _manager.Load<SoundEffect>("Sounds/small_win").CreateInstance();
             smallWin.Volume = 1f;
             music = _manager.Load<SoundEffect>("Sounds/pixel_music").CreateInstance();
-            music.Volume = 0.25f;
+            music.Volume = 0.4f;
             brushSfx.IsLooped = true;
         }        
     }
@@ -740,7 +741,7 @@ public class PetCare : LevelInterface
 
         //game is running
         } else {
-            if(GameHandler.allowAudio && !GameHandler.muted) {
+            if(GameHandler.allowAudio && !GameHandler.musicMuted) {
                 music.Play();
             }
             tempermentGauge.Update(gameTime);

@@ -79,6 +79,7 @@ public class GameHandler : Game
     private bool isResizing;
     public static bool allowAudio = true;
     public static bool muted = false;
+    public static bool musicMuted = false;
     public static bool isPaused = false;
     public static bool mouseLeftPressed;
 

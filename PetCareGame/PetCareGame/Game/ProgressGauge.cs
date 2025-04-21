@@ -183,13 +183,13 @@ public class ProgressGauge {
         if(isVisible) {
             if(gaugeType == GaugeType.HitInRange) {
                 if(targetRange.X <= markerPos.X && markerPos.X <= (targetRange.X +  targetRange.Width)) {
-                    if(GameHandler.allowAudio) {
+                    if(GameHandler.allowAudio && !GameHandler.muted) {
                         GameHandler.successSfx.Play();
                     }
                     returnState = 1;
                     CalculateTargetRange();
                 } else {
-                    if(GameHandler.allowAudio) {
+                    if(GameHandler.allowAudio && !GameHandler.muted) {
                         GameHandler.failSfx.Play();
                     }
                     returnState = -1;

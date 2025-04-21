@@ -24,7 +24,8 @@ public class PauseMenu : LevelInterface
     private Button resumeButton;
     private Button yesButton;
     private Button noButton;
-    private Button muteButton;
+    private Button muteSfxButton;
+    private Button muteMusicButton;
     private Button resetWindowButton;
 
     private Vector2 saveButtonPos = new Vector2(310, 155);//55px spacing
@@ -33,8 +34,9 @@ public class PauseMenu : LevelInterface
     private Vector2 resumeButtonPos = new Vector2(310, 345);
     private Vector2 yesButtonPos = new Vector2(250, 250);
     private Vector2 noButtonPos = new Vector2(400, 250);
-    private Vector2 muteButtonPos = new Vector2(170, 150);
-    private Vector2 resetButtonPos = new Vector2(170, 250);
+    private Vector2 muteSfxPos = new Vector2(170, 150);
+    private Vector2 muteMusicPos = new Vector2(170, 250);
+    private Vector2 resetButtonPos = new Vector2(170, 350);
 
     private Rectangle saveButtonBounds;
     private Rectangle mmButtonBounds;
@@ -42,7 +44,8 @@ public class PauseMenu : LevelInterface
     private Rectangle resumeButtonBounds;
     private Rectangle yesButtonBounds;
     private Rectangle noButtonBounds;
-    private Rectangle muteButtonBounds;
+    private Rectangle muteSfxBounds;
+    private Rectangle muteMusicBounds;
     private Rectangle resetButtonBounds;
 
     private bool mouseDown = false;
@@ -67,7 +70,8 @@ public class PauseMenu : LevelInterface
     {
         SpriteFont font = GameHandler.highPixel22;
         Rectangle atlasButton = new Rectangle(16, 0, 16, 16);
-        Rectangle atlasAudioButton = new Rectangle(32, 16, 16, 16);
+        Rectangle atlasAudioButton = new Rectangle(0, 32, 16, 16);
+        Rectangle atlasMusicButton = new Rectangle(32, 16, 16, 16);
         Rectangle atlasXMark = new Rectangle(48, 0, 16, 16);
         Rectangle atlasResetButton = new Rectangle(48, 16, 16, 16);
 
@@ -139,10 +143,15 @@ public class PauseMenu : LevelInterface
             //draw mute button
             if (GameHandler.allowAudio)
             {
-                spriteBatch.Draw(GameHandler.coreTextureAtlas, muteButtonBounds, atlasAudioButton, Color.White);
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, muteSfxBounds, atlasAudioButton, Color.White);
                 if (GameHandler.muted)
                 {
-                    spriteBatch.Draw(GameHandler.coreTextureAtlas, muteButtonBounds, atlasXMark, Color.Red);
+                    spriteBatch.Draw(GameHandler.coreTextureAtlas, muteSfxBounds, atlasXMark, Color.Red);
+                }
+
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, muteMusicBounds, atlasMusicButton, Color.White);
+                if(GameHandler.musicMuted) {
+                    spriteBatch.Draw(GameHandler.coreTextureAtlas, muteMusicBounds, atlasXMark, Color.Red);
                 }
             }
 
@@ -180,10 +189,15 @@ public class PauseMenu : LevelInterface
                 {
                     GameHandler.isPaused = false;
                 }
-                else if (muteButton.CheckIfSelectButtonWasClicked())
+                else if (muteSfxButton.CheckIfSelectButtonWasClicked())
                 {
                     GameHandler.muted = !GameHandler.muted;
                     Console.WriteLine("Mute toggled");
+                }
+                else if (muteMusicButton.CheckIfSelectButtonWasClicked())
+                {
+                    GameHandler.musicMuted = !GameHandler.musicMuted;
+                    Console.WriteLine("Music toggled");
                 }
                 else if (resetWindowButton.CheckIfSelectButtonWasClicked())
                 {
@@ -247,11 +261,13 @@ public class PauseMenu : LevelInterface
         resumeButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(320, 64), resumeButtonPos, "Resume", 41, true);
         yesButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(yesButtonBounds.Width, yesButtonBounds.Height), yesButtonPos, "Yes", 42, false);
         noButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(noButtonBounds.Width, noButtonBounds.Height), noButtonPos, "No", 43, false);
-        muteButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(muteButtonBounds.Width, muteButtonBounds.Height), muteButtonPos, "Mute", 44, true);
-        resetWindowButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(resetButtonBounds.Width, resetButtonBounds.Height), resetButtonPos, "Reset Window", 45, true);
+        muteSfxButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(muteSfxBounds.Width, muteSfxBounds.Height), muteSfxPos, "Mute SFX", 44, true);
+        muteMusicButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(muteMusicBounds.Width, muteMusicBounds.Height), muteMusicPos, "Mute Music", 45, true);
+        resetWindowButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(resetButtonBounds.Width, resetButtonBounds.Height), resetButtonPos, "Reset Window", 46, true);
         if (!GameHandler.allowAudio)
         {
-            muteButton.Visible = false;
+            muteSfxButton.Visible = false;
+            muteMusicButton.Visible = false;
         }
     }
 
@@ -264,7 +280,8 @@ public class PauseMenu : LevelInterface
         resumeButtonBounds = new Rectangle((int)resumeButtonPos.X, (int)resumeButtonPos.Y, 200, 48);
         yesButtonBounds = new Rectangle((int)yesButtonPos.X, (int)yesButtonPos.Y, 100, 48);
         noButtonBounds = new Rectangle((int)noButtonPos.X, (int)noButtonPos.Y, 100, 48);
-        muteButtonBounds = new Rectangle((int)muteButtonPos.X, (int)muteButtonPos.Y, 64, 64);
+        muteSfxBounds = new Rectangle((int)muteSfxPos.X, (int)muteSfxPos.Y, 64, 64);
+        muteMusicBounds = new Rectangle((int)muteMusicPos.X,(int)muteMusicPos.Y, 64, 64);
         resetButtonBounds = new Rectangle((int)resetButtonPos.X, (int)resetButtonPos.Y, 64, 64);
     }
 
