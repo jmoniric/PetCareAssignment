@@ -122,7 +122,6 @@ public class PauseMenu : LevelInterface
             spriteBatch.DrawString(font, "Save", new Vector2(370, saveButtonPos.Y + 15), Color.Black);
 
             //draw main menu button
-
             spriteBatch.Draw(GameHandler.coreTextureAtlas, mmButtonBounds, atlasButton, Color.White);
             //draw "Main Menu"
             spriteBatch.DrawString(font, "Main Menu", new Vector2(330, mmButtonPos.Y + 15), Color.Black);
