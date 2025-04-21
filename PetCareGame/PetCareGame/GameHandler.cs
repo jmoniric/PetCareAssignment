@@ -28,7 +28,7 @@ public class GameHandler : Game
 
     private GraphicsDeviceManager graphics;
     private SpriteBatch spriteBatch;
-    public SaveFile saveFile;
+    public static SaveFile saveFile;
 
     private Button pauseButton;
 
@@ -209,7 +209,7 @@ public class GameHandler : Game
 
         if (isPaused)
         {
-            pauseMenu.HandleInput(gameTime);
+            pauseMenu.HandleInput(gameTime, this);
         }
         else
         {
@@ -253,7 +253,7 @@ public class GameHandler : Game
 
         if (isPaused)
         {
-            pauseMenu.Update(gameTime);
+            pauseMenu.Update(gameTime, this);
         }
         switch (CurrentState)
         {

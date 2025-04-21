@@ -21,8 +21,7 @@ namespace PetCareGame
         private Rectangle quitButtonBounds;
 
         private bool mouseDown = false;
-
-        public static bool fileExists;
+        private bool ifSaveFileExists;
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
         {
@@ -55,14 +54,23 @@ namespace PetCareGame
             );
 
             //draw "Pet Care"
-            spriteBatch.DrawString(GameHandler.highPixel36, "Pet Care", new Vector2(240, 100), Color.White);
+            spriteBatch.DrawString(GameHandler.highPixel36, "Pet Care", new Vector2(290, 100), Color.White);
 
             // if save file exist draw continue normally
             // if not draw continue faded or darker
-            //draw continue button
-            spriteBatch.Draw(GameHandler.coreTextureAtlas, continueButtonBounds, atlasButton, Color.White);
+            if (SaveFile.doesFileExist())
+            {
+                //draw active continue button
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, continueButtonBounds, atlasButton, Color.White);
+            }
+            else
+            {
+                //draw inactive continue button
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, continueButtonBounds, atlasButton, Color.White * 0.5f);
+            }
+
             //draw "Continue"
-            spriteBatch.DrawString(font, "Continue", new Vector2(330, continueButtonPos.Y + 15), Color.Black);
+            spriteBatch.DrawString(font, "Continue", new Vector2(340, continueButtonPos.Y + 15), Color.Black);
 
             //draw new game button
             spriteBatch.Draw(GameHandler.coreTextureAtlas, newGameButtonBounds, atlasButton, Color.White);
@@ -89,10 +97,12 @@ namespace PetCareGame
                         SetButtonVisibility(false);
                         GameHandler.CurrentState = GameHandler.GameState.Overworld;
                     }
-                    else if (continueButton.CheckIfSelectButtonWasClicked())
+                    else if (continueButton.CheckIfSelectButtonWasClicked() && SaveFile.doesFileExist())
                     {
                         // logic for loading content from save file if available
                         SetButtonVisibility(false);
+                        GameHandler.saveFile.Load();
+                        GameHandler.CurrentState = GameHandler.GameState.Overworld;
                     }
                     else if (quitButton.CheckIfSelectButtonWasClicked())
                     {
@@ -135,8 +145,18 @@ namespace PetCareGame
             newGameButtonBounds = new Rectangle((int)newGameButtonPos.X, (int)newGameButtonPos.Y, 200, 48);
             quitButtonBounds = new Rectangle((int)quitButtonPos.X, (int)quitButtonPos.Y, 200, 48);
             newGameButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(newGameButtonBounds.Width, newGameButtonBounds.Height), newGameButtonPos, "New Game", 33, true);
-            continueButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(continueButtonBounds.Width, continueButtonBounds.Height), continueButtonPos, "Continue Game", 34, true);
             quitButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(quitButtonBounds.Width, quitButtonBounds.Height), quitButtonPos, "Quit Game", 35, true);
+
+            if (SaveFile.doesFileExist())
+            {
+                ifSaveFileExists = true;
+            }
+            else
+            {
+                ifSaveFileExists = false;
+            }
+
+            continueButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(continueButtonBounds.Width, continueButtonBounds.Height), continueButtonPos, "Continue Game", 34, ifSaveFileExists);
         }
 
         public void LoadContent(ContentManager manager, ContentManager coreAssets)
