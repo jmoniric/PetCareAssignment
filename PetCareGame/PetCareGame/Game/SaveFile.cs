@@ -14,7 +14,7 @@ namespace PetCareGame
         public static bool SlidingGameDone { get; set; }
         public static bool WheresWaldoDone { get; set; }
 
-        private const string PATH = "stats.json";
+        private const string PATH = @"stats.json";
 
         public void Save(SaveFile saved)
         {
@@ -26,6 +26,16 @@ namespace PetCareGame
         {
             var fileContents = File.ReadAllText(PATH);
             return JsonSerializer.Deserialize<SaveFile>(fileContents);
+        }
+
+        public static bool doesFileExist()
+        {
+            string curFile = @"stats.json";
+            if (File.Exists(curFile))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
