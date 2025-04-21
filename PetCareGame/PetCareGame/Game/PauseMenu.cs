@@ -101,10 +101,10 @@ public class PauseMenu : LevelInterface
             switch (currentState)
             {
                 case PauseState.ExitWarning:
-                    DrawWarning(spriteBatch, atlasButton, font, "Exiting Game", 0);
+                    DrawWarning(spriteBatch, atlasButton, font, "   Exiting Game", 0);
                     break;
                 case PauseState.MainMenuWarning:
-                    DrawWarning(spriteBatch,atlasButton, font, "Going to Main Menu", 0);
+                    DrawWarning(spriteBatch, atlasButton, font, "Going to Main Menu", 0);
                     break;
                 case PauseState.SavingWarning:
                     DrawWarning(spriteBatch, atlasButton, font, "Overwrite Existing\n     Save File", 25);
@@ -151,7 +151,7 @@ public class PauseMenu : LevelInterface
         }
     }
 
-    public void HandleInput(GameTime gameTime)
+    public void HandleInput(GameTime gameTime, GameHandler game)
     {
         if (GameHandler.mouseState.LeftButton == ButtonState.Pressed)
         {
@@ -173,7 +173,9 @@ public class PauseMenu : LevelInterface
                 }
                 else if (saveQuitButton.CheckIfSelectButtonWasClicked())
                 {
-
+                    isWarning = true;
+                    SetButtonVisibility();
+                    currentState = PauseState.ExitWarning;
                 }
                 else if (resumeButton.CheckIfSelectButtonWasClicked())
                 {
@@ -196,8 +198,8 @@ public class PauseMenu : LevelInterface
                         case PauseState.ExitWarning:
                             if (yesButton.CheckIfSelectButtonWasClicked())
                             {
-                                Console.WriteLine("Game Exits here");
-                                isWarning = false;
+                                SaveFile.Save(GameHandler.saveFile);
+                                game.Exit();
                             }
                             else if (noButton.CheckIfSelectButtonWasClicked())
                             {
@@ -267,9 +269,9 @@ public class PauseMenu : LevelInterface
         resetButtonBounds = new Rectangle((int)resetButtonPos.X, (int)resetButtonPos.Y, 64, 64);
     }
 
-    public void Update(GameTime gameTime)
+    public void Update(GameTime gameTime, GameHandler game)
     {
-        HandleInput(gameTime);
+        HandleInput(gameTime, game);
         SetButtonVisibility();
     }
 
@@ -321,5 +323,15 @@ public class PauseMenu : LevelInterface
         spriteBatch.Draw(GameHandler.coreTextureAtlas, noButtonBounds, atlasButton, Color.White);
         // draw "no"
         spriteBatch.DrawString(font, "No", new Vector2(420, noButtonPos.Y + 15), Color.Black);
+    }
+
+    public void Update(GameTime gameTime)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void HandleInput(GameTime gameTime)
+    {
+        throw new NotImplementedException();
     }
 }

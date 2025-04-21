@@ -203,7 +203,7 @@ public class GameHandler : Game
 
         if (isPaused)
         {
-            pauseMenu.HandleInput(gameTime);
+            pauseMenu.HandleInput(gameTime, this);
         }
         else
         {
@@ -247,7 +247,7 @@ public class GameHandler : Game
 
         if (isPaused)
         {
-            pauseMenu.Update(gameTime);
+            pauseMenu.Update(gameTime, this);
         }
         switch (CurrentState)
         {
