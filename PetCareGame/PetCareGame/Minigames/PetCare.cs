@@ -26,6 +26,13 @@ public class PetCare : LevelInterface
         NailTrim,
         Brushing
     }
+
+    enum InfoPanel {
+        SummaryPanel,
+        BathInfoPanel,
+        BrushInfoPanel,
+        NailsInfoPanel
+    }
     private Vector2 catPos = new Vector2(400, 305);
     private Rectangle catBounds;
     private Color backgroundColour = new Color(197, 118, 38);
@@ -73,9 +80,8 @@ public class PetCare : LevelInterface
 
     private ObjectHeld currentObject = ObjectHeld.None;
     private GameStage currentStage = GameStage.Instructions;
-    private Button startButton;
-    private Point startButtonPos = new Point(270,510);
-    private Rectangle startButtonBounds;
+    private InfoPanel currentInfo = InfoPanel.SummaryPanel;
+
     private ProgressGauge tempermentGauge;
     private ProgressGauge gameInputGauge;
     private ProgressGauge progressGauge;
@@ -84,6 +90,22 @@ public class PetCare : LevelInterface
     private bool brushGoal = false;
     private Goal sprayGoal = new Goal(5);
     private Goal dryGoal = new Goal(5);
+
+    private Button startButton;
+    private Button infoBath;
+    private Button infoBrush;
+    private Button infoNails;
+
+    private Point startButtonPos = new Point(540,510);
+    private Point infoBathPos = new Point(25,510);
+    private Point infoBrushPos = new Point(185,510);
+    private Point infoNailsPos = new Point(380,510);
+
+    private Rectangle startButtonBounds;
+    private Rectangle infoBathBounds;
+    private Rectangle infoBrushBounds;
+    private Rectangle infoNailsBounds;
+    
 
     private Rectangle brushPoint1 = new Rectangle(385, 270, 50, 50);
     private Rectangle brushPoint2 = new Rectangle(340, 420, 40, 60);
@@ -254,26 +276,54 @@ public class PetCare : LevelInterface
                 Color.Black
             );
 
-            spriteBatch.DrawString(
-                GameHandler.highPixel22,
-                """
-                Owning a pet requires some work!
-                Your pet needs your help to stay
-                clean and happy. Your pet needs
-                you to brush their fur, trim their
-                nails, and give them a gentle bath.
-                But watch out! The gauge at the top
-                represents happiness. If it strays
-                into the red, your pet will get
-                very upset and you will need to
-                start over! Good Luck!
-                """,
-                new Vector2(100, 150),
-                Color.Black
-            );
+            if(currentInfo == InfoPanel.SummaryPanel) {
+                spriteBatch.DrawString(
+                    GameHandler.highPixel22,
+                    """
+                    Owning a pet requires some work! Your pet
+                    needs your help to stay clean and happy.
+                    Your pet needs you to brush their fur,
+                    trim their nails, and give them a gentle
+                    bath. But watch out! The gauge at the top
+                    represents happiness. If it strays into the
+                    red, your pet will get very upset and you
+                    will need to start over! Good Luck!
 
+                    Click any of the buttons below to see
+                    instructions for each stage.
+                    """,
+                    new Vector2(50, 110),
+                    Color.Black
+                );
+            }
+            
+
+            //start game button
             spriteBatch.Draw(GameHandler.coreTextureAtlas, startButtonBounds, new Rectangle(16,0,16,16), Color.White);
-            spriteBatch.DrawString(GameHandler.highPixel22, "Start", new Vector2(350, startButtonPos.Y+25), Color.Black);
+            spriteBatch.DrawString(GameHandler.highPixel22, "Start", new Vector2(610, startButtonPos.Y+25), Color.Black);
+
+            //minigame stage info buttons - colours button green if selected
+            if(currentInfo == InfoPanel.BathInfoPanel) {
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, infoBathBounds, new Rectangle(16,0,16,16), Color.Lime);
+            } else {
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, infoBathBounds, new Rectangle(16,0,16,16), Color.White);
+            }
+            spriteBatch.DrawString(GameHandler.highPixel22, "Bath", new Vector2(65, infoBathPos.Y+25), Color.Black);
+            
+            if(currentInfo == InfoPanel.BrushInfoPanel) {
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, infoBrushBounds, new Rectangle(16,0,16,16), Color.Lime);
+            } else {
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, infoBrushBounds, new Rectangle(16,0,16,16), Color.White);
+            }
+            spriteBatch.DrawString(GameHandler.highPixel22, "Brushing", new Vector2(215, infoBrushPos.Y+25), Color.Black);
+
+            if(currentInfo == InfoPanel.NailsInfoPanel) {
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, infoNailsBounds, new Rectangle(16,0,16,16), Color.Lime);
+            } else {
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, infoNailsBounds, new Rectangle(16,0,16,16), Color.White);
+            }
+            spriteBatch.DrawString(GameHandler.highPixel22, "Nails", new Vector2(415, infoNailsPos.Y+25), Color.Black);
+
         } else if(currentStage == GameStage.NailTrim) {
             //calls draw for input gauge - will only draw if isVisible == true
             gameInputGauge.Draw(gameTime, spriteBatch);
@@ -430,6 +480,27 @@ public class PetCare : LevelInterface
                     //if start button is clicked
                     if(startButton.CheckIfSelectButtonWasClicked()) {
                         currentStage = GameStage.Idle;
+                    } else if(infoBath.CheckIfSelectButtonWasClicked()) {
+                        //toggles back to main summary if button is clicked again
+                        if(currentInfo == InfoPanel.BathInfoPanel) {
+                            currentInfo = InfoPanel.SummaryPanel;
+                        } else {
+                            currentInfo = InfoPanel.BathInfoPanel;
+                        }
+                    } else if(infoBrush.CheckIfSelectButtonWasClicked()) {
+                        //toggles back to main summary if button is clicked again
+                        if(currentInfo == InfoPanel.BrushInfoPanel) {
+                            currentInfo = InfoPanel.SummaryPanel;
+                        } else {
+                            currentInfo = InfoPanel.BrushInfoPanel;
+                        }
+                    } else if(infoNails.CheckIfSelectButtonWasClicked()) {
+                        //toggles back to main summary if button is clicked again
+                        if(currentInfo == InfoPanel.NailsInfoPanel) {
+                            currentInfo = InfoPanel.SummaryPanel;
+                        } else {
+                            currentInfo = InfoPanel.NailsInfoPanel;
+                        }
                     }
                 //if game stage is nail trimming and not in fail limbo state
                 } else if(currentStage == GameStage.NailTrim && !failState) {
@@ -541,7 +612,10 @@ public class PetCare : LevelInterface
         //GameHandler.catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 5f, 0.5f);
         //GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         atlas = _manager.Load<Texture2D>("Sprites/petcare_textureatlas");
-        startButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(250, 72), new Vector2(startButtonPos.X,startButtonPos.Y), "Start", 42, true);
+        startButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(225, 72), new Vector2(startButtonPos.X,startButtonPos.Y), "Start", 42, true);
+        infoBath = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(150, 72), new Vector2(infoBathPos.X,infoBathPos.Y), "Bath", 43, true);
+        infoBrush = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(190, 72), new Vector2(infoBrushPos.X,infoBrushPos.Y), "Brushing", 44, true);
+        infoNails = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(150, 72), new Vector2(infoNailsPos.X,infoNailsPos.Y), "Nails", 45, true);
 
         hotspot1.Load(_manager, "Sprites/hotspot_gauge_32", 9, 1);
         hotspot2.Load(_manager, "Sprites/hotspot_gauge_32", 9, 1);
@@ -565,7 +639,11 @@ public class PetCare : LevelInterface
         tempermentGauge = new ProgressGauge(new Rectangle(25, 20, 300, 60), 0, 16, 8, ProgressGauge.GaugeType.GoodBad, true);
         gameInputGauge = new ProgressGauge(new Rectangle(350, 20, 300, 60), 0, 30, 15, ProgressGauge.GaugeType.HitInRange, false);
         progressGauge = new ProgressGauge(new Rectangle(350, 20, 300, 60), 0, 10, 0, ProgressGauge.GaugeType.Progress, false);
-        startButtonBounds = new Rectangle(startButtonPos.X, startButtonPos.Y, 250, 72);
+        
+        startButtonBounds = new Rectangle(startButtonPos.X, startButtonPos.Y, 225, 72);
+        infoBathBounds = new Rectangle(infoBathPos.X, infoBathPos.Y, 150, 72);
+        infoNailsBounds = new Rectangle(infoNailsPos.X, infoNailsPos.Y, 150, 72);
+        infoBrushBounds = new Rectangle(infoBrushPos.X, infoBrushPos.Y, 190, 72);
 
         //add statement to not force instructions if played before
     }
@@ -898,7 +976,7 @@ public class PetCare : LevelInterface
         
         currentObject = ObjectHeld.None;
         currentStage = GameStage.Instructions;
-        startButtonPos = new Point(270,510);
+        currentInfo = InfoPanel.SummaryPanel;
 
         hotspot1Frame = 0;
         hotspot2Frame = 0;
