@@ -121,8 +121,6 @@ public class PetCare : LevelInterface
     private int hotspot1Frame = 0;
     private int hotspot2Frame = 0;
     private int hotspot3Frame = 0;
-
-    
     
     private Rectangle catNailsBounds = new Rectangle(330,430, 130, 75);
 
@@ -130,6 +128,8 @@ public class PetCare : LevelInterface
     private SoundEffectInstance snipSfx;
     private SoundEffectInstance brushSfx;
     private SoundEffectInstance spraySfx;
+    private SoundEffectInstance smallWin;
+    private SoundEffectInstance music;
 
     public void Dispose()
     {
@@ -154,9 +154,6 @@ public class PetCare : LevelInterface
         Rectangle sprayZone = new Rectangle(0,96,32,32);
 
         _graphics.GraphicsDevice.Clear(backgroundColour);
-
-        //sets line spacing to avoid cluttering of text
-        GameHandler.highPixel22.LineSpacing = 35;
         
         //draw wall paneling
         for(int h = 0; h < 8; h++) {
@@ -245,7 +242,7 @@ public class PetCare : LevelInterface
 
         //render water particles
         for(int i = 0; i < particles.Count; i++) {
-            particles[i].Draw(gameTime, spriteBatch, _graphics, Color.SkyBlue);
+            particles[i].Draw(gameTime, spriteBatch, _graphics, new Color(0,127,255));
         }
 
         //draw toolbar background
@@ -269,35 +266,95 @@ public class PetCare : LevelInterface
                 Color.LightPink
             );
 
-            spriteBatch.DrawString(
-                GameHandler.highPixel36,
-                "Instructions",
-                new Vector2(240,50),
-                Color.Black
-            );
+            //changes text on info page according to button selected
+            switch (currentInfo) {
+                case InfoPanel.SummaryPanel:
+                    spriteBatch.DrawString(GameHandler.highPixel36, "Summary", new Vector2(260,50),Color.Black);
+                    spriteBatch.DrawString(
+                        GameHandler.highPixel22,
+                        """
+                        Owning a pet requires some work! Your pet
+                        needs your help to stay clean and happy.
+                        Your pet needs you to brush their fur,
+                        trim their nails, and give them a gentle
+                        bath. But watch out! The gauge at the top
+                        represents happiness. If it strays into the
+                        red, your pet will get very upset and you
+                        will need to start over! Good Luck!
 
-            if(currentInfo == InfoPanel.SummaryPanel) {
-                spriteBatch.DrawString(
-                    GameHandler.highPixel22,
-                    """
-                    Owning a pet requires some work! Your pet
-                    needs your help to stay clean and happy.
-                    Your pet needs you to brush their fur,
-                    trim their nails, and give them a gentle
-                    bath. But watch out! The gauge at the top
-                    represents happiness. If it strays into the
-                    red, your pet will get very upset and you
-                    will need to start over! Good Luck!
+                        Click any of the buttons below to see
+                        instructions for each stage.
+                        """,
+                        new Vector2(50, 110),
+                        Color.Black
+                    );
+                    break;
 
-                    Click any of the buttons below to see
-                    instructions for each stage.
-                    """,
-                    new Vector2(50, 110),
-                    Color.Black
-                );
+                case InfoPanel.BathInfoPanel:
+                    spriteBatch.DrawString(GameHandler.highPixel36, "Bath", new Vector2(300,50),Color.Black);
+                    spriteBatch.DrawString(
+                        GameHandler.highPixel18,
+                        """
+                        This stage is separated into two parts:
+                        washing and drying.
+
+                        Part 1:
+                        Your cat will enter the green box at 1 of 3 heights.
+                        You must spray it 5 times while inside the box,
+                        but keep an eye on your water supply!
+
+                        Part 2:
+                        [TBD]
+                        """,
+                        new Vector2(50, 110),
+                        Color.Black
+                    );
+                    break;
+
+                case InfoPanel.NailsInfoPanel:
+                    spriteBatch.DrawString(GameHandler.highPixel36, "Nail Trimming", new Vector2(240,50),Color.Black);
+                    spriteBatch.DrawString(
+                        GameHandler.highPixel22,
+                        """
+                        Position the nail clippers over your
+                        cat's paws. Notice the bar at the top
+                        with the rapidly-moving marker. When
+                        the marker is inside the green zone,
+                        click the mouse. But watch out!
+                        Clicking outside of the green zone
+                        irritates the cat, and when the
+                        mood meter dips into red, you must
+                        restart!
+
+                        Trim 10 nails to win!
+                        """,
+                        new Vector2(50, 110),
+                        Color.Black
+                    );
+                    break;
+
+                case InfoPanel.BrushInfoPanel:
+                    spriteBatch.DrawString(GameHandler.highPixel36, "Brushing", new Vector2(260,50),Color.Black);
+                    spriteBatch.DrawString(
+                        GameHandler.highPixel22,
+                        """
+                        Click and hold the mouse, moving the brush
+                        head over each of the hotspots. When in
+                        contact with the brush, they will increment
+                        and change colour. Get all hotspots to
+                        green to progress the counter. But
+                        watch out! Brushing hotspots into yellow
+                        can reverse progress, and brushing
+                        hotspots to red resets the stage!
+
+                        Move the counter to the end to win!
+                        """,
+                        new Vector2(50, 110),
+                        Color.Black
+                    );
+                    break;
             }
             
-
             //start game button
             spriteBatch.Draw(GameHandler.coreTextureAtlas, startButtonBounds, new Rectangle(16,0,16,16), Color.White);
             spriteBatch.DrawString(GameHandler.highPixel22, "Start", new Vector2(610, startButtonPos.Y+25), Color.Black);
@@ -330,9 +387,10 @@ public class PetCare : LevelInterface
             nailGoal.DrawOutput(spriteBatch, GameHandler.highPixel22, new Vector2(355, 120), Color.Black, "Nails");
 
             if(failState) {
-                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(160,155,500,100), Color.Black);
-                spriteBatch.DrawString(GameHandler.highPixel22, "The cat is angry!\nPress [SPACEBAR] to restart", new Vector2(175,170), Color.Red);
+                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(160,155,520,120), Color.Black);
+                spriteBatch.DrawString(GameHandler.highPixel22, "The cat is angry!\nPress [SPACEBAR] to restart;\n[BKSPACE] to see instructions", new Vector2(175,170), Color.Red);
             }
+
         } else if(currentStage == GameStage.Brushing) {
             /*** //debug for brush zones
             spriteBatch.Draw(GameHandler.plainWhiteTexture, brushPoint1, Color.Red);
@@ -349,12 +407,13 @@ public class PetCare : LevelInterface
             hotspot3.DrawFrame(spriteBatch, hotspot3Frame, new Vector2(430,410), SpriteEffects.None);
 
             if(failState) {
-                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(160,155,500,100), Color.Black);
-                spriteBatch.DrawString(GameHandler.highPixel22, "Brushed too hard!\nPress [SPACEBAR] to restart", new Vector2(175,170), Color.Red);
+                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(160,155,520,120), Color.Black);
+                spriteBatch.DrawString(GameHandler.highPixel22, "Brushed too hard!\nPress [SPACEBAR] to restart;\n[BKSPACE] to see instructions", new Vector2(175,170), Color.Red);
             }
 
             //debug for brush head
             spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(brushHeadOffset, new Point(8,8)), Color.Lime);
+
         } else if(currentStage == GameStage.BathWashing) {
             progressGauge.Draw(gameTime, spriteBatch);
             //print remaining water count
@@ -363,8 +422,8 @@ public class PetCare : LevelInterface
             spriteBatch.DrawString(GameHandler.highPixel22, "Sprays: " + sprayGoal.GetCurrentValue() + "/5", new Vector2(400,115), Color.Black);
 
             if(failState) {
-                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(160,155,500,100), Color.Black);
-                spriteBatch.DrawString(GameHandler.highPixel22, "Ran out of water!\nPress [SPACEBAR] to restart", new Vector2(175,170), Color.Red);
+                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(160,155,520,120), Color.Black);
+                spriteBatch.DrawString(GameHandler.highPixel22, "Ran out of water!\nPress [SPACEBAR] to restart;\n[BKSPACE] to see instructions", new Vector2(175,170), Color.Red);
             }
             //debug for cat bounds
             /*
@@ -401,7 +460,7 @@ public class PetCare : LevelInterface
         }
 
         //debug for cat pos coords
-        spriteBatch.DrawString(GameHandler.highPixel22, catPos.ToString(), new Vector2(0,60), Color.Black);
+        //spriteBatch.DrawString(GameHandler.highPixel22, catPos.ToString(), new Vector2(0,60), Color.Black);
     }
 
     public void HandleInput(GameTime gameTime)
@@ -418,22 +477,33 @@ public class PetCare : LevelInterface
         }
         
 
-        if(failState && Keyboard.GetState().IsKeyDown(Keys.Space)) {
-            if(currentStage == GameStage.BathWashing) {
+        if(failState) {
+            if(Keyboard.GetState().IsKeyDown(Keys.Space)) {
+                if(currentStage == GameStage.BathWashing) {
+                    CleanupProcesses();
+                    currentStage = GameStage.BathWashing;
+                    currentObject = ObjectHeld.SprayBottle;
+                } else if(currentStage == GameStage.NailTrim) {
+                    nailGoal.ResetGoal();
+                    CleanupProcesses();
+                    currentStage = GameStage.NailTrim;
+                    currentObject = ObjectHeld.NailClippers;
+                } else if(currentStage == GameStage.Brushing) {
+                    brushGoal = false;
+                    progressGauge.SetCurrentValue(0);
+                    CleanupProcesses();
+                    currentStage = GameStage.Brushing;
+                    currentObject = ObjectHeld.Brush;
+                }
+            } else if(Keyboard.GetState().IsKeyDown(Keys.Back)) {
                 CleanupProcesses();
-                currentStage = GameStage.BathWashing;
-                currentObject = ObjectHeld.SprayBottle;
-            } else if(currentStage == GameStage.NailTrim) {
-                nailGoal.ResetGoal();
-                CleanupProcesses();
-                currentStage = GameStage.NailTrim;
-                currentObject = ObjectHeld.NailClippers;
-            } else if(currentStage == GameStage.Brushing) {
-                brushGoal = false;
                 progressGauge.SetCurrentValue(0);
-                CleanupProcesses();
-                currentStage = GameStage.Brushing;
-                currentObject = ObjectHeld.Brush;
+                currentStage = GameStage.Instructions;
+                currentObject = ObjectHeld.None;
+                currentInfo = InfoPanel.SummaryPanel;
+                if(GameHandler.allowAudio) {
+                    catPurr.Pause();
+                }
             }
         }
 
@@ -531,6 +601,9 @@ public class PetCare : LevelInterface
                                 clippersOrigin = Vector2.Zero;
                                 tempermentGauge.SetCurrentValue(8);
                                 Console.WriteLine("TRIMMING stage won, returning to IDLE");
+                                if(GameHandler.allowAudio && !GameHandler.muted) {
+                                    smallWin.Play();
+                                }
                             }
                         } else if(returnState == -1) {
                             //returns false when unable to decrease anymore
@@ -563,7 +636,7 @@ public class PetCare : LevelInterface
                         }
                         
 
-                        if(GameHandler.allowAudio && !GameHandler.muted) {
+                        if(GameHandler.allowAudio && !GameHandler.muted && !sprayGoal.GetCompletion()) {
                             spraySfx.Play();
                         }
                     }
@@ -584,6 +657,8 @@ public class PetCare : LevelInterface
 
                     //switch to nail clipping stage
                     } else if(!nailGoal.GetCompletion() && clipperBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
+                        //sets mood to centre of gauge
+                        tempermentGauge.SetCurrentValue(8);
                         //sets held object to nail clippers
                         currentObject = ObjectHeld.NailClippers;
                         //sets game stage to nail trimming
@@ -592,6 +667,8 @@ public class PetCare : LevelInterface
                         gameInputGauge.SetVisibility(true);
                     //switch to brushing stage
                     } else if(!brushGoal && brushBounds.Contains(GameHandler.relativeMousePos.X, GameHandler.relativeMousePos.Y)) {
+                        //sets mood to centre of gauge
+                        tempermentGauge.SetCurrentValue(8);
                         currentObject = ObjectHeld.Brush;
                         currentStage = GameStage.Brushing;
                         progressGauge.UpdateParameters(0,10,0);
@@ -629,6 +706,10 @@ public class PetCare : LevelInterface
             snipSfx = _manager.Load<SoundEffect>("Sounds/snip").CreateInstance();
             brushSfx = _manager.Load<SoundEffect>("Sounds/brush").CreateInstance();
             spraySfx = _manager.Load<SoundEffect>("Sounds/spray").CreateInstance();
+            smallWin = _manager.Load<SoundEffect>("Sounds/small_win").CreateInstance();
+            smallWin.Volume = 1f;
+            music = _manager.Load<SoundEffect>("Sounds/pixel_music").CreateInstance();
+            music.Volume = 0.25f;
             brushSfx.IsLooped = true;
         }        
     }
@@ -654,10 +735,14 @@ public class PetCare : LevelInterface
         if(GameHandler.isPaused) {
             if(GameHandler.allowAudio) {
                 catPurr.Pause();
+                music.Pause();
             }
 
         //game is running
         } else {
+            if(GameHandler.allowAudio && !GameHandler.muted) {
+                music.Play();
+            }
             tempermentGauge.Update(gameTime);
 
             if(currentStage != GameStage.Instructions) {
@@ -692,7 +777,10 @@ public class PetCare : LevelInterface
                     currentStage = GameStage.Idle;
                     brushPos = new Point(600,200);
                     brushOrigin = Vector2.Zero;
-                    Console.WriteLine("BRUSH stage won, returning to IDLE");                    
+                    Console.WriteLine("BRUSH stage won, returning to IDLE");
+                    if(GameHandler.allowAudio && !GameHandler.muted) {
+                        smallWin.Play();
+                    }
                 }
                 if(!brushGoal && !failState) { //brushing goal not reached
                     progressGauge.SetVisibility(true);
@@ -754,16 +842,16 @@ public class PetCare : LevelInterface
                 }
             } else if(currentStage == GameStage.BathWashing) {
                 progressGauge.SetVisibility(true);
-                if(water <= 0) {
-                    failState = true;
-                }
+
                 //makes progress gauge reflect goal value
                 progressGauge.SetCurrentValue(sprayGoal.GetCurrentValue());
-
 
                 if(sprayGoal.GetCompletion()) {
                     sprayGoal.SetCompletion(true);
                 }
+
+                
+                
                 progressGauge.Update(gameTime);
 
                 //stops updates when in fail limbo
@@ -863,6 +951,8 @@ public class PetCare : LevelInterface
                     //calculates collision box for cat using offsets
                     catBounds = new Rectangle((int)(catPos.X-50), (int)(catPos.Y-20), 100, 200);
                 }
+
+                
                 
                 int index = 0;
                 //cycles through list of existing particles, destroying them if they meet
@@ -888,6 +978,12 @@ public class PetCare : LevelInterface
                         //increments if no particle was removed
                         index++;
                     }
+                }
+
+                //update failstate last to prevent false failure should player use all water
+                //and still win
+                if(water <= 0 && particles.Count <= 0 && !sprayGoal.GetCompletion()) {
+                    failState = true;
                 }
             }
 
@@ -983,6 +1079,11 @@ public class PetCare : LevelInterface
         hotspot3Frame = 0;
 
         tempermentGauge.SetCurrentValue(8);
+        progressGauge.SetCurrentValue(0);
+
+        if(!nailGoal.GetCompletion()) {
+            nailGoal.ResetGoal();
+        }
     }
 
     public void SaveData()

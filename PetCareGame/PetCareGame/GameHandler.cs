@@ -63,6 +63,7 @@ public class GameHandler : Game
     public static SoundEffectInstance selectSfx;
     public static SoundEffectInstance failSfx;
     public static SoundEffectInstance successSfx;
+    public static SoundEffectInstance bigWin;
 
     public static Texture2D coreTextureAtlas;
     public static Texture2D plainWhiteTexture;
@@ -71,6 +72,7 @@ public class GameHandler : Game
     // fonts
     public static SpriteFont courierNew36;
     public static SpriteFont courierNew52;
+    public static SpriteFont highPixel18;
     public static SpriteFont highPixel22;
     public static SpriteFont highPixel36;
 
@@ -153,8 +155,11 @@ public class GameHandler : Game
         //fonts
         courierNew36 = coreAssets.Load<SpriteFont>("Fonts/courier_new_36");
         courierNew52 = coreAssets.Load<SpriteFont>("Fonts/courier_new_52");
+        highPixel18 = coreAssets.Load<SpriteFont>("Fonts/high_pixel_18");
         highPixel22 = coreAssets.Load<SpriteFont>("Fonts/high_pixel_22");
         highPixel36 = coreAssets.Load<SpriteFont>("Fonts/high_pixel_36");
+
+        
 
         //tries to load audio assets; if device is missing audio drivers,
         //marks global bool _allowAudio as false which prevents game from
@@ -168,6 +173,7 @@ public class GameHandler : Game
             failSfx.Volume = 0.4f;
             successSfx = coreAssets.Load<SoundEffect>("Sounds/UI/success").CreateInstance();
             successSfx.Volume = 0.2f;
+            bigWin = coreAssets.Load<SoundEffect>("Sounds/UI/big_win").CreateInstance();
         }
         catch (NoAudioHardwareException e)
         {
@@ -281,6 +287,9 @@ public class GameHandler : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp, transformMatrix: displayManager.scaleMatrix);
+        //prevents cluttering of text
+        highPixel18.LineSpacing = 28;
+        highPixel22.LineSpacing = 35;
 
         switch (CurrentState)
         {

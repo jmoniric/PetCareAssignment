@@ -27,6 +27,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Core/Fonts/courier_new_52.spritefont
 
+#begin Core/Fonts/high_pixel_18.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Core/Fonts/high_pixel_18.spritefont
+
 #begin Core/Fonts/high_pixel_22.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -51,6 +58,12 @@
 /importer:XmlImporter
 /processor:PassThroughProcessor
 /build:Core/Sounds/placeholder.xml
+
+#begin Core/Sounds/UI/big_win.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Core/Sounds/UI/big_win.wav
 
 #begin Core/Sounds/UI/fail.wav
 /importer:WavImporter
@@ -301,6 +314,18 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:PetcareGame/Sounds/brush.wav
+
+#begin PetcareGame/Sounds/pixel_music.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:PetcareGame/Sounds/pixel_music.wav
+
+#begin PetcareGame/Sounds/small_win.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:PetcareGame/Sounds/small_win.wav
 
 #begin PetcareGame/Sounds/snip.wav
 /importer:WavImporter
