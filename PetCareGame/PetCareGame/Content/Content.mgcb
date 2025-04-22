@@ -315,11 +315,17 @@
 /processorParam:Quality=Best
 /build:PetcareGame/Sounds/brush.wav
 
-#begin PetcareGame/Sounds/pixel_music.wav
+#begin PetcareGame/Sounds/pixel_music_13.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:PetcareGame/Sounds/pixel_music.wav
+/build:PetcareGame/Sounds/pixel_music_13.wav
+
+#begin PetcareGame/Sounds/pixel_music_18.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:PetcareGame/Sounds/pixel_music_18.wav
 
 #begin PetcareGame/Sounds/small_win.wav
 /importer:WavImporter

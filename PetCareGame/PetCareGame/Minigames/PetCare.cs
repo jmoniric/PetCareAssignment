@@ -129,7 +129,9 @@ public class PetCare : LevelInterface
     private SoundEffectInstance brushSfx;
     private SoundEffectInstance spraySfx;
     private SoundEffectInstance smallWin;
-    private SoundEffectInstance music;
+    private SoundEffectInstance pixelMusic18;
+    private SoundEffectInstance pixelMusic13;
+    private SoundEffectInstance currentSong;
 
     public void Dispose()
     {
@@ -709,8 +711,17 @@ public class PetCare : LevelInterface
             spraySfx = _manager.Load<SoundEffect>("Sounds/spray").CreateInstance();
             smallWin = _manager.Load<SoundEffect>("Sounds/small_win").CreateInstance();
             smallWin.Volume = 1f;
-            music = _manager.Load<SoundEffect>("Sounds/pixel_music").CreateInstance();
-            music.Volume = 0.4f;
+            pixelMusic18 = _manager.Load<SoundEffect>("Sounds/pixel_music_18").CreateInstance();
+            pixelMusic13 = _manager.Load<SoundEffect>("Sounds/pixel_music_13").CreateInstance();
+            pixelMusic18.IsLooped = false;
+            pixelMusic13.IsLooped = false;
+            pixelMusic13.Volume = 0.4f;
+            pixelMusic18.Volume = 0.4f;
+
+            currentSong = pixelMusic13;
+            currentSong.Volume = 0.4f;
+
+            currentSong.IsLooped = false;
             brushSfx.IsLooped = true;
         }        
     }
@@ -732,18 +743,37 @@ public class PetCare : LevelInterface
 
     public void Update(GameTime gameTime)
     {
+        if(GameHandler.allowAudio) {
+            //changes between two different songs
+            if(currentSong.State == SoundState.Stopped) {
+                if(currentSong == pixelMusic13) {
+                    currentSong = pixelMusic18;
+                } else {
+                    currentSong = pixelMusic13;
+                }
+                currentSong.Play();
+            }
+
+            //turns down volume of music to better hear success sound
+            if(smallWin.State == SoundState.Playing) {
+                currentSong.Volume = 0.05f;
+            } else {
+                currentSong.Volume = 0.4f;
+            }
+        }
         //game is paused
         if(GameHandler.isPaused) {
             if(GameHandler.allowAudio) {
                 catPurr.Pause();
-                music.Pause();
+                currentSong.Pause();
             }
 
         //game is running
         } else {
             if(GameHandler.allowAudio && !GameHandler.musicMuted) {
-                music.Play();
+                currentSong.Play();
             }
+            
             tempermentGauge.Update(gameTime);
 
             if(currentStage != GameStage.Instructions) {
