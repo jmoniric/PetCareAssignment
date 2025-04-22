@@ -6,19 +6,21 @@ namespace PetCareGame
 {
     public class SaveFile
     {
-        public bool BathDone { get; set; }
-        public bool NailTrimDone { get; set; }
-        public bool BrushingDone { get; set; }
-        public bool PetCareDone { get; set; }
+        public static bool BathDone { get; set; }
+        public static bool NailTrimDone { get; set; }
+        public static bool BrushingDone { get; set; }
+        public static bool PetCareDone { get; set; }
 
-        public bool SlidingGameDone { get; set; }
-        public bool WheresWaldoDone { get; set; }
+        public static bool SlidingGameDone { get; set; }
+        public static bool WheresWaldoDone { get; set; }
 
         private const string PATH = @"stats.json";
 
         public static void Save(SaveFile saved)
         {
             GameHandler.petCareLevel.SaveData(saved);
+            //GameHandler.waldoLevel.SaveData(saved);
+            //GameHandler.slidingLevel.SaveData(saved);
             string serializedText = JsonSerializer.Serialize<SaveFile>(saved);
             File.WriteAllText(PATH, serializedText);
         }
@@ -37,6 +39,21 @@ namespace PetCareGame
                 return true;
             }
             return false;
+        }
+
+        public static void NewFile(SaveFile saved) {
+            ResetVariables();
+            string serializedText = JsonSerializer.Serialize<SaveFile>(saved);
+            File.WriteAllText(PATH, serializedText);
+        }
+
+        private static void ResetVariables() {
+            BathDone = false;
+            NailTrimDone = false;
+            BrushingDone = false;
+            PetCareDone = false;
+            SlidingGameDone = false;
+            WheresWaldoDone = false;
         }
     }
 }

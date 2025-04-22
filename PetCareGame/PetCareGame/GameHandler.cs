@@ -193,6 +193,12 @@ public class GameHandler : Game
     {
         mouseState = OneShotMouseButtons.GetState();
 
+        if(Keyboard.GetState().IsKeyDown(Keys.Escape) && !isPaused && CurrentState != GameState.MainMenu) {
+            isPaused = true;
+            pauseMenu.LoadLevel();
+            pauseMenu.LoadContent(null, coreAssets);
+        }
+
         if (mouseState.LeftButton == ButtonState.Pressed)
         {
             if (OneShotMouseButtons.HasNotBeenPressed(true))

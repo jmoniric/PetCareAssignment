@@ -94,6 +94,7 @@ namespace PetCareGame
                     if (newGameButton.CheckIfSelectButtonWasClicked())
                     {
                         // start a new game with a fresh file
+                        SaveFile.NewFile(GameHandler.saveFile);
                         SetButtonVisibility(false);
                         GameHandler.CurrentState = GameHandler.GameState.Overworld;
                     }
@@ -101,7 +102,7 @@ namespace PetCareGame
                     {
                         // logic for loading content from save file if available
                         SetButtonVisibility(false);
-                        GameHandler.saveFile.Load();
+                        GameHandler.saveFile = GameHandler.saveFile.Load();
                         GameHandler.CurrentState = GameHandler.GameState.Overworld;
                     }
                     else if (quitButton.CheckIfSelectButtonWasClicked())

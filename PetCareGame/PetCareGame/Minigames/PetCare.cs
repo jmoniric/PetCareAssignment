@@ -738,6 +738,10 @@ public class PetCare : LevelInterface
         infoNailsBounds = new Rectangle(infoNailsPos.X, infoNailsPos.Y, 150, 72);
         infoBrushBounds = new Rectangle(infoBrushPos.X, infoBrushPos.Y, 190, 72);
 
+        if(SaveFile.doesFileExist()) {
+            LoadData();
+        }
+
         //add statement to not force instructions if played before
     }
 
@@ -1119,14 +1123,17 @@ public class PetCare : LevelInterface
 
     public void SaveData(SaveFile saveFile)
     {
-        saveFile.BathDone = sprayGoal.GetCompletion() && dryGoal.GetCompletion();
-        saveFile.BrushingDone = brushGoal;
-        saveFile.NailTrimDone = nailGoal.GetCompletion();
-        saveFile.PetCareDone = saveFile.BathDone && saveFile.BrushingDone && saveFile.NailTrimDone;
+        SaveFile.BathDone = sprayGoal.GetCompletion() && dryGoal.GetCompletion();
+        SaveFile.BrushingDone = brushGoal;
+        SaveFile.NailTrimDone = nailGoal.GetCompletion();
+        SaveFile.PetCareDone = SaveFile.BathDone && SaveFile.BrushingDone && SaveFile.NailTrimDone;
     }
 
     public void LoadData()
     {
-        
+        brushGoal = SaveFile.BrushingDone;
+        nailGoal.SetCompletion(SaveFile.NailTrimDone);
+        sprayGoal.SetCompletion(SaveFile.BathDone);
+        dryGoal.SetCompletion(SaveFile.BathDone);
     }
 }
