@@ -38,10 +38,10 @@ public class GameHandler : Game
 
     public static MouseState mouseState;
 
-    private static PetCare petCareLevel = new PetCare();
-    private static CatFishing fishingLevel = new CatFishing();
-    private static WheresWaldo waldoLevel = new WheresWaldo();
-    private static SlidingGame slidingLevel = new SlidingGame();
+    public static PetCare petCareLevel = new PetCare();
+    public static CatFishing fishingLevel = new CatFishing();
+    public static WheresWaldo waldoLevel = new WheresWaldo();
+    public static SlidingGame slidingLevel = new SlidingGame();
     public static Overworld overworldLevel;
     private static PauseMenu pauseMenu = new PauseMenu();
     private static MainMenuScreen mainMenu = new MainMenuScreen();

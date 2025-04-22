@@ -1119,7 +1119,10 @@ public class PetCare : LevelInterface
 
     public void SaveData(SaveFile saveFile)
     {
-        
+        saveFile.BathDone = sprayGoal.GetCompletion() && dryGoal.GetCompletion();
+        saveFile.BrushingDone = brushGoal;
+        saveFile.NailTrimDone = nailGoal.GetCompletion();
+        saveFile.PetCareDone = saveFile.BathDone && saveFile.BrushingDone && saveFile.NailTrimDone;
     }
 
     public void LoadData()
