@@ -9,11 +9,11 @@ namespace PetCareGame
     public class WheresWaldo : LevelInterface
     {
         private SpriteFont font;
-        private Texture2D WaldoFirstDraft;
+        private Texture2D[] waldoImages;
         private Texture2D coreTextureAtlas;
 
-        private Rectangle markXRect = new Rectangle(48, 0, 16, 16);      
-        private Rectangle checkmarkRect = new Rectangle(0, 16, 16, 16);  
+        private Rectangle markXRect = new Rectangle(48, 0, 16, 16);
+        private Rectangle checkmarkRect = new Rectangle(0, 16, 16, 16);
 
         private bool showCheck = false;
         private bool showX = false;
@@ -29,11 +29,18 @@ namespace PetCareGame
 
         private Rectangle waldoBoundingBox;
 
+        private int currentLevel = 1;
+        private const int maxLevels = 3;
+
         public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
         {
             font = _coreAssets.Load<SpriteFont>("Fonts/courier_new_36");
-            WaldoFirstDraft = _manager.Load<Texture2D>("Sprites/WaldoFirstDraft");
             coreTextureAtlas = _coreAssets.Load<Texture2D>("Sprites/core_textureatlas");
+
+            waldoImages = new Texture2D[maxLevels + 1];
+            waldoImages[1] = _manager.Load<Texture2D>("Sprites/WaldoFirstDraft");
+            waldoImages[2] = _manager.Load<Texture2D>("Sprites/Waldo2");
+            waldoImages[3] = _manager.Load<Texture2D>("Sprites/Waldo3");
         }
 
         public void LoadLevel()
@@ -45,8 +52,24 @@ namespace PetCareGame
             showX = false;
             timeVisible = 0f;
             xTimeVisible = 0f;
+            mouseReleased = false;
 
-            waldoBoundingBox = new Rectangle(728, 545, 70, 40);
+            switch (currentLevel)
+            {
+                case 1:
+                    waldoBoundingBox = new Rectangle(728, 545, 70, 40);
+                    break;
+                case 2:
+                    waldoBoundingBox = new Rectangle(410, 295, 33, 25);
+                    break;
+                case 3:
+                    waldoBoundingBox = new Rectangle(404, 73, 25, 26);
+                    break;
+                default:
+                    GameHandler.CurrentState = GameHandler.GameState.Overworld;
+                    currentLevel = 1;
+                    return;
+            }
         }
 
         public void UnloadLevel(ContentManager _manager)
@@ -129,7 +152,24 @@ namespace PetCareGame
         {
             if (gameOver && Keyboard.GetState().IsKeyDown(Keys.Space))
             {
-                LoadLevel();
+                if (incorrectGuesses >= maxIncorrectGuesses)
+                {
+                    currentLevel = 1;
+                    LoadLevel();
+                }
+                else
+                {
+                    if (currentLevel < maxLevels)
+                    {
+                        currentLevel++;
+                        LoadLevel();
+                    }
+                    else
+                    {
+                        GameHandler.CurrentState = GameHandler.GameState.Overworld;
+                        currentLevel = 1;
+                    }
+                }
             }
         }
 
@@ -140,11 +180,11 @@ namespace PetCareGame
             float screenWidth = _graphics.PreferredBackBufferWidth;
             float screenHeight = _graphics.PreferredBackBufferHeight;
 
-            if (WaldoFirstDraft != null)
+            if (waldoImages[currentLevel] != null)
             {
-                float scale = Math.Min(screenWidth / (float)WaldoFirstDraft.Width, screenHeight / (float)WaldoFirstDraft.Height);
-                Vector2 position = new Vector2((screenWidth - WaldoFirstDraft.Width * scale) / 2, (screenHeight - WaldoFirstDraft.Height * scale) / 2);
-                spriteBatch.Draw(WaldoFirstDraft, position, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                float scale = Math.Min(screenWidth / (float)waldoImages[currentLevel].Width, screenHeight / (float)waldoImages[currentLevel].Height);
+                Vector2 position = new Vector2((screenWidth - waldoImages[currentLevel].Width * scale) / 2, (screenHeight - waldoImages[currentLevel].Height * scale) / 2);
+                spriteBatch.Draw(waldoImages[currentLevel], position, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             }
             else
             {
@@ -177,10 +217,9 @@ namespace PetCareGame
             if (gameOver)
             {
                 string message = incorrectGuesses >= maxIncorrectGuesses ? "Game Over! Too many incorrect guesses." : "You found Waldo!";
-                string restartMsg = "Press Space to Restart";
+                string restartMsg = "Press Space to Continue";
 
-                // Make the font smaller for the game over message
-                float scaleFactor = 0.5f; // Scale factor to make the text smaller
+                float scaleFactor = 0.5f;
 
                 Vector2 messageSize = font.MeasureString(message) * scaleFactor;
                 Vector2 restartSize = font.MeasureString(restartMsg) * scaleFactor;
@@ -188,7 +227,6 @@ namespace PetCareGame
                 Vector2 messagePosition = new Vector2((screenWidth - messageSize.X) / 2, screenHeight / 2 - 50);
                 Vector2 restartPosition = new Vector2((screenWidth - restartSize.X) / 2, screenHeight / 2 + 12);
 
-                // Draw smaller background rectangles for the messages
                 spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle((int)messagePosition.X - 10, (int)messagePosition.Y - 5, (int)(messageSize.X + 20), (int)(messageSize.Y + 10)), Color.Gray);
                 spriteBatch.DrawString(font, message, messagePosition, Color.Black, 0f, Vector2.Zero, scaleFactor, SpriteEffects.None, 0f);
 
@@ -206,3 +244,4 @@ namespace PetCareGame
         public void LoadData() { }
     }
 }
+
