@@ -169,7 +169,7 @@ namespace PetCareGame
             throw new NotImplementedException();
         }
 
-        public void SaveData()
+        public void SaveData(SaveFile saveFile)
         {
             throw new NotImplementedException();
         }

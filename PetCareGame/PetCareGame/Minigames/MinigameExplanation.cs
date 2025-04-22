@@ -73,7 +73,7 @@ public class MinigameExplanation : LevelInterface
         throw new System.NotImplementedException();
     }
 
-    public void SaveData()
+    public void SaveData(SaveFile saveFile)
     {
         throw new System.NotImplementedException();
     }

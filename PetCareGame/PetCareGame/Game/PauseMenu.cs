@@ -291,7 +291,7 @@ public class PauseMenu : LevelInterface
         SetButtonVisibility();
     }
 
-    public void SaveData()
+    public void SaveData(SaveFile saveFile)
     {
         throw new NotImplementedException();
     }

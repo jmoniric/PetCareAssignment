@@ -32,7 +32,7 @@ public interface LevelInterface : IDisposable
         _manager.Unload();
     }
 
-    public void SaveData();
+    public void SaveData(SaveFile saveFile);
 
     public void LoadData();
 }

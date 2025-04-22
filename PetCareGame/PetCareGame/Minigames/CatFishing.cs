@@ -41,7 +41,7 @@ public class CatFishing : LevelInterface
         
     }
 
-    public void SaveData()
+    public void SaveData(SaveFile saveFile)
     {
         throw new System.NotImplementedException();
     }

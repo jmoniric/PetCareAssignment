@@ -239,7 +239,7 @@ namespace PetCareGame
 
         public void Dispose() { }
 
-        public void SaveData() { }
+        public void SaveData(SaveFile saveFile) { }
 
         public void LoadData() { }
     }
