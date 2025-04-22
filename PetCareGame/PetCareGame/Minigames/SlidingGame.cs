@@ -59,12 +59,16 @@ public class SlidingGame : LevelInterface
     //frog (s) (end)
     private SoundEffectInstance peacefulTrack;
 
+    private int lives =5;
+
     enum GameStage
     {
         Instructions,
         Run,
+        
+        Completion,
 
-        Completion
+        gameOver
     }
 
     private Point goalTilePos;
@@ -185,6 +189,7 @@ public class SlidingGame : LevelInterface
                 }
 
             }
+            spriteBatch.DrawString(GameHandler.highPixel22, "Lives: " + lives, new Vector2(0,50), Color.Black);
 
             if (isOverlapping)
             {
@@ -235,11 +240,45 @@ public class SlidingGame : LevelInterface
                 GameHandler.catIdle.DrawFrame(spriteBatch, catPos, faceRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 2f);
             }
 
+            
+
+            if (lives <= 0)
+            {
+                currentStage = GameStage.gameOver;
+            }
+            
+
             if (frogPositions.Count == 4)
             {
                 currentStage = GameStage.Completion;
             }
 
+        }
+
+        else if (currentStage == GameStage.gameOver)
+        {
+            spriteBatch.Draw(
+                GameHandler.plainWhiteTexture,
+                new Rectangle(0, 0, (int)GameHandler.baseScreenSize.X, (int)GameHandler.baseScreenSize.Y),
+                Color.LightPink
+            );
+
+            spriteBatch.DrawString(
+                GameHandler.highPixel36,
+                "Game Over",
+                new Vector2(240, 50),
+                Color.Black
+            );
+
+            spriteBatch.DrawString(
+                GameHandler.highPixel22,
+                "You have been caught by the frogs!",
+                new Vector2(100, 150),
+                Color.Black
+            );
+
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, startButtonBounds, new Rectangle(16, 0, 16, 16), Color.White);
+            spriteBatch.DrawString(GameHandler.highPixel22, "Start", new Vector2(350, startButtonPos.Y + 25), Color.Black);
         }
         else if (currentStage == GameStage.Completion)
         {
@@ -355,7 +394,31 @@ public class SlidingGame : LevelInterface
 
         }
 
+        // Mouse Input for Game Over and Completion Screens
+        // Game Over Screen
+        if (currentStage == GameStage.gameOver)
+        {
+            
+            if (GameHandler.mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
+            {
+                if (startButtonBounds.Contains(GameHandler.mouseState.Position))
+                {
+                    currentStage = GameStage.Instructions;
+                    frogPositions.Clear();
+                    frogMovingRight.Clear();
+                    lives = 5;
+                }
+                mouseDown = true;
+            }
+            else if (GameHandler.mouseState.LeftButton == ButtonState.Released)
+            {
+                mouseDown = false;
+            }
+        }
+
         if (currentStage == GameStage.Completion)
+
+
         {
             if (GameHandler.mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
             {
@@ -364,6 +427,9 @@ public class SlidingGame : LevelInterface
                     currentStage = GameStage.Run;
                     frogPositions.Clear();
                     frogMovingRight.Clear();
+                    lives = 5;
+                 
+                    
                 }
                 mouseDown = true;
             }
@@ -371,8 +437,6 @@ public class SlidingGame : LevelInterface
             {
                 mouseDown = false;
             }
-
-
         }
 
         // Ensure the cat and chest positions are within the screen bounds
@@ -391,13 +455,7 @@ public class SlidingGame : LevelInterface
         atlas = _manager.Load<Texture2D>("Sprites/petcare_slidetextureatlas");
 
         frog = _manager.Load<Texture2D>("Sprites/FrogGreen_Hop");
-
-        //calling this again loads these assets again, but they have already been loaded in GameHandler
         
-        /***
-        GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
-        GameHandler.catWalk.Load(_coreAssets, "Sprites/Animal/walk", 7, 5);
-        ***/
         chest = _manager.Load<Texture2D>("Sprites/treasure_atlas");
         startButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(250, 72), new Vector2(startButtonPos.X, startButtonPos.Y), "Start", 42, true);
 
@@ -515,6 +573,8 @@ public class SlidingGame : LevelInterface
                 {
                     catPos = new Vector2(300, 305); // Reset to starting position
                     chestPos = new Point(400, 350); // Reset chest position
+                    lives--;
+                   // frogPositions.RemoveAt(i); // Remove the frog that touched the cat
                 }
 
                 // Move the frogs
