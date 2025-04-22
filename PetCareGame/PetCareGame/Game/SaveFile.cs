@@ -6,18 +6,19 @@ namespace PetCareGame
 {
     public class SaveFile
     {
-        public static bool BathDone { get; set; }
-        public static bool NailTrimDone { get; set; }
-        public static bool BrushingDone { get; set; }
-        public static bool PetCareDone { get; set; }
+        public bool BathDone { get; set; }
+        public bool NailTrimDone { get; set; }
+        public bool BrushingDone { get; set; }
+        public bool PetCareDone { get; set; }
 
-        public static bool SlidingGameDone { get; set; }
-        public static bool WheresWaldoDone { get; set; }
+        public bool SlidingGameDone { get; set; }
+        public bool WheresWaldoDone { get; set; }
 
         private const string PATH = @"stats.json";
 
         public static void Save(SaveFile saved)
         {
+            GameHandler.petCareLevel.SaveData(saved);
             string serializedText = JsonSerializer.Serialize<SaveFile>(saved);
             File.WriteAllText(PATH, serializedText);
         }
