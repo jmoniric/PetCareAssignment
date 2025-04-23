@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Audio;
+using System.Linq;
 
 namespace PetCareGame;
 
@@ -78,6 +79,7 @@ public class PetCare : LevelInterface
     private Vector2 waterDropOrigin = new Vector2(16,0);
     private Vector2 waterDropPos;
     private float waterDropScale = 0f;
+    
 
     private bool mouseDown = false;
     
@@ -121,6 +123,9 @@ public class PetCare : LevelInterface
     private Rectangle dryspotBounds3 = new Rectangle(410, 380, 50, 50);
     private Rectangle dryspotBounds4 = new Rectangle(415, 320, 50, 50);
 
+    private List<Rectangle> spotOrder = new List<Rectangle>();
+    private int spotIndex = 0;
+
     private AnimatedTexture hotspot1 = new AnimatedTexture(new Vector2(16,16), 0f, 2f, 1f);
     private AnimatedTexture hotspot2 = new AnimatedTexture(new Vector2(16,16), 0f, 2f, 1f);
     private AnimatedTexture hotspot3 = new AnimatedTexture(new Vector2(16,16), 0f, 2f, 1f);
@@ -143,6 +148,7 @@ public class PetCare : LevelInterface
     private SoundEffectInstance pixelMusic18;
     private SoundEffectInstance pixelMusic13;
     private SoundEffectInstance currentSong;
+    private SoundEffect waterDrip;
 
     public void Dispose()
     {
@@ -752,10 +758,12 @@ public class PetCare : LevelInterface
             snipSfx = _manager.Load<SoundEffect>("Sounds/snip").CreateInstance();
             brushSfx = _manager.Load<SoundEffect>("Sounds/brush").CreateInstance();
             spraySfx = _manager.Load<SoundEffect>("Sounds/spray").CreateInstance();
+            waterDrip = _manager.Load<SoundEffect>("Sounds/water_drip");
             smallWin = _manager.Load<SoundEffect>("Sounds/small_win").CreateInstance();
             smallWin.Volume = 1f;
             pixelMusic18 = _manager.Load<SoundEffect>("Sounds/pixel_music_18").CreateInstance();
             pixelMusic13 = _manager.Load<SoundEffect>("Sounds/pixel_music_13").CreateInstance();
+            
             pixelMusic18.IsLooped = false;
             pixelMusic13.IsLooped = false;
             pixelMusic13.Volume = 0.4f;
@@ -781,13 +789,20 @@ public class PetCare : LevelInterface
         infoNailsBounds = new Rectangle(infoNailsPos.X, infoNailsPos.Y, 150, 72);
         infoBrushBounds = new Rectangle(infoBrushPos.X, infoBrushPos.Y, 190, 72);
 
+        spotOrder.Add(dryspotBounds1);
+        spotOrder.Add(dryspotBounds2);
+        spotOrder.Add(dryspotBounds3);
+        spotOrder.Add(dryspotBounds4);
+
+        spotOrder = ShuffleList(spotOrder);
+
         if(SaveFile.doesFileExist()) {
             LoadData();
         }
 
         //for debug purposes:
         sprayGoal.SetCompletion(true);
-        waterDropPos = dryspotBounds1.Center.ToVector2();
+        waterDropPos = spotOrder[0].Center.ToVector2();
 
         //add statement to not force instructions if played before
     }
@@ -1072,9 +1087,20 @@ public class PetCare : LevelInterface
             } else if(currentStage == GameStage.BathDrying) {
                 if(isReady) {
                     if(waterDropScale < 1.5f) {
-                        waterDropScale += 0.05f;
+                        waterDropScale += 0.025f;
                     } else {
-                        waterDropPos.Y += 5;
+                        waterDropPos.Y += 3;
+                        if(waterDropPos.Y > 525) {
+                            spotIndex++;
+                            if(spotIndex > 3) {
+                                spotIndex = 0;
+                            }
+                            waterDropScale = 0f;
+                            waterDropPos = spotOrder[spotIndex].Center.ToVector2();
+                            if(GameHandler.allowAudio && !GameHandler.muted) {
+                                waterDrip.Play();
+                            }
+                        }
                     }
                 }
             }
@@ -1193,5 +1219,11 @@ public class PetCare : LevelInterface
         nailGoal.SetCompletion(SaveFile.NailTrimDone);
         sprayGoal.SetCompletion(SaveFile.BathDone);
         dryGoal.SetCompletion(SaveFile.BathDone);
+    }
+
+    public List<T> ShuffleList<T>(List<T> listToShuffle)
+    {
+        var shuffledList = listToShuffle.OrderBy(_ => rand.Next()).ToList();
+        return shuffledList;
     }
 }
