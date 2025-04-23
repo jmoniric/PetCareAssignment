@@ -752,8 +752,10 @@ public class PetCare : LevelInterface
             if(currentSong.State == SoundState.Stopped) {
                 if(currentSong == pixelMusic13) {
                     currentSong = pixelMusic18;
+                    currentSong.IsLooped = false;
                 } else {
                     currentSong = pixelMusic13;
+                    currentSong.IsLooped = false;
                 }
                 currentSong.Play();
             }
