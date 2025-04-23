@@ -68,11 +68,16 @@ public class PetCare : LevelInterface
     private Point towelPos = new Point(55,185);
     private Vector2 towelOrigin = Vector2.Zero;
     private Rectangle towelBounds;
+    private bool isReady = false;
     
     private Point brushPos = new Point(600,200);
     private Vector2 brushOrigin = Vector2.Zero;
     private Rectangle brushBounds;
     private Point brushHeadOffset;
+
+    private Vector2 waterDropOrigin = new Vector2(16,0);
+    private Vector2 waterDropPos;
+    private float waterDropScale = 0f;
 
     private bool mouseDown = false;
     
@@ -107,9 +112,15 @@ public class PetCare : LevelInterface
     private Rectangle infoNailsBounds;
     
 
-    private Rectangle brushPoint1 = new Rectangle(385, 270, 50, 50);
-    private Rectangle brushPoint2 = new Rectangle(340, 420, 40, 60);
-    private Rectangle brushPoint3 = new Rectangle(410, 380, 40, 60);
+    private Rectangle hotspotBounds1 = new Rectangle(385, 270, 50, 50);
+    private Rectangle hotspotBounds2 = new Rectangle(340, 420, 40, 60);
+    private Rectangle hotspotBounds3 = new Rectangle(410, 380, 40, 60);
+
+    private Rectangle dryspotBounds1 = new Rectangle(365, 270, 50, 50);
+    private Rectangle dryspotBounds2 = new Rectangle(340, 420, 50, 50);
+    private Rectangle dryspotBounds3 = new Rectangle(410, 380, 50, 50);
+    private Rectangle dryspotBounds4 = new Rectangle(415, 320, 50, 50);
+
     private AnimatedTexture hotspot1 = new AnimatedTexture(new Vector2(16,16), 0f, 2f, 1f);
     private AnimatedTexture hotspot2 = new AnimatedTexture(new Vector2(16,16), 0f, 2f, 1f);
     private AnimatedTexture hotspot3 = new AnimatedTexture(new Vector2(16,16), 0f, 2f, 1f);
@@ -154,7 +165,8 @@ public class PetCare : LevelInterface
         Rectangle checkbox = new Rectangle(16,16,16,16);
         Rectangle checkmark = new Rectangle(0,16,16,16);
         Rectangle sprayZone = new Rectangle(0,96,32,32);
-        Rectangle atlasAudioButton = new Rectangle(32, 16, 16, 16);
+        Rectangle wetSpot = new Rectangle(64,96,32,32);
+        Rectangle waterDrop = new Rectangle(32,96,32,32);
 
         _graphics.GraphicsDevice.Clear(backgroundColour);
         
@@ -228,6 +240,25 @@ public class PetCare : LevelInterface
         //draw towel hook
         spriteBatch.Draw(atlas, new Rectangle(75,150,96,96), towelHook, Color.White);
         
+        //draw visuals for drying spots
+        if(currentStage == GameStage.BathDrying && isReady) {
+            /***
+            //debug draw dry hotspots
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, dryspotBounds1, Color.Red);
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, dryspotBounds2, Color.Green);
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, dryspotBounds3, Color.Blue);
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, dryspotBounds4, Color.Yellow);
+            ***/
+
+            Color waterColour = new Color(33,216,243, 255);
+            spriteBatch.Draw(atlas,dryspotBounds1, wetSpot, waterColour);
+            spriteBatch.Draw(atlas,dryspotBounds2, wetSpot, waterColour);
+            spriteBatch.Draw(atlas,dryspotBounds3, wetSpot, waterColour);
+            spriteBatch.Draw(atlas,dryspotBounds4, wetSpot, waterColour);
+
+            spriteBatch.Draw(atlas, waterDropPos, waterDrop, Color.White, 0f, waterDropOrigin, waterDropScale, SpriteEffects.None, 1f);
+        }
+
         //draw towel
         towelBounds = new Rectangle(towelPos, new Point(128,128));
         spriteBatch.Draw(atlas, towelBounds, towel, Color.White, 0f, towelOrigin, SpriteEffects.None, 1f);
@@ -395,10 +426,12 @@ public class PetCare : LevelInterface
             }
 
         } else if(currentStage == GameStage.Brushing) {
-            /*** //debug for brush zones
-            spriteBatch.Draw(GameHandler.plainWhiteTexture, brushPoint1, Color.Red);
-            spriteBatch.Draw(GameHandler.plainWhiteTexture, brushPoint2, Color.Green);
-            spriteBatch.Draw(GameHandler.plainWhiteTexture, brushPoint3, Color.Blue);***/
+            /***
+            //debug for brush zones
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, hotspotBounds1, Color.Red);
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, hotspotBounds2, Color.Green);
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, hotspotBounds3, Color.Blue);
+            ***/
 
             progressGauge.Draw(gameTime, spriteBatch);
 
@@ -434,6 +467,9 @@ public class PetCare : LevelInterface
             spriteBatch.Draw(GameHandler.plainWhiteTexture, catBounds, Color.Red);
             spriteBatch.Draw(GameHandler.plainWhiteTexture, jumpGate, Color.Blue);
             */
+        } else if(currentStage == GameStage.BathDrying && !isReady) {
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(160,155,520,50), Color.DeepPink);
+            spriteBatch.DrawString(GameHandler.highPixel22, "Press [SPACEBAR] to continue!", new Vector2(175,170), Color.White);
         }
 
         //draw checklist on any stage but instructions mode
@@ -510,6 +546,13 @@ public class PetCare : LevelInterface
             }
         }
 
+        //begins "simon says"
+        if(currentStage == GameStage.BathDrying) {
+            if(!isReady && Keyboard.GetState().IsKeyDown(Keys.Space)) {
+                isReady = true;
+            }
+        }
+
         double cooldownBuffer = 0.25;
 
         //handle input for different stages in here, switch between them below
@@ -519,17 +562,17 @@ public class PetCare : LevelInterface
 
             //Console.WriteLine(hsCooldown1 + 0.5 < gameTime.TotalGameTime.TotalSeconds);
             if(currentStage == GameStage.Brushing && !failState) {
-                if(brushPoint1.Contains(brushHeadOffset) && (hsCooldown1 + cooldownBuffer < gameTime.TotalGameTime.TotalSeconds)) {
+                if(hotspotBounds1.Contains(brushHeadOffset) && (hsCooldown1 + cooldownBuffer < gameTime.TotalGameTime.TotalSeconds)) {
                     if(hotspot1Frame < 8) {
                         hotspot1Frame++;
                     }
                     hsCooldown1 = gameTime.TotalGameTime.TotalSeconds;
-                } else if(brushPoint2.Contains(brushHeadOffset) && (hsCooldown2 + cooldownBuffer < gameTime.TotalGameTime.TotalSeconds)) {
+                } else if(hotspotBounds2.Contains(brushHeadOffset) && (hsCooldown2 + cooldownBuffer < gameTime.TotalGameTime.TotalSeconds)) {
                     if(hotspot2Frame < 8) {
                         hotspot2Frame++;
                     }
                     hsCooldown2 = gameTime.TotalGameTime.TotalSeconds;
-                } else if(brushPoint3.Contains(brushHeadOffset) && (hsCooldown3 + cooldownBuffer < gameTime.TotalGameTime.TotalSeconds)) {
+                } else if(hotspotBounds3.Contains(brushHeadOffset) && (hsCooldown3 + cooldownBuffer < gameTime.TotalGameTime.TotalSeconds)) {
                     if(hotspot3Frame < 8) {
                         hotspot3Frame++;
                     }
@@ -537,7 +580,7 @@ public class PetCare : LevelInterface
                 }
 
                 if(GameHandler.allowAudio && !GameHandler.muted) {
-                    if(brushPoint1.Contains(brushHeadOffset) || brushPoint2.Contains(brushHeadOffset) || brushPoint3.Contains(brushHeadOffset)) {
+                    if(hotspotBounds1.Contains(brushHeadOffset) || hotspotBounds2.Contains(brushHeadOffset) || hotspotBounds3.Contains(brushHeadOffset)) {
                         brushSfx.IsLooped = true;
                         brushSfx.Play();
                     }
@@ -742,6 +785,10 @@ public class PetCare : LevelInterface
             LoadData();
         }
 
+        //for debug purposes:
+        sprayGoal.SetCompletion(true);
+        waterDropPos = dryspotBounds1.Center.ToVector2();
+
         //add statement to not force instructions if played before
     }
 
@@ -898,7 +945,7 @@ public class PetCare : LevelInterface
                     } else if(!waiting) {
                         catPos.X += 10;
 
-                        //executes after last spray and transitions to part 2 of minigame
+                        //executes after last spray, final lap completed, and transitions to part 2 of minigame
                         if(finalLap && catPos.X >= 400) {
                             allowJump = false;
                             catPos = new Vector2(400, 305);
@@ -1022,6 +1069,14 @@ public class PetCare : LevelInterface
                 if(water <= 0 && particles.Count <= 0 && !sprayGoal.GetCompletion()) {
                     failState = true;
                 }
+            } else if(currentStage == GameStage.BathDrying) {
+                if(isReady) {
+                    if(waterDropScale < 1.5f) {
+                        waterDropScale += 0.05f;
+                    } else {
+                        waterDropPos.Y += 5;
+                    }
+                }
             }
 
             //spray bottle held and not in fail limbo state
@@ -1087,6 +1142,7 @@ public class PetCare : LevelInterface
         finalLap = false;
         failState = false;
         water = 16;
+        isReady = false;
 
         //resets the goals for the bath stage only if both sections weren't completed
         //will not preserve progress if only part 1 was completed
