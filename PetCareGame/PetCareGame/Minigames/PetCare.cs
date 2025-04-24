@@ -25,7 +25,8 @@ public class PetCare : LevelInterface
         BathWashing,
         BathDrying,
         NailTrim,
-        Brushing
+        Brushing,
+        Win
     }
 
     enum InfoPanel {
@@ -79,6 +80,13 @@ public class PetCare : LevelInterface
     private Vector2 waterDropOrigin = new Vector2(16,0);
     private Vector2 waterDropPos;
     private float waterDropScale = 0f;
+    private double simonCooldown = 0;
+    private double simonDelay = 2;
+    private int maxSimonIterations = 5;
+    private List<Rectangle> spotOrder = new List<Rectangle>();
+    private int spotIndex = 0;
+    private int simonIteration = 0;
+    private bool isPlayerTurn = false;
     
 
     private bool mouseDown = false;
@@ -96,7 +104,7 @@ public class PetCare : LevelInterface
     private Goal nailGoal = new Goal(10);
     private bool brushGoal = false;
     private Goal sprayGoal = new Goal(5);
-    private Goal dryGoal = new Goal(5);
+    private Goal dryGoal;
 
     private Button startButton;
     private Button infoBath;
@@ -124,16 +132,13 @@ public class PetCare : LevelInterface
     private Rectangle dryspotBounds4 = new Rectangle(415, 320, 50, 50);
 
     private Rectangle lightBounds = new Rectangle(175, 245, 128, 128);
-
-    private List<Rectangle> spotOrder = new List<Rectangle>();
-    private int spotIndex = 0;
-    private int simonIteration = 0;
-    private bool isPlayerTurn = false;
+    
 
     private AnimatedTexture hotspot1 = new AnimatedTexture(new Vector2(16,16), 0f, 2f, 1f);
     private AnimatedTexture hotspot2 = new AnimatedTexture(new Vector2(16,16), 0f, 2f, 1f);
     private AnimatedTexture hotspot3 = new AnimatedTexture(new Vector2(16,16), 0f, 2f, 1f);
     private AnimatedTexture catJump = new AnimatedTexture(new Vector2(32,16), 0f, 3f, 0.5f);
+
     private double hsCooldown1 = 0;
     private double hsCooldown2 = 0;
     private double hsCooldown3 = 0;
@@ -262,28 +267,47 @@ public class PetCare : LevelInterface
             spriteBatch.Draw(GameHandler.plainWhiteTexture, dryspotBounds4, Color.Yellow);
             ***/
 
-            spriteBatch.Draw(atlas, lightBounds, lightBacking, Color.White);
+
             
-            if(isPlayerTurn) { //green light
-                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(220,330,40,40), Color.Lime);
-            } else { //red light
-                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(220,250,40,40), Color.Red);
+            if(!dryGoal.GetCompletion()) {
+                //draw traffic light dim lights
+                spriteBatch.Draw(atlas, lightBounds, lightBacking, Color.White);
+            
+                //draws illuminated lights
+                if(isPlayerTurn) { //green light
+                    spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(220,330,40,40), Color.Lime);
+                } else if(!isPlayerTurn && (simonCooldown + simonDelay > gameTime.TotalGameTime.TotalSeconds)) {
+                    spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(220,250,40,40), Color.Red);
+                } else { //yellow light - sequence is being displayed
+                    spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(220,295,40,40), Color.Yellow);
+                }
+
+                //draw traffic light housing
+                spriteBatch.Draw(atlas, lightBounds, lightHousing, Color.White);
+
+                Color waterColour = new Color(33,216,243, 255);
+                spriteBatch.Draw(atlas,dryspotBounds1, wetSpot, waterColour);
+                spriteBatch.Draw(atlas,dryspotBounds2, wetSpot, waterColour);
+                spriteBatch.Draw(atlas,dryspotBounds3, wetSpot, waterColour);
+                spriteBatch.Draw(atlas,dryspotBounds4, wetSpot, waterColour);
+
+                //draw water drop
+                spriteBatch.Draw(atlas, waterDropPos, waterDrop, Color.White, 0f, waterDropOrigin, waterDropScale, SpriteEffects.None, 1f);
             }
+            
 
-            spriteBatch.Draw(atlas, lightBounds, lightHousing, Color.White);
-
-            Color waterColour = new Color(33,216,243, 255);
-            spriteBatch.Draw(atlas,dryspotBounds1, wetSpot, waterColour);
-            spriteBatch.Draw(atlas,dryspotBounds2, wetSpot, waterColour);
-            spriteBatch.Draw(atlas,dryspotBounds3, wetSpot, waterColour);
-            spriteBatch.Draw(atlas,dryspotBounds4, wetSpot, waterColour);
-
-            spriteBatch.Draw(atlas, waterDropPos, waterDrop, Color.White, 0f, waterDropOrigin, waterDropScale, SpriteEffects.None, 1f);
+            if(failState) {
+                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(160,155,520,120), Color.Black);
+                spriteBatch.DrawString(GameHandler.highPixel22, "Wrong drying order!\nPress [SPACEBAR] to restart;\n[BKSPACE] to see instructions", new Vector2(175,170), Color.Red);
+            }
         }
 
         //draw towel
         towelBounds = new Rectangle(towelPos, new Point(128,128));
         spriteBatch.Draw(atlas, towelBounds, towel, Color.White, 0f, towelOrigin, SpriteEffects.None, 1f);
+        if(dryGoal.GetCompletion() && currentStage != GameStage.BathDrying) {
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, towelBounds, markX, Color.SlateGray);
+        }
 
         //bounding box of spray bottle
         sprayBottleBounds = new Rectangle(sprayBottlePos, new Point(96, 96));
@@ -489,10 +513,14 @@ public class PetCare : LevelInterface
             spriteBatch.Draw(GameHandler.plainWhiteTexture, catBounds, Color.Red);
             spriteBatch.Draw(GameHandler.plainWhiteTexture, jumpGate, Color.Blue);
             */
-        } else if(currentStage == GameStage.BathDrying && !isReady) {
-            spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(160,155,520,50), Color.DeepPink);
-            spriteBatch.DrawString(GameHandler.highPixel22, "Press [SPACEBAR] to continue!", new Vector2(175,170), Color.White);
-        }
+        } else if(currentStage == GameStage.BathDrying) {
+            //draw progress gauge
+            progressGauge.Draw(gameTime, spriteBatch);
+            if(!isReady) {
+                spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(160,155,520,50), Color.DeepPink);
+                spriteBatch.DrawString(GameHandler.highPixel22, "Press [SPACEBAR] to continue!", new Vector2(175,170), Color.White);
+            }
+        } 
 
         //draw checklist on any stage but instructions mode
         if(currentStage != GameStage.Instructions) {
@@ -555,6 +583,16 @@ public class PetCare : LevelInterface
                     CleanupProcesses();
                     currentStage = GameStage.Brushing;
                     currentObject = ObjectHeld.Brush;
+                } else if(currentStage == GameStage.BathDrying) {
+                    dryGoal.ResetGoal();
+                    spotOrder = ShuffleList(spotOrder);
+                    simonIteration = 0;
+                    spotIndex = 0;
+                    waterDropPos = spotOrder[0].Center.ToVector2();
+                    waterDropScale = 0f;
+                    isPlayerTurn = false;
+                    isReady = true;
+                    failState = false;
                 }
             } else if(Keyboard.GetState().IsKeyDown(Keys.Back)) {
                 CleanupProcesses();
@@ -670,7 +708,11 @@ public class PetCare : LevelInterface
                                 tempermentGauge.SetCurrentValue(8);
                                 Console.WriteLine("TRIMMING stage won, returning to IDLE");
                                 if(GameHandler.allowAudio && !GameHandler.muted) {
-                                    smallWin.Play();
+                                    if(GetAllCompletion()) {
+                                        GameHandler.bigWin.Play();
+                                    } else {
+                                        smallWin.Play();
+                                    }
                                 }
                             }
                         } else if(returnState == -1) {
@@ -708,7 +750,7 @@ public class PetCare : LevelInterface
                             spraySfx.Play();
                         }
                     }
-                } else if(currentStage == GameStage.BathDrying) {
+                } else if(currentStage == GameStage.BathDrying && !failState && !dryGoal.GetCompletion()) {
                     if(isPlayerTurn) {
                         //current attempt index is within range or last index before next cycle
                         if(spotIndex <= simonIteration) {
@@ -720,14 +762,13 @@ public class PetCare : LevelInterface
                                     GameHandler.successSfx.Play();
                                 }
                             } else { //check if wrong click or clicking somewhere else
-                                bool fail = false;
+                                
                                 //looks through the list of other spots to see if click was
                                 //misclick or genuinely wrong click
                                 for(int i = spotIndex+1; i < spotOrder.Count; i++) {
-                                    Console.WriteLine("I am running");
                                     //confirms genuine wrong input
                                     if(spotOrder[i].Contains(GameHandler.relativeMousePos)) {
-                                        fail = true;
+                                        failState = true;
                                         if(GameHandler.allowAudio && !GameHandler.muted) {
                                             GameHandler.failSfx.Play();
                                         }
@@ -739,6 +780,7 @@ public class PetCare : LevelInterface
                         }
                         //index is outside of current iteration, switch back to npc playback
                         if(spotIndex > simonIteration) {
+                            simonCooldown = gameTime.TotalGameTime.TotalSeconds;
                             spotIndex = 0;
                             dryGoal.Increment();
                             simonIteration++;
@@ -813,7 +855,7 @@ public class PetCare : LevelInterface
             spraySfx = _manager.Load<SoundEffect>("Sounds/spray").CreateInstance();
             waterDrip = _manager.Load<SoundEffect>("Sounds/water_drip");
             smallWin = _manager.Load<SoundEffect>("Sounds/small_win").CreateInstance();
-            smallWin.Volume = 1f;
+            smallWin.Volume = 0.35f;
             pixelMusic18 = _manager.Load<SoundEffect>("Sounds/pixel_music_18").CreateInstance();
             pixelMusic13 = _manager.Load<SoundEffect>("Sounds/pixel_music_13").CreateInstance();
             
@@ -849,8 +891,17 @@ public class PetCare : LevelInterface
         spotOrder.Add(dryspotBounds2);
         spotOrder.Add(dryspotBounds3);
         spotOrder.Add(dryspotBounds4);
-        //adds random spot
-        spotOrder.Add(spotOrder[(int)rand.NextInt64(0, 4)]);
+
+        //adds n number of random spots to fill any remaining slots after the initial 4
+        //have been added, i.e.: maxSimonInterations 6 means one instance of each spot
+        //plus two random spots (4 + 2)
+        //maxSimonIterations will be minimum of 4
+        for(int i = 0; i < maxSimonIterations - 4; i++) {
+            spotOrder.Add(spotOrder[(int)rand.NextInt64(0, 4)]);
+        }
+
+        dryGoal = new Goal(maxSimonIterations);
+        
 
         //randomizes order of list, ensuring different order every time
         spotOrder = ShuffleList(spotOrder);
@@ -859,10 +910,13 @@ public class PetCare : LevelInterface
             LoadData();
         }
 
-        //for debug purposes:
-        sprayGoal.SetCompletion(true);
         //puts waterdrop at starting spot
         waterDropPos = spotOrder[0].Center.ToVector2();
+
+
+        //for debug purposes:
+        //sprayGoal.SetCompletion(true);
+        
 
         //add statement to not force instructions if played before
     }
@@ -914,7 +968,9 @@ public class PetCare : LevelInterface
             
             //no game has been started
             if(currentStage == GameStage.Idle) { //no stage running
-                
+                if(GetAllCompletion()) { //transitions to win stage
+                    currentStage = GameStage.Win;
+                }
             } else if(currentStage == GameStage.NailTrim) { //nail trimming
                 if(nailGoal.GetCompletion()) {
                     gameInputGauge.SetVisibility(false);
@@ -938,7 +994,11 @@ public class PetCare : LevelInterface
                     brushOrigin = Vector2.Zero;
                     Console.WriteLine("BRUSH stage won, returning to IDLE");
                     if(GameHandler.allowAudio && !GameHandler.muted) {
-                        smallWin.Play();
+                        if(GetAllCompletion()) {
+                            GameHandler.bigWin.Play();
+                        } else {
+                            smallWin.Play();
+                        }
                     }
                 }
                 if(!brushGoal && !failState) { //brushing goal not reached
@@ -1033,6 +1093,7 @@ public class PetCare : LevelInterface
 
                             Console.WriteLine("BATHWASHING complete, progressing to BATHDRYING");
                             currentStage = GameStage.BathDrying;
+                            progressGauge.UpdateParameters(0, maxSimonIterations, 0);
                         }
 
                     //cooldown expires
@@ -1150,8 +1211,28 @@ public class PetCare : LevelInterface
 
 
             } else if(currentStage == GameStage.BathDrying) {
-                if(isReady) { 
-                    if(!isPlayerTurn) { //is npc turn
+                progressGauge.SetVisibility(true);
+                progressGauge.SetCurrentValue(dryGoal.GetCurrentValue());
+                progressGauge.Update(gameTime);
+
+                if(dryGoal.GetCompletion()) {
+                    currentStage = GameStage.Idle;
+                    currentObject = ObjectHeld.None;                        
+                    towelPos = new Point(55,185);
+                    towelOrigin = Vector2.Zero;
+                    Console.WriteLine("BATHDRYING stage won, returning to IDLE");
+                    if(GameHandler.allowAudio && !GameHandler.muted) {
+                        if(GetAllCompletion()) {
+                            GameHandler.bigWin.Play();
+                        } else {
+                            smallWin.Play();
+                        }
+                    }
+                }
+
+                if(isReady && !failState && !dryGoal.GetCompletion()) { 
+                    //is npc turn
+                    if(!isPlayerTurn && (simonCooldown + simonDelay < gameTime.TotalGameTime.TotalSeconds)) {
                         if(waterDropScale < 1.5f) {
                             waterDropScale += 0.025f;
                         } else {
@@ -1171,8 +1252,6 @@ public class PetCare : LevelInterface
                                 }
                             }
                         }
-                    } else { //is player turn
-
                     }
                 }
             }
@@ -1297,9 +1376,13 @@ public class PetCare : LevelInterface
         dryGoal.SetCompletion(SaveFile.BathDone);
     }
 
-    public List<T> ShuffleList<T>(List<T> listToShuffle)
+    private List<T> ShuffleList<T>(List<T> listToShuffle)
     {
         var shuffledList = listToShuffle.OrderBy(_ => rand.Next()).ToList();
         return shuffledList;
+    }
+
+    private bool GetAllCompletion() {
+        return brushGoal && dryGoal.GetCompletion() && sprayGoal.GetCompletion() && nailGoal.GetCompletion();
     }
 }

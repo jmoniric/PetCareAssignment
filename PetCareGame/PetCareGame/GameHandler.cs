@@ -175,6 +175,7 @@ public class GameHandler : Game
             successSfx = coreAssets.Load<SoundEffect>("Sounds/UI/success").CreateInstance();
             successSfx.Volume = 0.2f;
             bigWin = coreAssets.Load<SoundEffect>("Sounds/UI/big_win").CreateInstance();
+            bigWin.Volume = 0.15f;
         }
         catch (NoAudioHardwareException e)
         {
