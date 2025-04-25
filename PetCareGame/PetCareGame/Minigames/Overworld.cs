@@ -43,6 +43,16 @@ namespace PetCareGame
         private Rectangle T10 = new Rectangle(48,32,16,16); //tree corner top right
         private Rectangle T11 = new Rectangle(0,48,16,16); //tree corner bottom right
         private Rectangle T12 = new Rectangle(16,48,16,16); //rough grass bottom
+        private Rectangle T13 = new Rectangle(64,0,16,16); //path elbow from left to top
+        private Rectangle T14 = new Rectangle(64,16,16,16); //water cliff edge left
+        private Rectangle T15 = new Rectangle(64,32,16,16); //water cliff corner bottom left
+        private Rectangle T16 = new Rectangle(64,48,16,16); //water cliff edge bottom
+        private Rectangle T17 = new Rectangle(64,64,16,16); //water
+        private Rectangle T18 = new Rectangle(64,80,16,16); //water cliff corner bottom right
+        private Rectangle T19 = new Rectangle(64,96,16,16); //water cliff corner top right
+        private Rectangle T20 = new Rectangle(64,112,16,16); //water cliff edge right
+        private Rectangle T21 = new Rectangle(80,0,16,16); //water cliff inner corner top right
+        private Rectangle T22 = new Rectangle(0,16,16,16); //path cap top
 
 
         public Overworld(PetCare pet, WheresWaldo waldo, SlidingGame sliding, PauseMenu pauseMenu, Button pauseB)
@@ -123,6 +133,7 @@ namespace PetCareGame
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
         {
             Rectangle settlement = new Rectangle(0,64,64,64);
+            Rectangle house = new Rectangle(80,16,16,16);
             Rectangle tileDebug = new Rectangle(48,48,16,16);
 
             Rectangle sourceRectangle = new Rectangle(0, 0, petCareButton.CellWidth, petCareButton.CellHeight);
@@ -141,11 +152,12 @@ namespace PetCareGame
                     
 
                     //draws a debug grid to make assembling this easier
-                    spriteBatch.Draw(atlas, new Rectangle(h*64, v*64, 64, 64), tileDebug, Color.White);
+                    //spriteBatch.Draw(atlas, new Rectangle(h*64, v*64, 64, 64), tileDebug, Color.White);
                 }
             }
 
             spriteBatch.Draw(atlas, new Rectangle(448,256,256,256), settlement, Color.White);
+            spriteBatch.Draw(atlas, new Rectangle(576,64,64,64), house, Color.White);
 
             
             spriteBatch.Draw(petCareButton.Texture, destinationRectangle, sourceRectangle, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
@@ -182,15 +194,15 @@ namespace PetCareGame
                                                 new Point(64, 33), fishingButtonPosition, "Fishing Minigame", 36, true);
 
             overworldBlueprint = new Rectangle[10,13] {
-                { T09, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00 },
-                { T09, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00 },
-                { T11, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00 },
-                { T03, T03, T03, T05, T00, T00, T00, T00, T00, T00, T00, T00, T00 },
-                { T10, T00, T07, T01, T08, T08, T00, T00, T00, T00, T00, T00, T00 },
-                { T09, T06, T06, T01, T06, T07, T00, T00, T00, T00, T00, T00, T00 },
-                { T09, T06, T06, T01, T06, T06, T08, T00, T00, T00, T00, T00, T00 },
-                { T09, T06, T06, T01, T06, T06, T07, T00, T00, T00, T00, T00, T00 },
-                { T09, T12, T12, T04, T03, T03, T03, T03, T03, T02, T00, T00, T00 },
+                { T09, T00, T00, T00, T14, T17, T17, T20, T00, T00, T00, T00, T00 },
+                { T09, T00, T00, T00, T14, T17, T17, T21, T19, T00, T22, T05, T00 },
+                { T11, T00, T00, T00, T15, T17, T17, T17, T21, T19, T00, T01, T00 },
+                { T03, T03, T03, T05, T00, T15, T16, T16, T16, T18, T00, T01, T00 },
+                { T10, T00, T07, T01, T08, T08, T00, T00, T00, T00, T00, T01, T00 },
+                { T09, T06, T06, T01, T06, T07, T00, T00, T00, T00, T00, T01, T00 },
+                { T09, T06, T06, T01, T06, T06, T08, T00, T00, T00, T00, T01, T00 },
+                { T09, T06, T06, T01, T06, T06, T07, T00, T00, T00, T00, T01, T00 },
+                { T09, T12, T12, T04, T03, T03, T03, T03, T03, T02, T03, T13, T00 },
                 { T09, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00 }
             };
         }
