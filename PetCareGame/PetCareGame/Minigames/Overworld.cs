@@ -27,6 +27,24 @@ namespace PetCareGame
         private PauseMenu PauseMenu { get; set; }
         private ContentManager coreAssets { get; set; }
 
+        private Texture2D atlas;
+        private Rectangle[,] overworldBlueprint;
+
+        private Rectangle T00 = new Rectangle(0,0,16,16); //grass
+        private Rectangle T01 = new Rectangle(16,16,16,16); //vertical path
+        private Rectangle T02 = new Rectangle(48,16,16,16); //T-intersection pointing up
+        private Rectangle T03 = new Rectangle(32,0,16,16); //horizontal path
+        private Rectangle T04 = new Rectangle(0,32,16,16); //path elbow from top to right
+        private Rectangle T05 = new Rectangle(16,32,16,16); //path elbow from left to bottom
+        private Rectangle T06 = new Rectangle(16,0,16,16); //flower field
+        private Rectangle T07 = new Rectangle(48,0,16,16); //rough grass
+        private Rectangle T08 = new Rectangle(32,16,16,16); //rough grass top
+        private Rectangle T09 = new Rectangle(32,32,16,16); //tree edge right
+        private Rectangle T10 = new Rectangle(48,32,16,16); //tree corner top right
+        private Rectangle T11 = new Rectangle(0,48,16,16); //tree corner bottom right
+        private Rectangle T12 = new Rectangle(16,48,16,16); //rough grass bottom
+
+
         public Overworld(PetCare pet, WheresWaldo waldo, SlidingGame sliding, PauseMenu pauseMenu, Button pauseB)
         {
             PetCareLevel = pet;
@@ -104,6 +122,9 @@ namespace PetCareGame
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
         {
+            Rectangle settlement = new Rectangle(0,64,64,64);
+            Rectangle tileDebug = new Rectangle(48,48,16,16);
+
             Rectangle sourceRectangle = new Rectangle(0, 0, petCareButton.CellWidth, petCareButton.CellHeight);
             Rectangle sourceRectangle1 = new Rectangle(0, 0, waldoButton.CellWidth, waldoButton.CellHeight);
             Rectangle sourceRectangle2 = new Rectangle(0, 0, slidingButton.CellWidth, slidingButton.CellHeight);
@@ -114,10 +135,24 @@ namespace PetCareGame
             Rectangle destinationRectangle2 = new Rectangle((int)slidingButtonPosition.X, (int)slidingButtonPosition.Y, slidingButton.CellWidth, slidingButton.CellHeight);
             Rectangle destinationRectangle3 = new Rectangle((int)fishingButtonPosition.X, (int)fishingButtonPosition.Y, fishingButton.CellWidth, fishingButton.CellHeight);
 
+            for(int h = 0; h < 13; h++) {
+                for(int v = 0; v < 10; v++) {
+                    spriteBatch.Draw(atlas, new Rectangle(h*64, v*64, 64, 64), overworldBlueprint[v,h], Color.White);
+                    
+
+                    //draws a debug grid to make assembling this easier
+                    spriteBatch.Draw(atlas, new Rectangle(h*64, v*64, 64, 64), tileDebug, Color.White);
+                }
+            }
+
+            spriteBatch.Draw(atlas, new Rectangle(448,256,256,256), settlement, Color.White);
+
+            
             spriteBatch.Draw(petCareButton.Texture, destinationRectangle, sourceRectangle, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
             spriteBatch.Draw(waldoButton.Texture, destinationRectangle1, sourceRectangle1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
             spriteBatch.Draw(slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
             spriteBatch.Draw(fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
+            
         }
 
         public void Update(GameTime gameTime)
@@ -127,7 +162,7 @@ namespace PetCareGame
 
         public void LoadContent(ContentManager _manager, ContentManager assets)
         {
-            throw new NotImplementedException();
+            atlas = _manager.Load<Texture2D>("Sprites/overworld_atlas");
         }
 
         public void LoadLevel()
@@ -145,6 +180,19 @@ namespace PetCareGame
                                                 new Point(64, 33), slidingButtonPosition, "Sliding Minigame", 35, true);
             fishingButton = new Button(coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGame"), coreAssets.Load<Texture2D>("Sprites/Buttons/FishingMiniGameClicked"),
                                                 new Point(64, 33), fishingButtonPosition, "Fishing Minigame", 36, true);
+
+            overworldBlueprint = new Rectangle[10,13] {
+                { T09, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00 },
+                { T09, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00 },
+                { T11, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00 },
+                { T03, T03, T03, T05, T00, T00, T00, T00, T00, T00, T00, T00, T00 },
+                { T10, T00, T07, T01, T08, T08, T00, T00, T00, T00, T00, T00, T00 },
+                { T09, T06, T06, T01, T06, T07, T00, T00, T00, T00, T00, T00, T00 },
+                { T09, T06, T06, T01, T06, T06, T08, T00, T00, T00, T00, T00, T00 },
+                { T09, T06, T06, T01, T06, T06, T07, T00, T00, T00, T00, T00, T00 },
+                { T09, T12, T12, T04, T03, T03, T03, T03, T03, T02, T00, T00, T00 },
+                { T09, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00 }
+            };
         }
 
         public void CleanupProcesses()

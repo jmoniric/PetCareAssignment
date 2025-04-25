@@ -52,6 +52,7 @@ public class GameHandler : Game
     public static ContentManager waldoAssets;
     public static ContentManager fishingAssets;
     public static ContentManager petcareAssets;
+    public static ContentManager overworldAssets;
 
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32, 16), 0f, 3f, 0.5f);
     public static AnimatedTexture catIrritated = new AnimatedTexture(new Vector2(32, 16), 0f, 3f, 0.5f);
@@ -105,6 +106,9 @@ public class GameHandler : Game
 
         petcareAssets = new ContentManager(Content.ServiceProvider);
         petcareAssets.RootDirectory = "Content/PetcareGame";
+
+        overworldAssets = new ContentManager(Content.ServiceProvider);
+        overworldAssets.RootDirectory = "Content/Overworld";
 
         IsMouseVisible = true;
 

@@ -846,9 +846,6 @@ public class PetCare : LevelInterface
 
     public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
-        //loads cat in at bigger scale for my game
-        //GameHandler.catIdle = new AnimatedTexture(new Vector2(32,16), 0f, 5f, 0.5f);
-        //GameHandler.catIdle.Load(_coreAssets, "Sprites/Animal/idle", 7, 5);
         atlas = _manager.Load<Texture2D>("Sprites/petcare_textureatlas");
         startButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(225, 72), new Vector2(startButtonPos.X,startButtonPos.Y), "Start", 42, true);
         infoBath = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(150, 72), new Vector2(infoBathPos.X,infoBathPos.Y), "Bath", 43, true);

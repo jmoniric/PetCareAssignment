@@ -97,6 +97,7 @@ namespace PetCareGame
                         SaveFile.NewFile(GameHandler.saveFile);
                         SetButtonVisibility(false);
                         GameHandler.CurrentState = GameHandler.GameState.Overworld;
+                        GameHandler.overworldLevel.LoadContent(GameHandler.overworldAssets, GameHandler.coreAssets);
                     }
                     else if (continueButton.CheckIfSelectButtonWasClicked() && SaveFile.doesFileExist())
                     {
@@ -104,6 +105,7 @@ namespace PetCareGame
                         SetButtonVisibility(false);
                         GameHandler.saveFile = GameHandler.saveFile.Load();
                         GameHandler.CurrentState = GameHandler.GameState.Overworld;
+                        GameHandler.overworldLevel.LoadContent(GameHandler.overworldAssets, GameHandler.coreAssets);
                     }
                     else if (quitButton.CheckIfSelectButtonWasClicked())
                     {
