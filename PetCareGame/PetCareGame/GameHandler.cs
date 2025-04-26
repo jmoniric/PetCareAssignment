@@ -366,6 +366,9 @@ public class GameHandler : Game
                 slidingLevel.CleanupProcesses();
                 ((LevelInterface)slidingLevel).UnloadLevel(slidingAssets);
                 break;
+            case GameState.Overworld:
+                ((LevelInterface)overworldLevel).UnloadLevel(overworldAssets);
+                break;
             default:
                 break;
         }

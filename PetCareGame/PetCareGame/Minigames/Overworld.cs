@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -41,13 +42,17 @@ namespace PetCareGame
         private Texture2D atlas;
         private Rectangle[,] overworldBlueprint;
 
+        private SoundEffectInstance forestAmbience;
+        private SoundEffectInstance forestMusic;
+        private SoundEffectInstance footsteps;
+
         private Rectangle T00 = new Rectangle(0,0,16,16); //grass
         private Rectangle T01 = new Rectangle(16,16,16,16); //vertical path
         private Rectangle T02 = new Rectangle(48,16,16,16); //T-intersection pointing up
         private Rectangle T03 = new Rectangle(32,0,16,16); //horizontal path
         private Rectangle T04 = new Rectangle(0,32,16,16); //path elbow from top to right
         private Rectangle T05 = new Rectangle(16,32,16,16); //path elbow from left to bottom
-        private Rectangle T06 = new Rectangle(16,0,16,16); //flower field
+        private Rectangle T06 = new Rectangle(16,0,16,16); //flower field pink
         private Rectangle T07 = new Rectangle(48,0,16,16); //rough grass
         private Rectangle T08 = new Rectangle(32,16,16,16); //rough grass top
         private Rectangle T09 = new Rectangle(32,32,16,16); //tree edge right
@@ -64,6 +69,7 @@ namespace PetCareGame
         private Rectangle T20 = new Rectangle(64,112,16,16); //water cliff edge right
         private Rectangle T21 = new Rectangle(80,0,16,16); //water cliff inner corner top right
         private Rectangle T22 = new Rectangle(0,16,16,16); //path cap top
+        private Rectangle T23 = new Rectangle(80,32,16,16); //flower field yellow
 
 
         public Overworld(PetCare pet, WheresWaldo waldo, SlidingGame sliding, PauseMenu pauseMenu, Button pauseB)
@@ -82,23 +88,36 @@ namespace PetCareGame
             int speedH = 2;
             int speedV = 2;
 
+            bool footstepsFlag = false;
             //updates cat position, ensuring requested movement doesn't go out of bounds
             if(!GameHandler.isPaused) {
                 if(kybdState.GetPressedKeys().Contains(Keys.A) || kybdState.GetPressedKeys().Contains(Keys.Left)) {
                     if(ValidateMovement("H", speedH*-1)) {
                         catPos.X -= speedH;
+                        footstepsFlag = true;
                     }
                 } else if(kybdState.GetPressedKeys().Contains(Keys.D) || kybdState.GetPressedKeys().Contains(Keys.Right)) {
                     if(ValidateMovement("H", speedH)) {
                         catPos.X += speedH;
+                        footstepsFlag = true;
                     }
                 } else if(kybdState.GetPressedKeys().Contains(Keys.W) || kybdState.GetPressedKeys().Contains(Keys.Up)) {
                     if(ValidateMovement("V", speedV*-1)) {
                         catPos.Y -= speedV;
+                        footstepsFlag = true;
                     }
                 } else if(kybdState.GetPressedKeys().Contains(Keys.S) || kybdState.GetPressedKeys().Contains(Keys.Down)) {
                     if(ValidateMovement("V", speedV)) {
                         catPos.Y += speedV;
+                        footstepsFlag = true;
+                    }
+                }
+
+                if(GameHandler.allowAudio) {
+                    if(!GameHandler.muted && footstepsFlag) {
+                        footsteps.Play();
+                    } else {
+                        footsteps.Pause();
                     }
                 }
             }
@@ -234,6 +253,21 @@ namespace PetCareGame
 
             catBounds = new Rectangle((int)catPos.X+10,(int)catPos.Y+10,40,40);
             
+            if(GameHandler.allowAudio) {
+                if(!GameHandler.isPaused && !GameHandler.muted) {
+                    forestAmbience.Play();
+                } else {
+                    forestAmbience.Pause();
+                }
+
+                if(!GameHandler.isPaused && !GameHandler.musicMuted) {
+                    forestMusic.Play();
+                } else {
+                    forestMusic.Pause();
+                }
+            }
+            
+            
             HandleInput(gameTime);
         }
 
@@ -247,13 +281,20 @@ namespace PetCareGame
             catWalkDown.Load(_manager, "Sprites/walk_down", 8, fps);
             catIdle.Load(coreAssets, "Sprites/Animal/idle", 7, 5);
 
-            //adds containment collision rectangles for movement
-            colliders.Add(new Rectangle(0, 192, 256, 64));
-            colliders.Add(new Rectangle(192, 192, 64, 384));
-            colliders.Add(new Rectangle(192, 512, 576, 64));
-            colliders.Add(new Rectangle(704, 64, 64, 512));
-            colliders.Add(new Rectangle(640, 64, 128, 64));
-            colliders.Add(new Rectangle(576, 448, 64, 128));
+            if(GameHandler.allowAudio) {
+                forestAmbience = _manager.Load<SoundEffect>("Sounds/forest_ambience").CreateInstance();
+                forestAmbience.Volume = 0.3f;
+                forestAmbience.IsLooped = true;
+
+                forestMusic = _manager.Load<SoundEffect>("Sounds/forest_music").CreateInstance();
+                forestMusic.Volume = 0.4f;
+                forestMusic.IsLooped = true;
+
+                footsteps = _manager.Load<SoundEffect>("Sounds/gravel_footsteps").CreateInstance();
+                footsteps.Volume = 0.15f;
+                footsteps.IsLooped = true;
+                footsteps.Pitch = 0.5f;
+            }
         }
 
         public void LoadLevel()
@@ -279,11 +320,19 @@ namespace PetCareGame
                 { T03, T03, T03, T05, T00, T15, T16, T16, T16, T18, T00, T01, T00 },
                 { T10, T00, T07, T01, T08, T08, T00, T00, T00, T00, T00, T01, T00 },
                 { T09, T06, T06, T01, T06, T07, T00, T00, T00, T00, T00, T01, T00 },
-                { T09, T06, T06, T01, T06, T06, T08, T00, T00, T00, T00, T01, T00 },
-                { T09, T06, T06, T01, T06, T06, T07, T00, T00, T00, T00, T01, T00 },
+                { T09, T06, T23, T01, T23, T06, T08, T00, T00, T00, T00, T01, T00 },
+                { T09, T06, T06, T01, T23, T06, T07, T00, T00, T00, T00, T01, T00 },
                 { T09, T12, T12, T04, T03, T03, T03, T03, T03, T02, T03, T13, T00 },
                 { T09, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00 }
             };
+
+            //adds containment collision rectangles for movement
+            colliders.Add(new Rectangle(0, 192, 256, 64));
+            colliders.Add(new Rectangle(192, 192, 64, 384));
+            colliders.Add(new Rectangle(192, 512, 576, 64));
+            colliders.Add(new Rectangle(704, 64, 64, 512));
+            colliders.Add(new Rectangle(640, 64, 128, 64));
+            colliders.Add(new Rectangle(576, 448, 64, 128));
         }
 
         //use this to see if the requested movement moves out of allowed bounds

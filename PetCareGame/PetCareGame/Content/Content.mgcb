@@ -309,6 +309,24 @@
 /processor:PassThroughProcessor
 /build:FishingGame/Sprites/placeholder.xml
 
+#begin Overworld/Sounds/forest_ambience.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Overworld/Sounds/forest_ambience.wav
+
+#begin Overworld/Sounds/forest_music.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Overworld/Sounds/forest_music.wav
+
+#begin Overworld/Sounds/gravel_footsteps.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Overworld/Sounds/gravel_footsteps.wav
+
 #begin Overworld/Sprites/overworld_atlas.png
 /importer:TextureImporter
 /processor:TextureProcessor
