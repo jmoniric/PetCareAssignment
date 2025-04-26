@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -19,6 +21,15 @@ namespace PetCareGame
         private Vector2 waldoButtonPosition;
         private Vector2 fishingButtonPosition;
         private Vector2 petCareButtonPosition;
+
+        private KeyboardState kybdState;
+        private Vector2 catPos = new Vector2(0, 192);
+        private Rectangle catBounds;
+        private AnimatedTexture catWalkRight = new AnimatedTexture(Vector2.Zero, 0f, 1f, 1f);
+        private AnimatedTexture catWalkUp = new AnimatedTexture(Vector2.Zero, 0f, 1f, 1f);
+        private AnimatedTexture catWalkDown = new AnimatedTexture(Vector2.Zero, 0f, 1f, 1f);
+        private AnimatedTexture catIdle = new AnimatedTexture(Vector2.Zero, 0f, 1f, 1f);
+        private List<Rectangle> colliders = new List<Rectangle>();
 
         private PetCare PetCareLevel { get; set; }
         private CatFishing FishingLevel { get; set; }
@@ -68,6 +79,29 @@ namespace PetCareGame
 
         public void HandleInput(GameTime gameTime)
         {
+            int speedH = 2;
+            int speedV = 2;
+
+            //updates cat position, ensuring requested movement doesn't go out of bounds
+            if(!GameHandler.isPaused) {
+                if(kybdState.GetPressedKeys().Contains(Keys.A) || kybdState.GetPressedKeys().Contains(Keys.Left)) {
+                    if(ValidateMovement("H", speedH*-1)) {
+                        catPos.X -= speedH;
+                    }
+                } else if(kybdState.GetPressedKeys().Contains(Keys.D) || kybdState.GetPressedKeys().Contains(Keys.Right)) {
+                    if(ValidateMovement("H", speedH)) {
+                        catPos.X += speedH;
+                    }
+                } else if(kybdState.GetPressedKeys().Contains(Keys.W) || kybdState.GetPressedKeys().Contains(Keys.Up)) {
+                    if(ValidateMovement("V", speedV*-1)) {
+                        catPos.Y -= speedV;
+                    }
+                } else if(kybdState.GetPressedKeys().Contains(Keys.S) || kybdState.GetPressedKeys().Contains(Keys.Down)) {
+                    if(ValidateMovement("V", speedV)) {
+                        catPos.Y += speedV;
+                    }
+                }
+            }
             //for now, loading the next minigame will be handeled via the four buttons
             //but in the future, there will be conditional logic to allow for whether a
             //minigame should be loaded, whether the button is enabled, etc
@@ -159,6 +193,28 @@ namespace PetCareGame
             spriteBatch.Draw(atlas, new Rectangle(448,256,256,256), settlement, Color.White);
             spriteBatch.Draw(atlas, new Rectangle(576,64,64,64), house, Color.White);
 
+            //debug draw colliders
+            /*for(int i = 0; i < colliders.Count; i++) {
+                spriteBatch.Draw(GameHandler.plainWhiteTexture, colliders[i], Color.Orange);
+            }*/
+
+            //debug draw cat bounds
+            //spriteBatch.Draw(GameHandler.plainWhiteTexture, catBounds, Color.Lime);
+
+            //draws movement sprites
+            if(kybdState.GetPressedKeys().Contains(Keys.A) || kybdState.GetPressedKeys().Contains(Keys.Left)) {
+                catWalkRight.DrawFrame(spriteBatch, catPos, SpriteEffects.FlipHorizontally);
+            } else if(kybdState.GetPressedKeys().Contains(Keys.D) || kybdState.GetPressedKeys().Contains(Keys.Right)) {
+                catWalkRight.DrawFrame(spriteBatch, catPos, SpriteEffects.None);
+            } else if(kybdState.GetPressedKeys().Contains(Keys.W) || kybdState.GetPressedKeys().Contains(Keys.Up)) {
+                catWalkUp.DrawFrame(spriteBatch, catPos, SpriteEffects.None);
+            } else if(kybdState.GetPressedKeys().Contains(Keys.S) || kybdState.GetPressedKeys().Contains(Keys.Down)) {
+                catWalkDown.DrawFrame(spriteBatch, catPos, SpriteEffects.None);
+            } else {
+                catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.None);
+            }
+            
+            
             
             spriteBatch.Draw(petCareButton.Texture, destinationRectangle, sourceRectangle, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
             spriteBatch.Draw(waldoButton.Texture, destinationRectangle1, sourceRectangle1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
@@ -169,12 +225,35 @@ namespace PetCareGame
 
         public void Update(GameTime gameTime)
         {
+            kybdState = Keyboard.GetState();
+            float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            catWalkRight.UpdateFrame(elapsed);
+            catWalkUp.UpdateFrame(elapsed);
+            catWalkDown.UpdateFrame(elapsed);
+            catIdle.UpdateFrame(elapsed);
+
+            catBounds = new Rectangle((int)catPos.X+10,(int)catPos.Y+10,40,40);
+            
             HandleInput(gameTime);
         }
 
         public void LoadContent(ContentManager _manager, ContentManager assets)
         {
             atlas = _manager.Load<Texture2D>("Sprites/overworld_atlas");
+
+            int fps = 8;
+            catWalkRight.Load(_manager, "Sprites/walk_right", 8, fps);
+            catWalkUp.Load(_manager, "Sprites/walk_up", 8, fps);
+            catWalkDown.Load(_manager, "Sprites/walk_down", 8, fps);
+            catIdle.Load(coreAssets, "Sprites/Animal/idle", 7, 5);
+
+            //adds containment collision rectangles for movement
+            colliders.Add(new Rectangle(0, 192, 256, 64));
+            colliders.Add(new Rectangle(192, 192, 64, 384));
+            colliders.Add(new Rectangle(192, 512, 576, 64));
+            colliders.Add(new Rectangle(704, 64, 64, 512));
+            colliders.Add(new Rectangle(640, 64, 128, 64));
+            colliders.Add(new Rectangle(576, 448, 64, 128));
         }
 
         public void LoadLevel()
@@ -205,6 +284,33 @@ namespace PetCareGame
                 { T09, T12, T12, T04, T03, T03, T03, T03, T03, T02, T03, T13, T00 },
                 { T09, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00 }
             };
+        }
+
+        //use this to see if the requested movement moves out of allowed bounds
+        //rectangles must overlap each other in some way so that softlock edge doesn't
+        //form between two rectangles
+        private bool ValidateMovement(string direction, int amount) {
+            bool isValid = false;
+
+            Rectangle testBounds;
+            if(direction == "H") { //horizontal movement
+                testBounds = new Rectangle(catBounds.X+amount, catBounds.Y, catBounds.Width, catBounds.Height);
+
+                for(int i = 0; i < colliders.Count; i++) {
+                    if(colliders[i].Contains(testBounds)) { //moment cat box may leave
+                        isValid = true;
+                    }
+                }
+            } else if(direction == "V") {//vertical movement
+                testBounds = new Rectangle(catBounds.X, catBounds.Y+amount, catBounds.Width, catBounds.Height);
+
+                for(int i = 0; i < colliders.Count; i++) {
+                    if(colliders[i].Contains(testBounds)) { //moment cat box may leave
+                        isValid = true;
+                    }
+                }
+            }
+            return isValid;
         }
 
         public void CleanupProcesses()
