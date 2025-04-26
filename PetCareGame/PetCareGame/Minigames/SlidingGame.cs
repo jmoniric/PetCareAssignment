@@ -10,40 +10,33 @@ namespace PetCareGame;
 
 public class SlidingGame : LevelInterface
 {
-
+    //Texture and Sprites
     private Color backgroundColour = new Color(50, 205, 50);
-
-    private Vector2 catPos = new Vector2(200, 150);
-
-
-    private Point chestPos = new Point(400, 350);
-
     private Texture2D atlas;
 
     private Texture2D chest;
 
+    private Texture2D frog;
+
+    private Texture2D fruit;
+    
+    private SoundEffectInstance peacefulTrack;
 
 
-    private Rectangle chestBounds;
+    //Asset positions and Bounds
+     private Rectangle chestBounds;
+    private Point chestPos = new Point(400, 350);
 
-
-    private bool faceRight = true;
-
-    private GameStage currentStage = GameStage.Instructions;
+    private Vector2 catPos = new Vector2(200, 150);
 
     private Button startButton;
     private Point startButtonPos = new Point(270, 510);
-
     private Rectangle startButtonBounds;
-    private bool isMoving;
 
-    // Frog(s)
-    private Texture2D frog;
+    private Rectangle fruitBounds;
+    private Point goalTilePos;
 
-    private List<Vector2> frogPositions = new List<Vector2>();
-    private List<bool> frogMovingRight = new List<bool>();
-
-
+    private Point fruitPos = new Point(270, 610);
     // Animation variables
     private int frameWidth;
     private int frameHeight;
@@ -51,17 +44,17 @@ public class SlidingGame : LevelInterface
     private float frameSpeed = 0.1f;
     private float animationTimer = 0f;
     private int currentFrame = 0;
+    private bool faceRight = true;
+    private bool isMoving;
 
-    //Movement
-    private float frogSpeed = 150f; // Adjust speed as needed
+    //Frog Logic
+    
+    private List<Vector2> frogPositions = new List<Vector2>();
+    private List<bool> frogMovingRight = new List<bool>();
+    private float frogSpeed = 150f; 
 
-
-    //frog (s) (end)
-    private SoundEffectInstance peacefulTrack;
-
-    private int lives =5;
-
-    enum GameStage
+    //Game Stages variables
+        enum GameStage
     {
         Instructions,
         Run,
@@ -70,11 +63,11 @@ public class SlidingGame : LevelInterface
 
         gameOver
     }
-
-    private Point goalTilePos;
-
-
+    private GameStage currentStage = GameStage.Instructions;
+    private int lives =5;
     private bool mouseDown = false;
+    
+    private bool slidingGoal = false;
 
 
 
@@ -302,6 +295,8 @@ public class SlidingGame : LevelInterface
                 Color.Black
             );
 
+            spriteBatch.Draw(fruit, fruitBounds, new Rectangle(16, 0, 16, 16), Color.White);
+
             spriteBatch.Draw(GameHandler.coreTextureAtlas, startButtonBounds, new Rectangle(16, 0, 16, 16), Color.White);
             spriteBatch.DrawString(GameHandler.highPixel22, "Start", new Vector2(350, startButtonPos.Y + 25), Color.Black);
         }
@@ -459,6 +454,8 @@ public class SlidingGame : LevelInterface
         chest = _manager.Load<Texture2D>("Sprites/treasure_atlas");
         startButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(250, 72), new Vector2(startButtonPos.X, startButtonPos.Y), "Start", 42, true);
 
+        fruit = _manager.Load<Texture2D>("Sprites/fruit");
+
         frameWidth = frog.Width / frameCount;
         frameHeight = frog.Height;
 
@@ -470,6 +467,8 @@ public class SlidingGame : LevelInterface
     {
         //Start Button
         startButtonBounds = new Rectangle(startButtonPos.X, startButtonPos.Y, 250, 72);
+
+        fruitBounds = new Rectangle(fruitPos.X, fruitPos.Y, 250, 172);
 
         //Goal position
         int tileSize = 64;
@@ -499,16 +498,6 @@ public class SlidingGame : LevelInterface
 
     }
 
-    public void LoadData()
-    {
-
-    }
-
-    public void SaveData(SaveFile saveFile)
-    {
-
-    }
-
     public void Update(GameTime gameTime)
     {
         //this is your music handling code
@@ -529,6 +518,7 @@ public class SlidingGame : LevelInterface
             {
                 peacefulTrack.IsLooped = false;
                 peacefulTrack.Stop(true);
+                slidingGoal = true;
             }
         }
 
@@ -594,4 +584,16 @@ public class SlidingGame : LevelInterface
         }
 
     }
+
+        public void SaveData(SaveFile saveFile)
+    {
+        saveFile.SlidingGameDone = slidingGoal;
+    }
+
+        public void LoadData()
+    {
+
+    }
+
+
 }
