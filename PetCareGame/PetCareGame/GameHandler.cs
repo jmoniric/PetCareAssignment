@@ -52,6 +52,7 @@ public class GameHandler : Game
     public static ContentManager waldoAssets;
     public static ContentManager fishingAssets;
     public static ContentManager petcareAssets;
+    public static ContentManager overworldAssets;
 
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32, 16), 0f, 3f, 0.5f);
     public static AnimatedTexture catIrritated = new AnimatedTexture(new Vector2(32, 16), 0f, 3f, 0.5f);
@@ -105,6 +106,9 @@ public class GameHandler : Game
 
         petcareAssets = new ContentManager(Content.ServiceProvider);
         petcareAssets.RootDirectory = "Content/PetcareGame";
+
+        overworldAssets = new ContentManager(Content.ServiceProvider);
+        overworldAssets.RootDirectory = "Content/Overworld";
 
         IsMouseVisible = true;
 
@@ -175,6 +179,7 @@ public class GameHandler : Game
             successSfx = coreAssets.Load<SoundEffect>("Sounds/UI/success").CreateInstance();
             successSfx.Volume = 0.2f;
             bigWin = coreAssets.Load<SoundEffect>("Sounds/UI/big_win").CreateInstance();
+            bigWin.Volume = 0.15f;
         }
         catch (NoAudioHardwareException e)
         {
@@ -192,6 +197,12 @@ public class GameHandler : Game
     private void HandleInput(GameTime gameTime)
     {
         mouseState = OneShotMouseButtons.GetState();
+
+        if(Keyboard.GetState().IsKeyDown(Keys.Escape) && !isPaused && CurrentState != GameState.MainMenu) {
+            isPaused = true;
+            pauseMenu.LoadLevel();
+            pauseMenu.LoadContent(null, coreAssets);
+        }
 
         if (mouseState.LeftButton == ButtonState.Pressed)
         {
@@ -354,6 +365,9 @@ public class GameHandler : Game
             case GameState.SlidingGame:
                 slidingLevel.CleanupProcesses();
                 ((LevelInterface)slidingLevel).UnloadLevel(slidingAssets);
+                break;
+            case GameState.Overworld:
+                ((LevelInterface)overworldLevel).UnloadLevel(overworldAssets);
                 break;
             default:
                 break;
