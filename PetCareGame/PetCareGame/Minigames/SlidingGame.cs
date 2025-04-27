@@ -22,6 +22,10 @@ public class SlidingGame : LevelInterface
     
     private SoundEffectInstance peacefulTrack;
 
+    private SoundEffectInstance fasterTrack;
+
+    private SoundEffectInstance finalTrack;
+
 
     //Asset positions and Bounds
      private Rectangle chestBounds;
@@ -58,6 +62,10 @@ public class SlidingGame : LevelInterface
     {
         Instructions,
         Run,
+
+        Run2,
+
+        Run3,
         
         Completion,
 
@@ -68,6 +76,8 @@ public class SlidingGame : LevelInterface
     private bool mouseDown = false;
     
     private bool slidingGoal = false;
+
+    private int stagesCompleted = 0;
 
 
 
@@ -159,7 +169,7 @@ public class SlidingGame : LevelInterface
             spriteBatch.Draw(GameHandler.coreTextureAtlas, startButtonBounds, new Rectangle(16, 0, 16, 16), Color.White);
             spriteBatch.DrawString(GameHandler.highPixel22, "Start", new Vector2(350, startButtonPos.Y + 25), Color.Black);
         }
-        else if (currentStage == GameStage.Run)
+        else if (currentStage == GameStage.Run || currentStage == GameStage.Run2)
         {
 
             // Draw background (grass) first
@@ -202,6 +212,8 @@ public class SlidingGame : LevelInterface
 
                 frogPositions.Add(new Vector2(newX, newY));
                 frogMovingRight.Add(rand.Next(2) == 0); // Randomly choose left or right direction
+                stagesCompleted++;
+                
 
             }
             else
@@ -241,9 +253,22 @@ public class SlidingGame : LevelInterface
             }
             
 
-            if (frogPositions.Count == 4)
+            if (stagesCompleted == 4)
+            {
+                currentStage = GameStage.Run2;
+            }
+
+            if(stagesCompleted == 7)
             {
                 currentStage = GameStage.Completion;
+            }
+
+            if (slidingGoal)
+            {
+                spriteBatch.Draw(fruit, fruitBounds, openchestTextureSource, Color.White);
+                spriteBatch.DrawString(GameHandler.highPixel22, "You have moved the chest!", new Vector2(100, 150), Color.Black);
+                spriteBatch.DrawString(GameHandler.highPixel22, "Click to continue", new Vector2(100, 200), Color.Black);
+                slidingGoal = false;
             }
 
         }
@@ -423,6 +448,7 @@ public class SlidingGame : LevelInterface
                     frogPositions.Clear();
                     frogMovingRight.Clear();
                     lives = 5;
+                    stagesCompleted = 0;
                  
                     
                 }
@@ -460,6 +486,8 @@ public class SlidingGame : LevelInterface
         frameHeight = frog.Height;
 
         peacefulTrack = _manager.Load<SoundEffect>("Sounds/peacefulTrack").CreateInstance();
+        fasterTrack = _manager.Load<SoundEffect>("Sounds/fasterTrack").CreateInstance();
+        finalTrack = _manager.Load<SoundEffect>("Sounds/finalTrack").CreateInstance();
 
     }
 
@@ -509,10 +537,18 @@ public class SlidingGame : LevelInterface
                 peacefulTrack.IsLooped = true;
                 peacefulTrack.Play();
             }
+            if(!GameHandler.musicMuted && currentStage == GameStage.Run2 && !GameHandler.isPaused)
+            {
+                peacefulTrack.IsLooped = false;
+                peacefulTrack.Stop(true);
+                fasterTrack.IsLooped = true;
+                fasterTrack.Play();
+            }
             else //otherwise, pause soundtrack
             {
                 peacefulTrack.Pause();
             }
+            
 
             if (currentStage == GameStage.Completion)
             {
@@ -525,8 +561,8 @@ public class SlidingGame : LevelInterface
         
 
 
-        if (currentStage == GameStage.Run)
-        {
+        if (currentStage == GameStage.Run || currentStage == GameStage.Run2)
+        { 
             // Update frog animation
             animationTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (animationTimer > frameSpeed)
@@ -550,44 +586,45 @@ public class SlidingGame : LevelInterface
             }
 
 
-            for (int i = 0; i < frogPositions.Count; i++)
-            {
-                float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-                Vector2 frogPos = frogPositions[i];
+       for (int i = frogPositions.Count - 1; i >= 0; i--) // Loop backwards to safely remove
+{
+    float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+    Vector2 frogPos = frogPositions[i];
 
-                // Define frog bounds for collision detection
-                Rectangle frogBounds = new Rectangle((int)frogPos.X, (int)frogPos.Y, frameWidth * 2, frameHeight * 2);
+    // Define frog bounds
+    Rectangle frogBounds = new Rectangle((int)frogPos.X, (int)frogPos.Y, 64, 64);
 
-                // Reset cat position if a frog touches the chest
-                if (frogBounds.Intersects(catBounds))
-                {
-                    catPos = new Vector2(300, 305); // Reset to starting position
-                    chestPos = new Point(400, 350); // Reset chest position
-                    lives--;
-                   // frogPositions.RemoveAt(i); // Remove the frog that touched the cat
-                }
+    // Check for collision with cat
+    if (frogBounds.Intersects(catBounds))
+    {
+        lives--;
+        frogPositions.RemoveAt(i);
+        frogMovingRight.RemoveAt(i);
+        continue; 
+    }
 
-                // Move the frogs
-                if (frogMovingRight[i])
-                {
-                    frogPositions[i] += new Vector2(frogSpeed * elapsed, 0);
-                    if (frogPositions[i].X >= GameHandler.windowWidth - 64)
-                        frogMovingRight[i] = false;
-                }
-                else
-                {
-                    frogPositions[i] -= new Vector2(frogSpeed * elapsed, 0);
-                    if (frogPositions[i].X <= 0)
-                        frogMovingRight[i] = true;
-                }
-            }
-        }
+    // Move frog
+    float moveAmount = frogSpeed * elapsed;
+    if (frogMovingRight[i])
+    {
+        frogPos.X += moveAmount;
+        if (frogPos.X > GameHandler.windowWidth - 64) frogMovingRight[i] = false;
+    }
+    else
+    {
+        frogPos.X -= moveAmount;
+        if (frogPos.X < 0) frogMovingRight[i] = true;
+    }
+
+    frogPositions[i] = frogPos;
+}
+}
 
     }
 
         public void SaveData(SaveFile saveFile)
     {
-        saveFile.SlidingGameDone = slidingGoal;
+        //saveFile.SlidingGameDone = slidingGoal;
     }
 
         public void LoadData()

@@ -453,6 +453,18 @@
 /processorParam:TextureFormat=Color
 /build:PetcareGame/Sprites/petcare_textureatlas.png
 
+#begin SlidingGame/Sounds/fasterTrack.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SlidingGame/Sounds/fasterTrack.wav
+
+#begin SlidingGame/Sounds/finalTrack.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SlidingGame/Sounds/finalTrack.wav
+
 #begin SlidingGame/Sounds/peacefulTrack.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
