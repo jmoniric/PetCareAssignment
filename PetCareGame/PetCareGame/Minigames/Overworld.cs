@@ -140,6 +140,7 @@ namespace PetCareGame
                 {
                     if (petCareButton.CheckIfSelectButtonWasClicked())
                     {
+                        GameHandler.UnloadCurrentLevel();
                         SetVisiblity(false); //hides buttons to prevent them from being pressed again
                         petCareButton.Clicked();
                         GameHandler.CurrentState = GameHandler.GameState.PetCareGame;
@@ -148,6 +149,7 @@ namespace PetCareGame
                     }
                     else if (waldoButton.CheckIfSelectButtonWasClicked())
                     {
+                        GameHandler.UnloadCurrentLevel();
                         SetVisiblity(false);
                         waldoButton.Clicked();
                         GameHandler.CurrentState = GameHandler.GameState.WaldoGame;
@@ -156,6 +158,7 @@ namespace PetCareGame
                     }
                     else if (slidingButton.CheckIfSelectButtonWasClicked())
                     {
+                        GameHandler.UnloadCurrentLevel();
                         SetVisiblity(false);
                         slidingButton.Clicked();
                         GameHandler.CurrentState = GameHandler.GameState.SlidingGame;
@@ -164,6 +167,7 @@ namespace PetCareGame
                     }
                     else if (fishingButton.CheckIfSelectButtonWasClicked())
                     {
+                        GameHandler.UnloadCurrentLevel();
                         SetVisiblity(false);
                         fishingButton.Clicked();
                         GameHandler.CurrentState = GameHandler.GameState.FishingGame;
@@ -187,6 +191,7 @@ namespace PetCareGame
         {
             Rectangle settlement = new Rectangle(0,64,64,64);
             Rectangle house = new Rectangle(80,16,16,16);
+            Rectangle rock = new Rectangle(80,48,16,16);
             Rectangle tileDebug = new Rectangle(48,48,16,16);
 
             Rectangle sourceRectangle = new Rectangle(0, 0, petCareButton.CellWidth, petCareButton.CellHeight);
@@ -205,17 +210,20 @@ namespace PetCareGame
                     
 
                     //draws a debug grid to make assembling this easier
-                    //spriteBatch.Draw(atlas, new Rectangle(h*64, v*64, 64, 64), tileDebug, Color.White);
+                    spriteBatch.Draw(atlas, new Rectangle(h*64, v*64, 64, 64), tileDebug, Color.White);
                 }
             }
 
-            spriteBatch.Draw(atlas, new Rectangle(448,256,256,256), settlement, Color.White);
-            spriteBatch.Draw(atlas, new Rectangle(576,64,64,64), house, Color.White);
+            int mult = 64;
+
+            spriteBatch.Draw(atlas, new Rectangle(7*mult,4*mult,4*mult,4*mult), settlement, Color.White);
+            spriteBatch.Draw(atlas, new Rectangle(9*mult,mult,mult,mult), house, Color.White);
+            spriteBatch.Draw(atlas, new Rectangle(4*mult,8*mult,mult,mult), rock, Color.White);
 
             //debug draw colliders
-            /*for(int i = 0; i < colliders.Count; i++) {
+            for(int i = 0; i < colliders.Count; i++) {
                 spriteBatch.Draw(GameHandler.plainWhiteTexture, colliders[i], Color.Orange);
-            }*/
+            }
 
             //debug draw cat bounds
             //spriteBatch.Draw(GameHandler.plainWhiteTexture, catBounds, Color.Lime);
@@ -326,13 +334,15 @@ namespace PetCareGame
                 { T09, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00 }
             };
 
+            int mult = 64; //tiles are 64x64
+
             //adds containment collision rectangles for movement
-            colliders.Add(new Rectangle(0, 192, 256, 64));
-            colliders.Add(new Rectangle(192, 192, 64, 384));
-            colliders.Add(new Rectangle(192, 512, 576, 64));
-            colliders.Add(new Rectangle(704, 64, 64, 512));
-            colliders.Add(new Rectangle(640, 64, 128, 64));
-            colliders.Add(new Rectangle(576, 448, 64, 128));
+            colliders.Add(new Rectangle(0, 3*mult, 4*mult, mult));
+            colliders.Add(new Rectangle(3*mult, 3*mult, mult, 6*mult));
+            colliders.Add(new Rectangle(5*mult, 8*mult, 7*mult, mult));
+            colliders.Add(new Rectangle(11*mult, mult, mult, 8*mult));
+            colliders.Add(new Rectangle(10*mult, mult, 2*mult, mult));
+            colliders.Add(new Rectangle(9*mult, 7*mult, mult, 2*mult));
         }
 
         //use this to see if the requested movement moves out of allowed bounds
