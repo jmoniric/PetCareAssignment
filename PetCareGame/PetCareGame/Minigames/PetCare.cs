@@ -1367,6 +1367,7 @@ public class PetCare : LevelInterface
         tempermentGauge.SetCurrentValue(8);
         progressGauge.SetCurrentValue(0);
 
+        // nailGoal.ResetGoal();
         if(!nailGoal.GetCompletion()) {
             nailGoal.ResetGoal();
         }
@@ -1374,18 +1375,18 @@ public class PetCare : LevelInterface
 
     public void SaveData(SaveFile saveFile)
     {
-        SaveFile.BathDone = sprayGoal.GetCompletion() && dryGoal.GetCompletion();
-        SaveFile.BrushingDone = brushGoal;
-        SaveFile.NailTrimDone = nailGoal.GetCompletion();
-        SaveFile.PetCareDone = SaveFile.BathDone && SaveFile.BrushingDone && SaveFile.NailTrimDone;
+        GameHandler.saveFile.BathDone = sprayGoal.GetCompletion() && dryGoal.GetCompletion();
+        GameHandler.saveFile.BrushingDone = brushGoal;
+        GameHandler.saveFile.NailTrimDone = nailGoal.GetCompletion();
+        GameHandler.saveFile.PetCareDone = GameHandler.saveFile.BathDone && GameHandler.saveFile.BrushingDone && GameHandler.saveFile.NailTrimDone;
     }
 
     public void LoadData()
     {
-        brushGoal = SaveFile.BrushingDone;
-        nailGoal.SetCompletion(SaveFile.NailTrimDone);
-        sprayGoal.SetCompletion(SaveFile.BathDone);
-        dryGoal.SetCompletion(SaveFile.BathDone);
+        brushGoal = GameHandler.saveFile.BrushingDone;
+        nailGoal.SetCompletion(GameHandler.saveFile.NailTrimDone);
+        sprayGoal.SetCompletion(GameHandler.saveFile.BathDone);
+        dryGoal.SetCompletion(GameHandler.saveFile.BathDone);
     }
 
     private List<T> ShuffleList<T>(List<T> listToShuffle)
