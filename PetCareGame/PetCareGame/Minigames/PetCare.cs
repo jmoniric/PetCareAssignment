@@ -926,7 +926,7 @@ public class PetCare : LevelInterface
 
 
         //for simon says debug purposes:
-        sprayGoal.SetCompletion(true);
+        //sprayGoal.SetCompletion(true);
         
 
         //add statement to not force instructions if played before
