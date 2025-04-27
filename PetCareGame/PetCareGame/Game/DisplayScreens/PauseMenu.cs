@@ -211,7 +211,7 @@ public class PauseMenu : LevelInterface
                         case PauseState.ExitWarning:
                             if (yesButton.CheckIfSelectButtonWasClicked())
                             {
-                                SaveFile.Save(GameHandler.saveFile);
+                                GameHandler.saveFile.Save(GameHandler.saveFile);
                                 game.Exit();
                             }
                             else if (noButton.CheckIfSelectButtonWasClicked())
@@ -222,7 +222,7 @@ public class PauseMenu : LevelInterface
                         case PauseState.SavingWarning:
                             if (yesButton.CheckIfSelectButtonWasClicked())
                             {
-                                SaveFile.Save(GameHandler.saveFile);
+                                GameHandler.saveFile.Save(GameHandler.saveFile);
                                 isWarning = false;
                             }
                             else if (noButton.CheckIfSelectButtonWasClicked())

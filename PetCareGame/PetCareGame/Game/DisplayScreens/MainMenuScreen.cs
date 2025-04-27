@@ -94,7 +94,7 @@ namespace PetCareGame
                     if (newGameButton.CheckIfSelectButtonWasClicked())
                     {
                         // start a new game with a fresh file
-                        SaveFile.NewFile(GameHandler.saveFile);
+                        GameHandler.saveFile.NewFile(GameHandler.saveFile);
                         SetButtonVisibility(false);
                         GameHandler.CurrentState = GameHandler.GameState.Overworld;
                         GameHandler.overworldLevel.LoadContent(GameHandler.overworldAssets, GameHandler.coreAssets);
