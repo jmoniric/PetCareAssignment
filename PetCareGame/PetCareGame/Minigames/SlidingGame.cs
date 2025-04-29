@@ -299,9 +299,10 @@ public class SlidingGame : LevelInterface
 
             if (stagesCompleted == 9)
             {
-                currentStage = GameStage.Completion;
                 GameHandler.saveFile.SlidingGameDone = true;
                 GameHandler.saveFile.Save(GameHandler.saveFile);
+                
+                currentStage = GameStage.Completion;
             }
 
             if (slidingGoal)
@@ -480,12 +481,13 @@ public class SlidingGame : LevelInterface
             {
                 if (startButtonBounds.Contains(GameHandler.mouseState.Position))
                 {
-                    
+        
                     frogPositions.Clear();
                     frogMovingRight.Clear();
                     lives = 5;
                     stagesCompleted = 0;
-                    currentStage = GameStage.Run ;
+                    GameHandler.CurrentState = GameHandler.GameState.Overworld;
+                    GameHandler.overworldLevel.LoadContent(GameHandler.overworldAssets, GameHandler.coreAssets);
 
                 }
                 mouseDown = true;
@@ -587,6 +589,7 @@ public class SlidingGame : LevelInterface
             }
             else if (!GameHandler.musicMuted && currentStage == GameStage.Run2 && !GameHandler.isPaused)
             {
+                
                 peacefulTrack.IsLooped = false;
                 peacefulTrack.Stop(true);
                 fasterTrack.IsLooped = true;
@@ -608,8 +611,8 @@ public class SlidingGame : LevelInterface
 
             if (currentStage == GameStage.Completion)
             {
-                peacefulTrack.IsLooped = false;
-                peacefulTrack.Stop(true);
+                finalTrack.IsLooped = false;
+                finalTrack.Stop();
                 slidingGoal = true;
                 slidingGoalGlobal = true;
             }
@@ -694,6 +697,8 @@ public class SlidingGame : LevelInterface
         }
 
     }
+
+
 
     public void SaveData(SaveFile saveFile)
     {
