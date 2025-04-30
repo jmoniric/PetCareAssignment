@@ -11,7 +11,7 @@ namespace PetCareGame;
 public class SlidingGame : LevelInterface
 {
     //Texture and Sprites
-    private Color backgroundColour = new Color(50, 205, 50);
+    private Color backgroundColour = new Color(144, 238, 144);
     private Texture2D atlas;
 
     private Texture2D chest;
@@ -50,6 +50,10 @@ public class SlidingGame : LevelInterface
     private int currentFrame = 0;
     private bool faceRight = true;
     private bool isMoving;
+
+    //allows devs to skip game for debugging purposes
+    private bool debugSkipGame = true;
+
 
     //Frog Logic
 
@@ -176,7 +180,7 @@ public class SlidingGame : LevelInterface
             spriteBatch.Draw(
                 GameHandler.plainWhiteTexture,
                 new Rectangle(0, 0, (int)GameHandler.baseScreenSize.X, (int)GameHandler.baseScreenSize.Y),
-                Color.LightPink
+                backgroundColour
             );
 
             spriteBatch.DrawString(
@@ -331,7 +335,7 @@ public class SlidingGame : LevelInterface
             spriteBatch.Draw(
                 GameHandler.plainWhiteTexture,
                 new Rectangle(0, 0, (int)GameHandler.baseScreenSize.X, (int)GameHandler.baseScreenSize.Y),
-                Color.LightPink
+                backgroundColour
             );
 
             spriteBatch.DrawString(
@@ -356,7 +360,7 @@ public class SlidingGame : LevelInterface
             spriteBatch.Draw(
                 GameHandler.plainWhiteTexture,
                 new Rectangle(0, 0, (int)GameHandler.baseScreenSize.X, (int)GameHandler.baseScreenSize.Y),
-                Color.LightPink
+                backgroundColour
             );
 
             spriteBatch.DrawString(
@@ -376,7 +380,7 @@ public class SlidingGame : LevelInterface
             spriteBatch.Draw(fruit, fruitBounds, new Rectangle(16, 0, 16, 16), Color.White);
 
             spriteBatch.Draw(GameHandler.coreTextureAtlas, startButtonBounds, new Rectangle(16, 0, 16, 16), Color.White);
-            spriteBatch.DrawString(GameHandler.highPixel22, "Start", new Vector2(350, startButtonPos.Y + 25), Color.Black);
+            spriteBatch.DrawString(GameHandler.highPixel22, "Return", new Vector2(350, startButtonPos.Y + 25), Color.Black);
         }
 
 
@@ -389,139 +393,139 @@ public class SlidingGame : LevelInterface
 
     public void HandleInput(GameTime gameTime)
     {
-        isMoving = false;
+        if(!GameHandler.isPaused) {
+            isMoving = false;
 
-        KeyboardState keyboardState = Keyboard.GetState();
+            KeyboardState keyboardState = Keyboard.GetState();
 
-        float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        Rectangle catBounds = new Rectangle((int)catPos.X, (int)catPos.Y, 32, 32);
-        int tileSize = 64;
+            float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Rectangle catBounds = new Rectangle((int)catPos.X, (int)catPos.Y, 32, 32);
+            int tileSize = 64;
 
-        // Cat movement logic
-        if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
-        {
-            Rectangle newBounds = new Rectangle((int)(catPos.X - 300 * elapsed), (int)catPos.Y, 64, 64);
-            if (newBounds.Intersects(chestBounds)) chestPos.X -= tileSize;
-            else catPos.X -= 300 * elapsed;
-
-            faceRight = false;
-            isMoving = true;
-        }
-        if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
-        {
-            Rectangle newBounds = new Rectangle((int)(catPos.X + 300 * elapsed), (int)catPos.Y, 64, 64);
-            if (newBounds.Intersects(chestBounds)) chestPos.X += tileSize;
-            else catPos.X += 300 * elapsed;
-
-            faceRight = true;
-            isMoving = true;
-        }
-        if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
-        {
-            Rectangle newBounds = new Rectangle((int)catPos.X, (int)(catPos.Y - 300 * elapsed), 64, 64);
-            if (newBounds.Intersects(chestBounds)) chestPos.Y -= tileSize;
-            else catPos.Y -= 300 * elapsed;
-
-            isMoving = true;
-        }
-        if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
-        {
-            Rectangle newBounds = new Rectangle((int)catPos.X, (int)(catPos.Y + 300 * elapsed), 64, 64);
-            if (newBounds.Intersects(chestBounds)) chestPos.Y += tileSize;
-            else catPos.Y += 300 * elapsed;
-
-            isMoving = true;
-        }
-
-        //In case of chest softlock
-
-        if (keyboardState.IsKeyDown(Keys.R))
-        {
-            catPos = new Vector2(300, 305); // Reset to starting position
-            chestPos = new Point(400, 350); // Reset chest position
-        }
-
-        // Mouse Input for Start Button
-        if (currentStage == GameStage.Instructions)
-        {
-            if (GameHandler.mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
+            // Cat movement logic
+            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
-                if (startButtonBounds.Contains(GameHandler.mouseState.Position))
+                Rectangle newBounds = new Rectangle((int)(catPos.X - 300 * elapsed), (int)catPos.Y, 64, 64);
+                if (newBounds.Intersects(chestBounds)) chestPos.X -= tileSize;
+                else catPos.X -= 300 * elapsed;
+
+                faceRight = false;
+                isMoving = true;
+            }
+            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
+            {
+                Rectangle newBounds = new Rectangle((int)(catPos.X + 300 * elapsed), (int)catPos.Y, 64, 64);
+                if (newBounds.Intersects(chestBounds)) chestPos.X += tileSize;
+                else catPos.X += 300 * elapsed;
+
+                faceRight = true;
+                isMoving = true;
+            }
+            if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
+            {
+                Rectangle newBounds = new Rectangle((int)catPos.X, (int)(catPos.Y - 300 * elapsed), 64, 64);
+                if (newBounds.Intersects(chestBounds)) chestPos.Y -= tileSize;
+                else catPos.Y -= 300 * elapsed;
+
+                isMoving = true;
+            }
+            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
+            {
+                Rectangle newBounds = new Rectangle((int)catPos.X, (int)(catPos.Y + 300 * elapsed), 64, 64);
+                if (newBounds.Intersects(chestBounds)) chestPos.Y += tileSize;
+                else catPos.Y += 300 * elapsed;
+
+                isMoving = true;
+            }
+
+            //In case of chest softlock
+
+            if (keyboardState.IsKeyDown(Keys.R))
+            {
+                catPos = new Vector2(300, 305); // Reset to starting position
+                chestPos = new Point(400, 350); // Reset chest position
+            }
+
+            // Mouse Input for Start Button
+            if (currentStage == GameStage.Instructions)
+            {
+                if (GameHandler.mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
                 {
-                    currentStage = GameStage.Run;
-                    Console.WriteLine("Game Started!");
+                    if (startButtonBounds.Contains(GameHandler.mouseState.Position))
+                    {
+                        currentStage = GameStage.Run;
+                        Console.WriteLine("Game Started!");
+                    }
+                    mouseDown = true;
                 }
-                mouseDown = true;
-            }
-            else if (GameHandler.mouseState.LeftButton == ButtonState.Released)
-            {
-                mouseDown = false;
-            }
-
-
-        }
-
-        // Mouse Input for Game Over and Completion Screens
-        // Game Over Screen
-        if (currentStage == GameStage.gameOver)
-        {
-
-            if (GameHandler.mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
-            {
-                if (startButtonBounds.Contains(GameHandler.mouseState.Position))
+                else if (GameHandler.mouseState.LeftButton == ButtonState.Released)
                 {
-                    currentStage = GameStage.Instructions;
-                    frogPositions.Clear();
-                    frogMovingRight.Clear();
-                    lives = 5;
-                    stagesCompleted = 0;
+                    mouseDown = false;
                 }
-                mouseDown = true;
+
+
             }
-            else if (GameHandler.mouseState.LeftButton == ButtonState.Released)
+
+            // Mouse Input for Game Over and Completion Screens
+            // Game Over Screen
+            if (currentStage == GameStage.gameOver)
             {
-                mouseDown = false;
-            }
-        }
 
-        if (currentStage == GameStage.Completion)
-
-
-        {
-            if (GameHandler.mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
-            {
-                if (startButtonBounds.Contains(GameHandler.mouseState.Position))
+                if (GameHandler.mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
                 {
-        
-                    frogPositions.Clear();
-                    frogMovingRight.Clear();
-                    lives = 5;
-                    stagesCompleted = 0;
-
-                    //sets save file bool for this game to be true
-                    GameHandler.saveFile.SlidingGameDone = true;
-                    //unloads assets this game is using
-                    GameHandler.UnloadCurrentLevel();
-                    GameHandler.LoadOverworld();
-
+                    if (startButtonBounds.Contains(GameHandler.mouseState.Position))
+                    {
+                        currentStage = GameStage.Instructions;
+                        frogPositions.Clear();
+                        frogMovingRight.Clear();
+                        lives = 5;
+                        stagesCompleted = 0;
+                    }
+                    mouseDown = true;
                 }
-                mouseDown = true;
+                else if (GameHandler.mouseState.LeftButton == ButtonState.Released)
+                {
+                    mouseDown = false;
+                }
             }
-            else if (GameHandler.mouseState.LeftButton == ButtonState.Released)
+
+            if (currentStage == GameStage.Completion)
             {
-                mouseDown = false;
+                if (GameHandler.mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
+                {
+                    if (startButtonBounds.Contains(GameHandler.mouseState.Position))
+                    {
+            
+                        frogPositions.Clear();
+                        frogMovingRight.Clear();
+                        lives = 5;
+                        stagesCompleted = 0;
+
+                        //sets save file bool for this game to be true
+                        GameHandler.saveFile.SlidingGameDone = true;
+                        //unloads assets this game is using
+                        GameHandler.UnloadCurrentLevel();
+                        GameHandler.LoadOverworld();
+
+                    }
+                    mouseDown = true;
+                }
+                else if (GameHandler.mouseState.LeftButton == ButtonState.Released)
+                {
+                    mouseDown = false;
+                }
             }
+
+            // Ensure the cat and chest positions are within the screen bounds
+            catPos.X = MathHelper.Clamp(catPos.X, 0, GameHandler.windowWidth - tileSize);
+            catPos.Y = MathHelper.Clamp(catPos.Y, 0, GameHandler.windowHeight - tileSize);
+
+            chestPos.X = MathHelper.Clamp(chestPos.X, 0, GameHandler.windowWidth - tileSize);
+            chestPos.Y = MathHelper.Clamp(chestPos.Y, 0, GameHandler.windowHeight - tileSize);
+
+            // Update chest bounds to match its new position
+            chestBounds = new Rectangle(chestPos.X, chestPos.Y, 64, 64);
         }
-
-        // Ensure the cat and chest positions are within the screen bounds
-        catPos.X = MathHelper.Clamp(catPos.X, 0, GameHandler.windowWidth - tileSize);
-        catPos.Y = MathHelper.Clamp(catPos.Y, 0, GameHandler.windowHeight - tileSize);
-
-        chestPos.X = MathHelper.Clamp(chestPos.X, 0, GameHandler.windowWidth - tileSize);
-        chestPos.Y = MathHelper.Clamp(chestPos.Y, 0, GameHandler.windowHeight - tileSize);
-
-        // Update chest bounds to match its new position
-        chestBounds = new Rectangle(chestPos.X, chestPos.Y, 64, 64);
     }
     public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
@@ -580,6 +584,12 @@ public class SlidingGame : LevelInterface
 
     public void Update(GameTime gameTime)
     {
+        //allows devs to skip game for debugging purposes
+        if(debugSkipGame) {
+            currentStage = GameStage.Completion;
+        }
+
+
         //Show transition screen if active
         if (showTransitionScreen)
         {
@@ -632,85 +642,85 @@ public class SlidingGame : LevelInterface
                 slidingGoalGlobal = true;
             }
         }
-
-        // Handle input for the game stage transitions
-        if (currentStage == GameStage.Run || currentStage == GameStage.Run2 || currentStage == GameStage.Run3)
-        {
-            // Check for mouse input on the start button
-            if (GameHandler.mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
+        if(!GameHandler.isPaused) {
+            // Handle input for the game stage transitions
+            if (currentStage == GameStage.Run || currentStage == GameStage.Run2 || currentStage == GameStage.Run3)
             {
-                if (startButtonBounds.Contains(GameHandler.mouseState.Position))
+                // Check for mouse input on the start button
+                if (GameHandler.mouseState.LeftButton == ButtonState.Pressed && !mouseDown)
                 {
-                    currentStage = GameStage.Instructions;
-                    frogPositions.Clear();
-                    frogMovingRight.Clear();
-                    lives = 5;
+                    if (startButtonBounds.Contains(GameHandler.mouseState.Position))
+                    {
+                        currentStage = GameStage.Instructions;
+                        frogPositions.Clear();
+                        frogMovingRight.Clear();
+                        lives = 5;
+                    }
+                    mouseDown = true;
                 }
-                mouseDown = true;
-            }
-            else if (GameHandler.mouseState.LeftButton == ButtonState.Released)
-            {
-                mouseDown = false;
-            }
-        }
-        {
-            // Update frog animation
-            animationTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (animationTimer > frameSpeed)
-            {
-                animationTimer = 0f;
-                currentFrame = (currentFrame + 1) % frameCount;
-            }
-
-            // Define chest and cat bounds for collision detection
-            Rectangle chestBounds = new Rectangle(chestPos.X, chestPos.Y, 64, 64);
-
-            Rectangle catBounds = new Rectangle((int)catPos.X, (int)catPos.Y, 64, 64);
-
-            if (isMoving)
-            {
-                GameHandler.catWalk.UpdateFrame((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
-            else
-            {
-                GameHandler.catIdle.UpdateFrame((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
-
-
-            for (int i = frogPositions.Count - 1; i >= 0; i--) // Loop backwards to safely remove
-            {
-                float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-                Vector2 frogPos = frogPositions[i];
-
-                // Define frog bounds
-                Rectangle frogBounds = new Rectangle((int)frogPos.X, (int)frogPos.Y, 64, 64);
-
-                // Check for collision with cat
-                if (frogBounds.Intersects(catBounds))
+                else if (GameHandler.mouseState.LeftButton == ButtonState.Released)
                 {
-                    lives--;
-                    frogPositions.RemoveAt(i);
-                    frogMovingRight.RemoveAt(i);
-                    continue;
+                    mouseDown = false;
+                }
+            }
+            {
+                // Update frog animation
+                animationTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (animationTimer > frameSpeed)
+                {
+                    animationTimer = 0f;
+                    currentFrame = (currentFrame + 1) % frameCount;
                 }
 
-                // Move frog
-                float moveAmount = frogSpeed * elapsed;
-                if (frogMovingRight[i])
+                // Define chest and cat bounds for collision detection
+                Rectangle chestBounds = new Rectangle(chestPos.X, chestPos.Y, 64, 64);
+
+                Rectangle catBounds = new Rectangle((int)catPos.X, (int)catPos.Y, 64, 64);
+
+                if (isMoving)
                 {
-                    frogPos.X += moveAmount;
-                    if (frogPos.X > GameHandler.windowWidth - 64) frogMovingRight[i] = false;
+                    GameHandler.catWalk.UpdateFrame((float)gameTime.ElapsedGameTime.TotalSeconds);
                 }
                 else
                 {
-                    frogPos.X -= moveAmount;
-                    if (frogPos.X < 0) frogMovingRight[i] = true;
+                    GameHandler.catIdle.UpdateFrame((float)gameTime.ElapsedGameTime.TotalSeconds);
                 }
 
-                frogPositions[i] = frogPos;
+
+                for (int i = frogPositions.Count - 1; i >= 0; i--) // Loop backwards to safely remove
+                {
+                    float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    Vector2 frogPos = frogPositions[i];
+
+                    // Define frog bounds
+                    Rectangle frogBounds = new Rectangle((int)frogPos.X, (int)frogPos.Y, 64, 64);
+
+                    // Check for collision with cat
+                    if (frogBounds.Intersects(catBounds))
+                    {
+                        lives--;
+                        frogPositions.RemoveAt(i);
+                        frogMovingRight.RemoveAt(i);
+                        continue;
+                    }
+
+                    // Move frog
+                    float moveAmount = frogSpeed * elapsed;
+                    if (frogMovingRight[i])
+                    {
+                        frogPos.X += moveAmount;
+                        if (frogPos.X > GameHandler.windowWidth - 64) frogMovingRight[i] = false;
+                    }
+                    else
+                    {
+                        frogPos.X -= moveAmount;
+                        if (frogPos.X < 0) frogMovingRight[i] = true;
+                    }
+
+                    frogPositions[i] = frogPos;
+                }
             }
         }
-
     }
 
 

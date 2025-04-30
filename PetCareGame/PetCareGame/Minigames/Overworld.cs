@@ -398,7 +398,7 @@ namespace PetCareGame
 
         public void CleanupProcesses()
         {
-            throw new NotImplementedException();
+            catPos = new Vector2(0, 192);
         }
 
         public void SaveData(SaveFile saveFile)
