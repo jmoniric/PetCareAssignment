@@ -66,8 +66,13 @@ namespace PetCareGame
                     waldoBoundingBox = new Rectangle(404, 73, 25, 26);
                     break;
                 default:
-                    GameHandler.CurrentState = GameHandler.GameState.Overworld;
                     currentLevel = 1;
+
+                    //sets save file bool for this game to be true
+                    GameHandler.saveFile.WheresWaldoDone = true;
+                    //unloads assets this game is using
+                    GameHandler.UnloadCurrentLevel();
+                    GameHandler.LoadOverworld();
                     return;
             }
         }
@@ -166,8 +171,13 @@ namespace PetCareGame
                     }
                     else
                     {
-                        GameHandler.CurrentState = GameHandler.GameState.Overworld;
                         currentLevel = 1;
+
+                        //sets save file bool for this game to be true
+                        GameHandler.saveFile.WheresWaldoDone = true;
+                        //unloads assets this game is using
+                        GameHandler.UnloadCurrentLevel();
+                        GameHandler.LoadOverworld();
                     }
                 }
             }

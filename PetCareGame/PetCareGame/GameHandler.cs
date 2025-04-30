@@ -375,6 +375,12 @@ public class GameHandler : Game
         CurrentState = GameState.MainMenu;
     }
 
+    public static void LoadOverworld() {
+        CurrentState = GameState.Overworld;
+        overworldLevel.LoadContent(overworldAssets, coreAssets);
+        overworldLevel.LoadLevel();
+    }
+
     public void Quit()
     {
         this.Exit();

@@ -93,14 +93,24 @@ public class SlidingGame : LevelInterface
 
         catPos = new Vector2(400, 305);
 
+        frogPositions.Clear();
+        frogMovingRight.Clear();
 
         mouseDown = false;
         faceRight = true;
 
         currentStage = GameStage.Instructions;
         startButtonPos = new Point(270, 510);
+        lives = 5;
+        stagesCompleted = 0;
+        
+        chestPos = new Point(400, 350);
+        
+        //Frog Logic
+        frogPositions.Add(new Vector2(300, 150));
+        new Vector2(200, 150);
 
-
+        frogMovingRight.Add(true); // Start moving right
     }
 
     public void Dispose()
@@ -464,6 +474,7 @@ public class SlidingGame : LevelInterface
                     frogPositions.Clear();
                     frogMovingRight.Clear();
                     lives = 5;
+                    stagesCompleted = 0;
                 }
                 mouseDown = true;
             }
@@ -486,8 +497,12 @@ public class SlidingGame : LevelInterface
                     frogMovingRight.Clear();
                     lives = 5;
                     stagesCompleted = 0;
-                    GameHandler.CurrentState = GameHandler.GameState.Overworld;
-                    GameHandler.overworldLevel.LoadContent(GameHandler.overworldAssets, GameHandler.coreAssets);
+
+                    //sets save file bool for this game to be true
+                    GameHandler.saveFile.SlidingGameDone = true;
+                    //unloads assets this game is using
+                    GameHandler.UnloadCurrentLevel();
+                    GameHandler.LoadOverworld();
 
                 }
                 mouseDown = true;

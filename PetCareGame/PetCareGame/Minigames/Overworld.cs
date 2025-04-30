@@ -46,6 +46,9 @@ namespace PetCareGame
         private SoundEffectInstance forestMusic;
         private SoundEffectInstance footsteps;
 
+        private bool roadBlock1;
+        private bool roadBlock2;
+
         private Rectangle T00 = new Rectangle(0,0,16,16); //grass
         private Rectangle T01 = new Rectangle(16,16,16,16); //vertical path
         private Rectangle T02 = new Rectangle(48,16,16,16); //T-intersection pointing up
@@ -191,7 +194,8 @@ namespace PetCareGame
         {
             Rectangle settlement = new Rectangle(0,64,64,64);
             Rectangle house = new Rectangle(80,16,16,16);
-            Rectangle rock = new Rectangle(80,48,16,16);
+            Rectangle rock1 = new Rectangle(80,48,16,16);
+            Rectangle rock2 = new Rectangle(80,64,16,16);
             Rectangle tileDebug = new Rectangle(48,48,16,16);
 
             Rectangle sourceRectangle = new Rectangle(0, 0, petCareButton.CellWidth, petCareButton.CellHeight);
@@ -218,11 +222,18 @@ namespace PetCareGame
 
             spriteBatch.Draw(atlas, new Rectangle(7*mult,4*mult,4*mult,4*mult), settlement, Color.White);
             spriteBatch.Draw(atlas, new Rectangle(9*mult,mult,mult,mult), house, Color.White);
-            spriteBatch.Draw(atlas, new Rectangle(4*mult,8*mult,mult,mult), rock, Color.White);
 
             //debug draw colliders
             for(int i = 0; i < colliders.Count; i++) {
                 spriteBatch.Draw(GameHandler.plainWhiteTexture, colliders[i], Color.Orange);
+            }
+
+            //roadblock 1
+            if(roadBlock1) {
+                spriteBatch.Draw(atlas, new Rectangle(4*mult,8*mult,mult,mult), rock1, Color.White);
+            }
+            if(roadBlock2) {
+                spriteBatch.Draw(atlas, new Rectangle(11*mult,6*mult,mult,mult), rock2, Color.White);
             }
 
             //debug draw cat bounds
@@ -312,6 +323,10 @@ namespace PetCareGame
             slidingButtonPosition = new Vector2(228, 100);
             fishingButtonPosition = new Vector2(292, 100);
 
+            //roadblocks are true if goal not met
+            roadBlock1 = !GameHandler.saveFile.SlidingGameDone;
+            roadBlock2 = !GameHandler.saveFile.WheresWaldoDone;
+
             petCareButton = new Button(coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGame"), coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGameClicked"),
                                                 new Point(64, 33), petCareButtonPosition, "Pet Care Minigame", 33, true);
             waldoButton = new Button(coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGame"), coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGameClicked"),
@@ -340,9 +355,18 @@ namespace PetCareGame
             colliders.Add(new Rectangle(0, 3*mult, 4*mult, mult));
             colliders.Add(new Rectangle(3*mult, 3*mult, mult, 6*mult));
             colliders.Add(new Rectangle(5*mult, 8*mult, 7*mult, mult));
-            colliders.Add(new Rectangle(11*mult, mult, mult, 8*mult));
+            colliders.Add(new Rectangle(11*mult, mult, mult, 5*mult));
+            //gap between these two
+            colliders.Add(new Rectangle(11*mult, 7*mult, mult, 2*mult));
             colliders.Add(new Rectangle(10*mult, mult, 2*mult, mult));
             colliders.Add(new Rectangle(9*mult, 7*mult, mult, 2*mult));
+
+            if(!roadBlock1) {
+                colliders.Add(new Rectangle(3*mult, 8*mult, 3*mult, mult));
+            }
+            if(!roadBlock2) {
+                colliders.Add(new Rectangle(11*mult, 5*mult, mult, 3*mult));
+            }
         }
 
         //use this to see if the requested movement moves out of allowed bounds
