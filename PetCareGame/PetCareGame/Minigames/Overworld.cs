@@ -41,6 +41,7 @@ namespace PetCareGame
 
         private Texture2D atlas;
         private Rectangle[,] overworldBlueprint;
+        private int mult = 64; //tiles are 64x64
 
         private SoundEffectInstance forestAmbience;
         private SoundEffectInstance forestMusic;
@@ -48,6 +49,10 @@ namespace PetCareGame
 
         private bool roadBlock1;
         private bool roadBlock2;
+
+        private Rectangle missionPad1;
+        private Rectangle missionPad2;
+        private Rectangle missionPad3;
 
         private Rectangle T00 = new Rectangle(0,0,16,16); //grass
         private Rectangle T01 = new Rectangle(16,16,16,16); //vertical path
@@ -196,6 +201,10 @@ namespace PetCareGame
             Rectangle house = new Rectangle(80,16,16,16);
             Rectangle rock1 = new Rectangle(80,48,16,16);
             Rectangle rock2 = new Rectangle(80,64,16,16);
+
+            Rectangle missionPadBlue = new Rectangle(80,80,16,16);
+            Rectangle missionPadRed = new Rectangle(80,96,16,16);
+            Rectangle missionPadGray = new Rectangle(80,112,16,16);
             Rectangle tileDebug = new Rectangle(48,48,16,16);
 
             Rectangle sourceRectangle = new Rectangle(0, 0, petCareButton.CellWidth, petCareButton.CellHeight);
@@ -214,19 +223,19 @@ namespace PetCareGame
                     
 
                     //draws a debug grid to make assembling this easier
-                    spriteBatch.Draw(atlas, new Rectangle(h*64, v*64, 64, 64), tileDebug, Color.White);
+                    //spriteBatch.Draw(atlas, new Rectangle(h*64, v*64, 64, 64), tileDebug, Color.White);
                 }
             }
 
-            int mult = 64;
+            
 
             spriteBatch.Draw(atlas, new Rectangle(7*mult,4*mult,4*mult,4*mult), settlement, Color.White);
             spriteBatch.Draw(atlas, new Rectangle(9*mult,mult,mult,mult), house, Color.White);
 
             //debug draw colliders
-            for(int i = 0; i < colliders.Count; i++) {
+            /*for(int i = 0; i < colliders.Count; i++) {
                 spriteBatch.Draw(GameHandler.plainWhiteTexture, colliders[i], Color.Orange);
-            }
+            }*/
 
             //roadblock 1
             if(roadBlock1) {
@@ -234,6 +243,31 @@ namespace PetCareGame
             }
             if(roadBlock2) {
                 spriteBatch.Draw(atlas, new Rectangle(11*mult,6*mult,mult,mult), rock2, Color.White);
+            }
+
+            //draw default states for mission pads
+            spriteBatch.Draw(atlas, missionPad1, missionPadRed, Color.White);
+            spriteBatch.Draw(atlas, missionPad2, missionPadGray, Color.White);
+            spriteBatch.Draw(atlas, missionPad3, missionPadGray, Color.White);
+
+            //minigame 1 complete
+            if(GameHandler.saveFile.SlidingGameDone) {
+                spriteBatch.Draw(atlas, missionPad1, missionPadBlue, Color.White);
+                spriteBatch.Draw(atlas, missionPad2, missionPadRed, Color.White);
+            }
+            //minigame 2 complete
+            if(GameHandler.saveFile.WheresWaldoDone) {
+                spriteBatch.Draw(atlas, missionPad2, missionPadBlue, Color.White);
+                spriteBatch.Draw(atlas, missionPad3, missionPadRed, Color.White);
+            }
+            //minigame 3 complete
+            if((
+                GameHandler.saveFile.BathDone &&
+                GameHandler.saveFile.BrushingDone &&
+                GameHandler.saveFile.NailTrimDone) ||
+                GameHandler.saveFile.PetCareDone
+            ) {
+                spriteBatch.Draw(atlas, missionPad3, missionPadBlue, Color.White);
             }
 
             //debug draw cat bounds
@@ -327,6 +361,10 @@ namespace PetCareGame
             roadBlock1 = !GameHandler.saveFile.SlidingGameDone;
             roadBlock2 = !GameHandler.saveFile.WheresWaldoDone;
 
+            missionPad1 = new Rectangle(3*mult, 6*mult, mult, mult);
+            missionPad2 = new Rectangle(9*mult, 7*mult, mult, mult);
+            missionPad3 = new Rectangle(10*mult, mult, mult, mult);
+
             petCareButton = new Button(coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGame"), coreAssets.Load<Texture2D>("Sprites/Buttons/PetCareMiniGameClicked"),
                                                 new Point(64, 33), petCareButtonPosition, "Pet Care Minigame", 33, true);
             waldoButton = new Button(coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGame"), coreAssets.Load<Texture2D>("Sprites/Buttons/WaldoMiniGameClicked"),
@@ -349,7 +387,7 @@ namespace PetCareGame
                 { T09, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00, T00 }
             };
 
-            int mult = 64; //tiles are 64x64
+            
 
             //adds containment collision rectangles for movement
             colliders.Add(new Rectangle(0, 3*mult, 4*mult, mult));

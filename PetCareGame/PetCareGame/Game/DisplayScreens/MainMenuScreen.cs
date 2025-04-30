@@ -96,16 +96,14 @@ namespace PetCareGame
                         // start a new game with a fresh file
                         GameHandler.saveFile.NewFile(GameHandler.saveFile);
                         SetButtonVisibility(false);
-                        GameHandler.CurrentState = GameHandler.GameState.Overworld;
-                        GameHandler.overworldLevel.LoadContent(GameHandler.overworldAssets, GameHandler.coreAssets);
+                        GameHandler.LoadOverworld();
                     }
                     else if (continueButton.CheckIfSelectButtonWasClicked() && SaveFile.doesFileExist())
                     {
                         // logic for loading content from save file if available
                         SetButtonVisibility(false);
                         GameHandler.saveFile = GameHandler.saveFile.Load();
-                        GameHandler.CurrentState = GameHandler.GameState.Overworld;
-                        GameHandler.overworldLevel.LoadContent(GameHandler.overworldAssets, GameHandler.coreAssets);
+                        GameHandler.LoadOverworld();
                     }
                     else if (quitButton.CheckIfSelectButtonWasClicked())
                     {
