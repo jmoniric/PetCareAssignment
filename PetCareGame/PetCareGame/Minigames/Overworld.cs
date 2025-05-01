@@ -121,6 +121,28 @@ namespace PetCareGame
                     }
                 }
 
+                //handle the mission pads here
+                if(kybdState.IsKeyDown(Keys.E)) {
+                    if(missionPad1.Contains(catBounds)) {
+                        GameHandler.UnloadCurrentLevel();
+                        GameHandler.CurrentState = GameHandler.GameState.SlidingGame;
+                        SlidingLevel.LoadContent(GameHandler.slidingAssets, coreAssets);
+                        SlidingLevel.LoadLevel();
+                    } else if(missionPad2.Contains(catBounds)) {
+                        GameHandler.UnloadCurrentLevel();
+                        GameHandler.CurrentState = GameHandler.GameState.WaldoGame;
+                        WaldoLevel.LoadContent(GameHandler.waldoAssets, coreAssets);
+                        WaldoLevel.LoadLevel();
+                    } else if(missionPad3.Contains(catBounds)) {
+                        GameHandler.UnloadCurrentLevel();
+                        GameHandler.CurrentState = GameHandler.GameState.PetCareGame;
+                        PetCareLevel.LoadContent(GameHandler.petcareAssets, coreAssets);
+                        PetCareLevel.LoadLevel();
+                    }
+                }
+
+
+
                 if(GameHandler.allowAudio) {
                     if(!GameHandler.muted && footstepsFlag) {
                         footsteps.Play();
@@ -146,7 +168,8 @@ namespace PetCareGame
                 }
                 else if (!GameHandler.isPaused)
                 {
-                    if (petCareButton.CheckIfSelectButtonWasClicked())
+                    //this is the input handler for our debug buttons
+                    /*if (petCareButton.CheckIfSelectButtonWasClicked())
                     {
                         GameHandler.UnloadCurrentLevel();
                         SetVisiblity(false); //hides buttons to prevent them from being pressed again
@@ -181,7 +204,7 @@ namespace PetCareGame
                         GameHandler.CurrentState = GameHandler.GameState.FishingGame;
                         FishingLevel.LoadContent(GameHandler.fishingAssets, coreAssets);
                         FishingLevel.LoadLevel();
-                    }
+                    }*/
                 }
             }
         }
@@ -201,6 +224,7 @@ namespace PetCareGame
             Rectangle house = new Rectangle(80,16,16,16);
             Rectangle rock1 = new Rectangle(80,48,16,16);
             Rectangle rock2 = new Rectangle(80,64,16,16);
+            Rectangle highlight = new Rectangle(32,48,16,16);
 
             Rectangle missionPadBlue = new Rectangle(80,80,16,16);
             Rectangle missionPadRed = new Rectangle(80,96,16,16);
@@ -244,6 +268,11 @@ namespace PetCareGame
             if(roadBlock2) {
                 spriteBatch.Draw(atlas, new Rectangle(11*mult,6*mult,mult,mult), rock2, Color.White);
             }
+            
+            //debug draw mission pad bounds
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, missionPad1, Color.Turquoise);
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, missionPad2, Color.Turquoise);
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, missionPad3, Color.Turquoise);
 
             //draw default states for mission pads
             spriteBatch.Draw(atlas, missionPad1, missionPadRed, Color.White);
@@ -270,8 +299,10 @@ namespace PetCareGame
                 spriteBatch.Draw(atlas, missionPad3, missionPadBlue, Color.White);
             }
 
+            
+
             //debug draw cat bounds
-            //spriteBatch.Draw(GameHandler.plainWhiteTexture, catBounds, Color.Lime);
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, catBounds, Color.Lime);
 
             //draws movement sprites
             if(kybdState.GetPressedKeys().Contains(Keys.A) || kybdState.GetPressedKeys().Contains(Keys.Left)) {
@@ -285,14 +316,23 @@ namespace PetCareGame
             } else {
                 catIdle.DrawFrame(spriteBatch, catPos, SpriteEffects.None);
             }
+
+            //draw start hint
+            if(missionPad1.Contains(catBounds) || missionPad2.Contains(catBounds) || missionPad3.Contains(catBounds)) {
+                spriteBatch.Draw(GameHandler.coreTextureAtlas, new Rectangle(180,60,220,90), new Rectangle(16,32,16,16), Color.DeepSkyBlue);
+                spriteBatch.DrawString(GameHandler.highPixel22, "Press [E]\nto start!", new Vector2(210,75), Color.Black);
+                //awful-looking flashy highlight thing
+                //spriteBatch.Draw(atlas, new Rectangle(100,25,510,150), highlight, Color.Gold);
+            }
             
             
-            
+            //the numbered buttons we used
+            /*
             spriteBatch.Draw(petCareButton.Texture, destinationRectangle, sourceRectangle, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
             spriteBatch.Draw(waldoButton.Texture, destinationRectangle1, sourceRectangle1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
             spriteBatch.Draw(slidingButton.Texture, destinationRectangle2, sourceRectangle2, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
             spriteBatch.Draw(fishingButton.Texture, destinationRectangle3, sourceRectangle3, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
-            
+            */
         }
 
         public void Update(GameTime gameTime)
@@ -318,6 +358,11 @@ namespace PetCareGame
                 } else {
                     forestMusic.Pause();
                 }
+            }
+
+            if(!GameHandler.isPaused) {
+                GameHandler.saveFile.catPosX = (int)catPos.X;
+                GameHandler.saveFile.catPosY = (int)catPos.Y;
             }
             
             
@@ -399,11 +444,16 @@ namespace PetCareGame
             colliders.Add(new Rectangle(10*mult, mult, 2*mult, mult));
             colliders.Add(new Rectangle(9*mult, 7*mult, mult, 2*mult));
 
+            //adds the colliders so that player can move on path if roadblock is missing
             if(!roadBlock1) {
                 colliders.Add(new Rectangle(3*mult, 8*mult, 3*mult, mult));
             }
             if(!roadBlock2) {
                 colliders.Add(new Rectangle(11*mult, 5*mult, mult, 3*mult));
+            }
+
+            if(SaveFile.doesFileExist()) {
+                LoadData();
             }
         }
 
@@ -441,12 +491,13 @@ namespace PetCareGame
 
         public void SaveData(SaveFile saveFile)
         {
-            throw new NotImplementedException();
+            saveFile.catPosX = (int)catPos.X;
+            saveFile.catPosY = (int)catPos.Y;
         }
 
         public void LoadData()
         {
-            throw new NotImplementedException();
+            catPos = new Vector2(GameHandler.saveFile.catPosX, GameHandler.saveFile.catPosY);
         }
 
         public void Dispose()
