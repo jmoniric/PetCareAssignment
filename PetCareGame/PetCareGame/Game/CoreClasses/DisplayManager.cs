@@ -17,6 +17,7 @@ public class DisplayManager
     public Matrix scaleMatrix;
     public Viewport viewport;
 
+    // Constructor for the DisplayManger object
     public DisplayManager(Game game, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice)
     {
         this.game = game;
@@ -42,6 +43,8 @@ public class DisplayManager
         graphics.IsFullScreen = true;
         graphics.ApplyChanges();
     }
+
+    // Updates the screen scale matrix that is used to change the window size of the application
     public void UpdateScreenScaleMatrix()
     {
         // Determine the size of the actual screen

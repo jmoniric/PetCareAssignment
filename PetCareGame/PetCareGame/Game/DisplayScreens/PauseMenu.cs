@@ -9,6 +9,8 @@ namespace PetCareGame;
 
 public class PauseMenu : LevelInterface
 {
+    // Enumarates states in which the game can switch between
+    // During the pause menu use
     private enum PauseState
     {
         ExitWarning,
@@ -18,6 +20,7 @@ public class PauseMenu : LevelInterface
 
     private PauseState currentState;
 
+    // Button objects for pause menu
     private Button saveButton;
     private Button mainMenuButton;
     private Button saveQuitButton;
@@ -28,6 +31,7 @@ public class PauseMenu : LevelInterface
     private Button muteMusicButton;
     private Button resetWindowButton;
 
+    // Position for buttons
     private Vector2 saveButtonPos = new Vector2(310, 155);//55px spacing
     private Vector2 mmButtonPos = new Vector2(310, 210);
     private Vector2 sqButtonPos = new Vector2(310, 265);
@@ -38,6 +42,7 @@ public class PauseMenu : LevelInterface
     private Vector2 muteMusicPos = new Vector2(170, 250);
     private Vector2 resetButtonPos = new Vector2(170, 350);
 
+    // Bounds where buttons are created
     private Rectangle saveButtonBounds;
     private Rectangle mmButtonBounds;
     private Rectangle sqButtonBounds;
@@ -50,22 +55,7 @@ public class PauseMenu : LevelInterface
 
     private bool mouseDown = false;
 
-    public void CleanupProcesses()
-    {
-        throw new NotImplementedException();
-    }
-    private bool isWarning = false;
-
-    public void Dispose()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public PauseMenu()
-    {
-
-    }
-
+    // Is responsible for drawing content to the screen. (Monogame Documentation)
     public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
     {
         SpriteFont font = GameHandler.highPixel22;
@@ -77,7 +67,7 @@ public class PauseMenu : LevelInterface
 
         GameHandler.highPixel22.LineSpacing = 29;
 
-        //draw backing texture
+        // Draw backing texture
         spriteBatch.Draw(
             GameHandler.coreTextureAtlas,
             new Rectangle(
@@ -88,7 +78,7 @@ public class PauseMenu : LevelInterface
             new Rectangle(32, 0, 16, 16),
             Color.LightGray
         );
-        //draw window
+        // Draw window
         spriteBatch.Draw(
             GameHandler.coreTextureAtlas,
             new Rectangle(
@@ -100,6 +90,7 @@ public class PauseMenu : LevelInterface
             atlasButton, Color.DimGray
         );
 
+        //
         if (isWarning)
         {
             switch (currentState)
@@ -117,30 +108,34 @@ public class PauseMenu : LevelInterface
         }
         else
         {
-            //draw "Game Paused"
+            // Draw "Game Paused"
             spriteBatch.DrawString(GameHandler.highPixel36, "Game Paused", new Vector2(240, 100), Color.White);
 
-            //draw save button
+            // Draw save button
             spriteBatch.Draw(GameHandler.coreTextureAtlas, saveButtonBounds, atlasButton, Color.White);
-            //draw "Save"
+
+            //Draw "Save"
             spriteBatch.DrawString(font, "Save", new Vector2(370, saveButtonPos.Y + 15), Color.Black);
 
-            //draw main menu button
+            // Draw main menu button
             spriteBatch.Draw(GameHandler.coreTextureAtlas, mmButtonBounds, atlasButton, Color.White);
-            //draw "Main Menu"
+
+            //Draw "Main Menu"
             spriteBatch.DrawString(font, "Main Menu", new Vector2(330, mmButtonPos.Y + 15), Color.Black);
 
-            //draw save and quit button
+            // Draw save and quit button
             spriteBatch.Draw(GameHandler.coreTextureAtlas, sqButtonBounds, atlasButton, Color.White);
-            //draw "Save and Quit Game"
+
+            // Draw "Save and Quit Game"
             spriteBatch.DrawString(font, "Save and\nQuit Game", new Vector2(330, sqButtonPos.Y + 15), Color.Black);
 
-            //draw resume button
+            // Draw resume button
             spriteBatch.Draw(GameHandler.coreTextureAtlas, resumeButtonBounds, atlasButton, Color.White);
-            //draw "Resume"
+
+            // Draw "Resume"
             spriteBatch.DrawString(font, "Resume", new Vector2(350, resumeButtonPos.Y + 15), Color.Black);
 
-            //draw mute button
+            // Draw mute button
             if (GameHandler.allowAudio)
             {
                 spriteBatch.Draw(GameHandler.coreTextureAtlas, muteSfxBounds, atlasAudioButton, Color.White);
@@ -150,7 +145,8 @@ public class PauseMenu : LevelInterface
                 }
 
                 spriteBatch.Draw(GameHandler.coreTextureAtlas, muteMusicBounds, atlasMusicButton, Color.White);
-                if(GameHandler.musicMuted) {
+                if (GameHandler.musicMuted)
+                {
                     spriteBatch.Draw(GameHandler.coreTextureAtlas, muteMusicBounds, atlasXMark, Color.Red);
                 }
             }
@@ -159,6 +155,7 @@ public class PauseMenu : LevelInterface
         }
     }
 
+    // This method handles any input within the pause menu
     public void HandleInput(GameTime gameTime, GameHandler game)
     {
         if (GameHandler.mouseState.LeftButton == ButtonState.Pressed)
@@ -233,7 +230,8 @@ public class PauseMenu : LevelInterface
                         case PauseState.MainMenuWarning:
                             if (yesButton.CheckIfSelectButtonWasClicked())
                             {
-                                if(GameHandler.CurrentState == GameHandler.GameState.Overworld) {
+                                if (GameHandler.CurrentState == GameHandler.GameState.Overworld)
+                                {
                                     GameHandler.overworldLevel.CleanupProcesses();
                                 }
                                 GameHandler.UnloadCurrentLevel();
@@ -256,8 +254,10 @@ public class PauseMenu : LevelInterface
         }
     }
 
+    // Loads necessary assets to pause menu
     public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
+        // Initializes the button objects
         saveButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(saveButtonBounds.Width, saveButtonBounds.Height), saveButtonPos, "Save", 38, true);
         mainMenuButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(mmButtonBounds.Width, mmButtonBounds.Height), mmButtonPos, "Main Menu", 39, true);
         saveQuitButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(sqButtonBounds.Width, sqButtonBounds.Height), sqButtonPos, "Save and Quit Game", 40, true);
@@ -274,9 +274,10 @@ public class PauseMenu : LevelInterface
         }
     }
 
+    // Initializes the necessary bounds for the buttons
     public void LoadLevel()
     {
-        //creates hitboxes that are used for drawing and checking clicks for buttons
+        // Creates hitboxes that are used for drawing and checking clicks for buttons
         saveButtonBounds = new Rectangle((int)saveButtonPos.X, (int)saveButtonPos.Y, 200, 48);
         mmButtonBounds = new Rectangle((int)mmButtonPos.X, (int)mmButtonPos.Y, 200, 48);
         sqButtonBounds = new Rectangle((int)sqButtonPos.X, (int)sqButtonPos.Y, 200, 76);
@@ -284,7 +285,7 @@ public class PauseMenu : LevelInterface
         yesButtonBounds = new Rectangle((int)yesButtonPos.X, (int)yesButtonPos.Y, 100, 48);
         noButtonBounds = new Rectangle((int)noButtonPos.X, (int)noButtonPos.Y, 100, 48);
         muteSfxBounds = new Rectangle((int)muteSfxPos.X, (int)muteSfxPos.Y, 64, 64);
-        muteMusicBounds = new Rectangle((int)muteMusicPos.X,(int)muteMusicPos.Y, 64, 64);
+        muteMusicBounds = new Rectangle((int)muteMusicPos.X, (int)muteMusicPos.Y, 64, 64);
         resetButtonBounds = new Rectangle((int)resetButtonPos.X, (int)resetButtonPos.Y, 64, 64);
     }
 
@@ -294,16 +295,8 @@ public class PauseMenu : LevelInterface
         SetButtonVisibility();
     }
 
-    public void SaveData(SaveFile saveFile)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void LoadData()
-    {
-        throw new NotImplementedException();
-    }
-
+    // Sets the visibility of buttons to make them nonclickable or clickable
+    // Dependant on if the warning page is live
     public void SetButtonVisibility()
     {
         if (isWarning)
@@ -326,21 +319,25 @@ public class PauseMenu : LevelInterface
         }
     }
 
+    // This method draws warning page that will be reused
     public void DrawWarning(SpriteBatch spriteBatch, Rectangle atlasButton, SpriteFont font, String str, int extraSpacing)
     {
-        // draw str that is passed in
+        // Draw str that is passed in
         spriteBatch.DrawString(GameHandler.highPixel36, str, new Vector2(150, 100), Color.White);
-        // draw "Are you sure"
+
+        // Draw "Are you sure"
         spriteBatch.DrawString(GameHandler.highPixel36, "Are you sure?", new Vector2(240, 170 + extraSpacing), Color.White);
 
-        // draw Yes button
+        // Draw Yes button
         spriteBatch.Draw(GameHandler.coreTextureAtlas, yesButtonBounds, atlasButton, Color.White);
-        // draw "Yes"
+
+        // Draw "Yes"
         spriteBatch.DrawString(font, "Yes", new Vector2(270, yesButtonPos.Y + 15), Color.Black);
 
-        // draw No button
+        // Draw No button
         spriteBatch.Draw(GameHandler.coreTextureAtlas, noButtonBounds, atlasButton, Color.White);
-        // draw "no"
+
+        // Draw "no"
         spriteBatch.DrawString(font, "No", new Vector2(420, noButtonPos.Y + 15), Color.Black);
     }
 
@@ -350,6 +347,26 @@ public class PauseMenu : LevelInterface
     }
 
     public void HandleInput(GameTime gameTime)
+    {
+        throw new NotImplementedException();
+    }
+    public void CleanupProcesses()
+    {
+        throw new NotImplementedException();
+    }
+    private bool isWarning = false;
+
+    public void Dispose()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void SaveData(SaveFile saveFile)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void LoadData()
     {
         throw new NotImplementedException();
     }

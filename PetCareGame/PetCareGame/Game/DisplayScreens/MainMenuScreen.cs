@@ -8,14 +8,17 @@ namespace PetCareGame
 {
     public class MainMenuScreen : LevelInterface
     {
+        // Buttons objects for main menu
         private Button newGameButton;
         private Button continueButton;
         private Button quitButton;
 
+        // Position for buttons
         private Vector2 continueButtonPos = new Vector2(310, 155);
         private Vector2 newGameButtonPos = new Vector2(310, 210);
         private Vector2 quitButtonPos = new Vector2(310, 265);
 
+        // Bounds where buttons are created
         private Rectangle newGameButtonBounds;
         private Rectangle continueButtonBounds;
         private Rectangle quitButtonBounds;
@@ -23,6 +26,7 @@ namespace PetCareGame
         private bool mouseDown = false;
         private bool ifSaveFileExists;
 
+        // Is responsible for drawing content to the screen. (Monogame Documentation)
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
         {
             SpriteFont font = GameHandler.highPixel22;
@@ -83,6 +87,7 @@ namespace PetCareGame
             spriteBatch.DrawString(font, "Quit Game", new Vector2(330, quitButtonPos.Y + 15), Color.Black);
         }
 
+        // This method handles any input within the main menu
         public void HandleInput(GameTime gameTime, GameHandler game)
         {
             if (GameHandler.mouseState.LeftButton == ButtonState.Pressed)
@@ -119,6 +124,8 @@ namespace PetCareGame
             }
         }
 
+        // The Update method is called multiple times per second,
+        // and it is used to update the game state 
         public void Update(GameTime gameTime, GameHandler game)
         {
             HandleInput(gameTime, game);
@@ -131,16 +138,7 @@ namespace PetCareGame
             quitButton.Visible = isVisible;
         }
 
-        public void Update(GameTime gameTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void HandleInput(GameTime gameTime)
-        {
-            throw new NotImplementedException();
-        }
-
+        // Loads necessary assets to main menu
         public void LoadLevel()
         {
             //creates hitboxes that are used for drawing and checking clicks for buttons
@@ -160,6 +158,15 @@ namespace PetCareGame
             }
 
             continueButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(continueButtonBounds.Width, continueButtonBounds.Height), continueButtonPos, "Continue Game", 34, ifSaveFileExists);
+        }
+        public void Update(GameTime gameTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void HandleInput(GameTime gameTime)
+        {
+            throw new NotImplementedException();
         }
 
         public void LoadContent(ContentManager manager, ContentManager coreAssets)

@@ -14,6 +14,7 @@ namespace PetCareGame;
 
 public class GameHandler : Game
 {
+    // Enumarates states in which the game can switch between
     public enum GameState
     {
         MainMenu,
@@ -38,6 +39,7 @@ public class GameHandler : Game
 
     public static MouseState mouseState;
 
+    // Level Objects
     public static PetCare petCareLevel = new PetCare();
     public static CatFishing fishingLevel = new CatFishing();
     public static WheresWaldo waldoLevel = new WheresWaldo();
@@ -47,6 +49,7 @@ public class GameHandler : Game
     private static MainMenuScreen mainMenu = new MainMenuScreen();
     public static DisplayManager displayManager;
 
+    // Assets
     public static ContentManager coreAssets;
     public static ContentManager slidingAssets;
     public static ContentManager waldoAssets;
@@ -54,12 +57,14 @@ public class GameHandler : Game
     public static ContentManager petcareAssets;
     public static ContentManager overworldAssets;
 
+    // Animated Texture Assets
     public static AnimatedTexture catIdle = new AnimatedTexture(new Vector2(32, 16), 0f, 3f, 0.5f);
     public static AnimatedTexture catIrritated = new AnimatedTexture(new Vector2(32, 16), 0f, 3f, 0.5f);
     public static AnimatedTexture catAttack = new AnimatedTexture(new Vector2(32, 16), 0f, 3f, 0.5f);
     public static AnimatedTexture catWalk = new AnimatedTexture(new Vector2(32, 16), 0f, 3f, 0.5f);
     public static AnimatedTexture catRun = new AnimatedTexture(new Vector2(32, 16), 0f, 3f, 0.5f);
 
+    // Sound Effects
     public static SoundEffect catPurr;
     public static SoundEffectInstance selectSfx;
     public static SoundEffectInstance failSfx;
@@ -87,6 +92,7 @@ public class GameHandler : Game
     public static int windowHeight = 600;
     public static int windowWidth = 800;
 
+    // Main game constructor 
     public GameHandler()
     {
         graphics = new GraphicsDeviceManager(this);
@@ -116,6 +122,7 @@ public class GameHandler : Game
         Window.ClientSizeChanged += OnClientSizeChange;
     }
 
+    // Method updates the Screen Matrix when the window size changes
     private void OnClientSizeChange(object sender, EventArgs e)
     {
         if (!isResizing && Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
@@ -126,6 +133,8 @@ public class GameHandler : Game
         }
     }
 
+    // Runs when the application starts
+    // This is where you can query any required services and load any non-graphic related content. (Monogame Documentation)
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
@@ -141,6 +150,7 @@ public class GameHandler : Game
         base.Initialize();
     }
 
+    // Method runs to load in all assets and other necessary method call when the game initializes
     protected override void LoadContent()
     {
         spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -164,7 +174,7 @@ public class GameHandler : Game
         highPixel22 = coreAssets.Load<SpriteFont>("Fonts/high_pixel_22");
         highPixel36 = coreAssets.Load<SpriteFont>("Fonts/high_pixel_36");
 
-        
+
 
         //tries to load audio assets; if device is missing audio drivers,
         //marks global bool _allowAudio as false which prevents game from
@@ -194,11 +204,14 @@ public class GameHandler : Game
 
     }
 
+    // This method handles any input within the game
+    // Dictated by the Current Enumarated State
     private void HandleInput(GameTime gameTime)
     {
         mouseState = OneShotMouseButtons.GetState();
 
-        if(Keyboard.GetState().IsKeyDown(Keys.Escape) && !isPaused && CurrentState != GameState.MainMenu) {
+        if (Keyboard.GetState().IsKeyDown(Keys.Escape) && !isPaused && CurrentState != GameState.MainMenu)
+        {
             isPaused = true;
             pauseMenu.LoadLevel();
             pauseMenu.LoadContent(null, coreAssets);
@@ -243,6 +256,8 @@ public class GameHandler : Game
         }
     }
 
+    // The Update method is called multiple times per second,
+    // and it is used to update the game state (checking for collisions, gathering input, playing audio, etc.). (Monogame Documentation)
     protected override void Update(GameTime gameTime)
     {
         var mousePosition = new Vector2(mouseState.X, mouseState.Y);
@@ -259,9 +274,6 @@ public class GameHandler : Game
         }
 
         HandleInput(gameTime);
-
-        //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-        //  Exit();
 
         if (isPaused)
         {
@@ -294,6 +306,7 @@ public class GameHandler : Game
         base.Update(gameTime);
     }
 
+    // Is responsible for drawing content to the screen. (Monogame Documentation)
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -345,7 +358,7 @@ public class GameHandler : Game
         base.Draw(gameTime);
     }
 
-    //allows level to cleanup and reset, then unloads its assets and sets state to main menu
+    // Allows level to cleanup and reset, then unloads its assets and sets state to main menu
     public static void UnloadCurrentLevel()
     {
         switch (CurrentState)
@@ -374,13 +387,16 @@ public class GameHandler : Game
         }
         CurrentState = GameState.MainMenu;
     }
-
-    public static void LoadOverworld() {
+    
+    // This will load the overworld level
+    public static void LoadOverworld()
+    {
         CurrentState = GameState.Overworld;
         overworldLevel.LoadContent(overworldAssets, coreAssets);
         overworldLevel.LoadLevel();
     }
 
+    // Quits the application
     public void Quit()
     {
         this.Exit();

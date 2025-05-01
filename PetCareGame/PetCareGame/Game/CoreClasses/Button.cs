@@ -23,6 +23,7 @@ namespace PetCareGame
         public int CellWidth { get; set; }
         public int CellHeight { get; set; }
 
+        // Constructor for button objects
         public Button(Texture2D staticImage, Texture2D clickedImage, Point dimensions, Vector2 position, string name, int id, bool visible)
         {
             _staticTexture = staticImage;
@@ -46,52 +47,7 @@ namespace PetCareGame
             Texture = _clickedTexture;
         }
 
-        public void UpdateButton()
-        {
-            if (AnimationTime > 0)
-            {
-                AnimationTime--;
-            }
-            if (AnimationTime == 0)
-            {
-                Texture = _staticTexture;
-            }
-        }
-
-        public bool CheckIfButtonWasClicked()
-        {
-            if (Visible)
-            {
-                if (GameHandler.relativeMousePos.X >= Position.X && GameHandler.relativeMousePos.X <= (Position.X + Dimensions.X))
-                {
-                    if (GameHandler.relativeMousePos.Y >= Position.Y && GameHandler.relativeMousePos.Y <= (Position.Y + Dimensions.Y))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        public bool CheckIfButtonWasClicked(SoundEffectInstance sfx)
-        {
-            if (Visible)
-            {
-                if (GameHandler.relativeMousePos.X >= Position.X && GameHandler.relativeMousePos.X <= (Position.X + Dimensions.X))
-                {
-                    if (GameHandler.relativeMousePos.Y >= Position.Y && GameHandler.relativeMousePos.Y <= (Position.Y + Dimensions.Y))
-                    {
-                        if (GameHandler.allowAudio && !GameHandler.muted)
-                        {
-                            sfx.Play();
-                        }
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
+        // Checks if the button was clicked and plays a sound effect if its not muted
         public bool CheckIfSelectButtonWasClicked()
         {
             if (Visible)
