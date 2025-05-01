@@ -270,9 +270,9 @@ namespace PetCareGame
             }
             
             //debug draw mission pad bounds
-            spriteBatch.Draw(GameHandler.plainWhiteTexture, missionPad1, Color.Turquoise);
+            /*spriteBatch.Draw(GameHandler.plainWhiteTexture, missionPad1, Color.Turquoise);
             spriteBatch.Draw(GameHandler.plainWhiteTexture, missionPad2, Color.Turquoise);
-            spriteBatch.Draw(GameHandler.plainWhiteTexture, missionPad3, Color.Turquoise);
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, missionPad3, Color.Turquoise);*/
 
             //draw default states for mission pads
             spriteBatch.Draw(atlas, missionPad1, missionPadRed, Color.White);
@@ -302,7 +302,7 @@ namespace PetCareGame
             
 
             //debug draw cat bounds
-            spriteBatch.Draw(GameHandler.plainWhiteTexture, catBounds, Color.Lime);
+            //spriteBatch.Draw(GameHandler.plainWhiteTexture, catBounds, Color.Lime);
 
             //draws movement sprites
             if(kybdState.GetPressedKeys().Contains(Keys.A) || kybdState.GetPressedKeys().Contains(Keys.Left)) {

@@ -52,7 +52,7 @@ public class SlidingGame : LevelInterface
     private bool isMoving;
 
     //allows devs to skip game for debugging purposes
-    private bool debugSkipGame = true;
+    private bool debugSkipGame = false;
 
 
     //Frog Logic

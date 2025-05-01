@@ -337,7 +337,7 @@ public class GameHandler : Game
         }
 
         //FOR DEV PURPOSES: prints (X,Y) of mouse in top left corner
-        spriteBatch.DrawString(highPixel22, "(" + relativeMousePos.X + ", " + relativeMousePos.Y + ")", new Vector2(0, 20), Color.Black);
+        //spriteBatch.DrawString(highPixel22, "(" + relativeMousePos.X + ", " + relativeMousePos.Y + ")", new Vector2(0, 20), Color.Black);
 
         //end drawing
         spriteBatch.End();

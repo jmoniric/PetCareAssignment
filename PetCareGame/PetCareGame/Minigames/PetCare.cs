@@ -962,7 +962,8 @@ public class PetCare : LevelInterface
             LoadData();
         }
 
-        DebugSkip(true);
+        //skips all minigames for debugging purposes
+        DebugSkip(false);
 
         //puts waterdrop at starting spot
         waterDropPos = spotOrder[0].Center.ToVector2();
