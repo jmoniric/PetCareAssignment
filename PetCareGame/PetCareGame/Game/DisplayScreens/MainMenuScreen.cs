@@ -103,6 +103,8 @@ namespace PetCareGame
                         // logic for loading content from save file if available
                         SetButtonVisibility(false);
                         GameHandler.saveFile = GameHandler.saveFile.Load();
+                        //fix to make sure that level status isn't resetting on game continue
+                        GameHandler.slidingLevel.LoadData();
                         GameHandler.LoadOverworld();
                     }
                     else if (quitButton.CheckIfSelectButtonWasClicked())

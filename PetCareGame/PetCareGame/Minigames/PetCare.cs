@@ -110,16 +110,19 @@ public class PetCare : LevelInterface
     private Button infoBath;
     private Button infoBrush;
     private Button infoNails;
+    private Button returnButton;
 
     private Point startButtonPos = new Point(540,510);
     private Point infoBathPos = new Point(25,510);
     private Point infoBrushPos = new Point(185,510);
     private Point infoNailsPos = new Point(380,510);
+    private Point returnButtonPos = new Point(250,510);
 
     private Rectangle startButtonBounds;
     private Rectangle infoBathBounds;
     private Rectangle infoBrushBounds;
     private Rectangle infoNailsBounds;
+    private Rectangle returnButtonBounds;
     
 
     private Rectangle hotspotBounds1 = new Rectangle(385, 270, 50, 50);
@@ -398,7 +401,11 @@ public class PetCare : LevelInterface
                         but keep an eye on your water supply!
 
                         Part 2:
-                        [TBD]
+                        Pay close attention to the order that the water
+                        drops fall, then dry the wet spots in that same
+                        order! The traffic light indicates red means timeout,
+                        yelow means watch the pattern, and green means your
+                        turn.
                         """,
                         new Vector2(50, 110),
                         Color.Black
@@ -562,6 +569,24 @@ public class PetCare : LevelInterface
             }
         }
 
+        //draw win screen over everything
+        if(currentStage == GameStage.Win) {
+            spriteBatch.Draw(GameHandler.plainWhiteTexture, new Rectangle(0,0,800,600), Color.LightPink);
+            spriteBatch.DrawString(GameHandler.highPixel36, "You Win!", new Vector2(240,50),Color.Black);
+            spriteBatch.DrawString(
+                        GameHandler.highPixel22,
+                        """
+                        You successfully cared for and groomed
+                        your cat, and now it is happy! Return
+                        to the overworld for your prize.
+                        """,
+                        new Vector2(50, 110),
+                        Color.Black
+            );
+            spriteBatch.Draw(GameHandler.coreTextureAtlas, returnButtonBounds, new Rectangle(16,0,16,16), Color.White);
+            spriteBatch.DrawString(GameHandler.highPixel22, "Return", new Vector2(310, returnButtonPos.Y+25), Color.Black);
+        }
+
         //debug for cat pos coords
         //spriteBatch.DrawString(GameHandler.highPixel22, catPos.ToString(), new Vector2(0,60), Color.Black);
     }
@@ -664,6 +689,20 @@ public class PetCare : LevelInterface
             //runs only once after mouse pressed
             if(!mouseDown) {
                 mouseDown = true;
+
+                if(currentStage == GameStage.Win) {
+                    if(returnButton.CheckIfSelectButtonWasClicked()) {
+                        if(GameHandler.allowAudio) {
+                            catPurr.Stop();
+                        }
+
+                        //sets save file bool for this game to be true
+                        GameHandler.saveFile.PetCareDone = true;
+                        //unloads assets this game is using
+                        GameHandler.UnloadCurrentLevel();
+                        GameHandler.LoadOverworld();
+                    }
+                }
 
                 //if instructions are being displayed
                 if(currentStage == GameStage.Instructions) {
@@ -847,10 +886,11 @@ public class PetCare : LevelInterface
     public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
     {
         atlas = _manager.Load<Texture2D>("Sprites/petcare_textureatlas");
-        startButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(225, 72), new Vector2(startButtonPos.X,startButtonPos.Y), "Start", 42, true);
-        infoBath = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(150, 72), new Vector2(infoBathPos.X,infoBathPos.Y), "Bath", 43, true);
-        infoBrush = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(190, 72), new Vector2(infoBrushPos.X,infoBrushPos.Y), "Brushing", 44, true);
-        infoNails = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(150, 72), new Vector2(infoNailsPos.X,infoNailsPos.Y), "Nails", 45, true);
+        startButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(225, 72), startButtonPos.ToVector2(), "Start", 42, true);
+        infoBath = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(150, 72), infoBathPos.ToVector2(), "Bath", 43, true);
+        infoBrush = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(190, 72), infoBrushPos.ToVector2(), "Brushing", 44, true);
+        infoNails = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(150, 72), infoNailsPos.ToVector2(), "Nails", 45, true);
+        returnButton = new Button(GameHandler.coreTextureAtlas, GameHandler.coreTextureAtlas, new Point(225, 72), returnButtonPos.ToVector2(), "Return", 46, true);
 
         hotspot1.Load(_manager, "Sprites/hotspot_gauge_32", 9, 1);
         hotspot2.Load(_manager, "Sprites/hotspot_gauge_32", 9, 1);
@@ -894,6 +934,7 @@ public class PetCare : LevelInterface
         infoBathBounds = new Rectangle(infoBathPos.X, infoBathPos.Y, 150, 72);
         infoNailsBounds = new Rectangle(infoNailsPos.X, infoNailsPos.Y, 150, 72);
         infoBrushBounds = new Rectangle(infoBrushPos.X, infoBrushPos.Y, 190, 72);
+        returnButtonBounds = new Rectangle(returnButtonPos.X, returnButtonPos.Y, 225, 72);
 
         //clears list if returning to minigame in current session
         spotOrder.Clear();
@@ -920,6 +961,8 @@ public class PetCare : LevelInterface
         if(SaveFile.doesFileExist()) {
             LoadData();
         }
+
+        DebugSkip(true);
 
         //puts waterdrop at starting spot
         waterDropPos = spotOrder[0].Center.ToVector2();
@@ -1397,5 +1440,14 @@ public class PetCare : LevelInterface
 
     private bool GetAllCompletion() {
         return brushGoal && dryGoal.GetCompletion() && sprayGoal.GetCompletion() && nailGoal.GetCompletion();
+    }
+
+    private void DebugSkip(bool enabled) {
+        if(enabled) {
+            dryGoal.SetCompletion(true);
+            sprayGoal.SetCompletion(true);
+            nailGoal.SetCompletion(true);
+            brushGoal = true;
+        }
     }
 }

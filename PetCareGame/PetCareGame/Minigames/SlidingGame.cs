@@ -52,7 +52,7 @@ public class SlidingGame : LevelInterface
     private bool isMoving;
 
     //allows devs to skip game for debugging purposes
-    private bool debugSkipGame = false;
+    private bool debugSkipGame = true;
 
 
     //Frog Logic
@@ -732,7 +732,7 @@ public class SlidingGame : LevelInterface
 
     public void LoadData()
     {
-
+        slidingGoalGlobal = GameHandler.saveFile.SlidingGameDone;
     }
 
 
