@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace PetCareGame
 {
@@ -32,6 +34,12 @@ namespace PetCareGame
         private int currentLevel = 1;
         private const int maxLevels = 3;
 
+       
+        private Song backgroundMusic;
+        private SoundEffect correctSound;
+        private SoundEffect wrongSound;
+        private bool musicPlaying = false;
+
         public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
         {
             font = _coreAssets.Load<SpriteFont>("Fonts/courier_new_36");
@@ -41,6 +49,11 @@ namespace PetCareGame
             waldoImages[1] = _manager.Load<Texture2D>("Sprites/WaldoFirstDraft");
             waldoImages[2] = _manager.Load<Texture2D>("Sprites/Waldo2");
             waldoImages[3] = _manager.Load<Texture2D>("Sprites/Waldo3");
+
+            
+            backgroundMusic = _manager.Load<Song>("Sounds/Song");
+            correctSound = _manager.Load<SoundEffect>("Sounds/Correct");
+            wrongSound = _manager.Load<SoundEffect>("Sounds/Wrong");
         }
 
         public void LoadLevel()
@@ -54,6 +67,14 @@ namespace PetCareGame
             xTimeVisible = 0f;
             mouseReleased = false;
 
+            
+            if (!musicPlaying)
+            {
+                MediaPlayer.IsRepeating = true;
+                MediaPlayer.Play(backgroundMusic);
+                musicPlaying = true;
+            }
+
             switch (currentLevel)
             {
                 case 1:
@@ -66,13 +87,10 @@ namespace PetCareGame
                     waldoBoundingBox = new Rectangle(404, 73, 25, 26);
                     break;
                 default:
+                    MediaPlayer.Stop();
+                    musicPlaying = false;
+                    GameHandler.CurrentState = GameHandler.GameState.Overworld;
                     currentLevel = 1;
-
-                    //sets save file bool for this game to be true
-                    GameHandler.saveFile.WheresWaldoDone = true;
-                    //unloads assets this game is using
-                    GameHandler.UnloadCurrentLevel();
-                    GameHandler.LoadOverworld();
                     return;
             }
         }
@@ -105,6 +123,7 @@ namespace PetCareGame
 
                 if (waldoBoundingBox.Contains((int)mouseX, (int)mouseY))
                 {
+                    correctSound.Play(); 
                     showCheck = true;
                     showX = false;
                     gameOver = true;
@@ -113,6 +132,7 @@ namespace PetCareGame
                 }
                 else
                 {
+                    wrongSound.Play(); 
                     showCheck = false;
 
                     if (incorrectGuesses < maxIncorrectGuesses - 1)
@@ -171,11 +191,11 @@ namespace PetCareGame
                     }
                     else
                     {
+                        MediaPlayer.Stop();
+                        musicPlaying = false;
+                        GameHandler.CurrentState = GameHandler.GameState.Overworld;
                         currentLevel = 1;
-
-                        //sets save file bool for this game to be true
                         GameHandler.saveFile.WheresWaldoDone = true;
-                        //unloads assets this game is using
                         GameHandler.UnloadCurrentLevel();
                         GameHandler.LoadOverworld();
                     }
@@ -249,11 +269,8 @@ namespace PetCareGame
 
         public void Dispose() { }
 
-        public void SaveData(SaveFile saveFile) {
-            
-        }
+        public void SaveData(SaveFile saveFile) { }
 
         public void LoadData() { }
     }
 }
-

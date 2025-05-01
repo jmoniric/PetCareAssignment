@@ -524,10 +524,28 @@
 /processorParam:TextureFormat=Color
 /build:SlidingGame/Sprites/treasure_chests_32x32.png;SlidingGame/Sprites/treasure_atlas.png
 
+#begin WaldoGame/Sounds/Correct.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:WaldoGame/Sounds/Correct.wav
+
 #begin WaldoGame/Sounds/placeholder.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
 /build:WaldoGame/Sounds/placeholder.xml
+
+#begin WaldoGame/Sounds/Song.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:WaldoGame/Sounds/Song.mp3
+
+#begin WaldoGame/Sounds/Wrong.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:WaldoGame/Sounds/Wrong.wav
 
 #begin WaldoGame/Sprites/GreenCheck.png
 /importer:TextureImporter
