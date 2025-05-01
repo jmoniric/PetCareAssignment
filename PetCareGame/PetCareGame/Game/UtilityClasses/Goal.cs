@@ -1,3 +1,6 @@
+/** 
+@author: Nolan
+*/
 using System;
 using System.Runtime.Intrinsics;
 using Microsoft.Xna.Framework;

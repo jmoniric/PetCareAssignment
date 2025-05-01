@@ -1,4 +1,7 @@
-﻿using System;
+﻿/** 
+@author: Javier & Nolan
+*/
+using System;
 using System.Diagnostics;
 using System.Net.Mime;
 using Microsoft.Xna.Framework;

@@ -1,3 +1,6 @@
+/** 
+@author: Javier & Nolan
+*/
 using System;
 using System.Security.Principal;
 using Microsoft.Xna.Framework;

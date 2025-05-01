@@ -1,3 +1,6 @@
+/** 
+@author: Nolan
+*/
 using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
