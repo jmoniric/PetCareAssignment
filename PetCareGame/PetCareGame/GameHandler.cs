@@ -12,6 +12,8 @@ using System.IO;
 
 namespace PetCareGame;
 
+// The main Game1 class inherits from the Game class,
+// which provides all the core methods for the game (ie. Load/Unload Content, Update, Draw etc.). (Monogame Documentation)
 public class GameHandler : Game
 {
     // Enumarates states in which the game can switch between
