@@ -13,36 +13,42 @@ namespace PetCareGame
 {
     public class WheresWaldo : LevelInterface
     {
+        // Font and textures
         private SpriteFont font;
-        private Texture2D[] waldoImages;
-        private Texture2D coreTextureAtlas;
+        private Texture2D[] waldoImages; // Array of images per level
+        private Texture2D coreTextureAtlas; // Contains checkmark and X sprites
 
+        // Rectangles for checkmark and X icons
         private Rectangle markXRect = new Rectangle(48, 0, 16, 16);
         private Rectangle checkmarkRect = new Rectangle(0, 16, 16, 16);
 
+        // Game state flags
         private bool showCheck = false;
         private bool showX = false;
         private bool gameOver = false;
+        private bool mouseReleased = true;
+
+        // Timers and scoring
         private float timer = 0f;
+        private float timeVisible = 0f; // How long to show check
+        private float xTimeVisible = 0f; // How long to show X
+        private const float timeToDisappear = 5f;
         private int score = 0;
         private int incorrectGuesses = 0;
         private const int maxIncorrectGuesses = 3;
-        private bool mouseReleased = true;
-        private float timeVisible = 0f;
-        private const float timeToDisappear = 5f;
-        private float xTimeVisible = 0f;
 
-        private Rectangle waldoBoundingBox;
+        private Rectangle waldoBoundingBox; // Defines Waldo's location for each level
 
         private int currentLevel = 1;
         private const int maxLevels = 3;
 
-       
+ 
         private Song backgroundMusic;
         private SoundEffect correctSound;
         private SoundEffect wrongSound;
         private bool musicPlaying = false;
 
+    
         public void LoadContent(ContentManager _manager, ContentManager _coreAssets)
         {
             font = _coreAssets.Load<SpriteFont>("Fonts/courier_new_36");
@@ -53,12 +59,12 @@ namespace PetCareGame
             waldoImages[2] = _manager.Load<Texture2D>("Sprites/Waldo2");
             waldoImages[3] = _manager.Load<Texture2D>("Sprites/Waldo3");
 
-            
             backgroundMusic = _manager.Load<Song>("Sounds/Song");
             correctSound = _manager.Load<SoundEffect>("Sounds/Correct");
             wrongSound = _manager.Load<SoundEffect>("Sounds/Wrong");
         }
 
+        // Reset and initialize values when level is loaded
         public void LoadLevel()
         {
             timer = 0f;
@@ -70,7 +76,7 @@ namespace PetCareGame
             xTimeVisible = 0f;
             mouseReleased = false;
 
-            
+            // Start background music 
             if (!musicPlaying)
             {
                 MediaPlayer.IsRepeating = true;
@@ -78,6 +84,7 @@ namespace PetCareGame
                 musicPlaying = true;
             }
 
+            // Define Waldo's clickable area per level
             switch (currentLevel)
             {
                 case 1:
@@ -90,6 +97,7 @@ namespace PetCareGame
                     waldoBoundingBox = new Rectangle(404, 73, 25, 26);
                     break;
                 default:
+                    // If no more levels, return to overworld
                     MediaPlayer.Stop();
                     musicPlaying = false;
                     GameHandler.CurrentState = GameHandler.GameState.Overworld;
@@ -103,6 +111,7 @@ namespace PetCareGame
             _manager.Unload();
         }
 
+        // Main update loop - handles timer, mouse clicks, guess checking
         public void Update(GameTime gameTime)
         {
             if (!gameOver)
@@ -112,18 +121,20 @@ namespace PetCareGame
 
             float mouseX = GameHandler.relativeMousePos.X;
             float mouseY = GameHandler.relativeMousePos.Y;
-
             MouseState mouseState = Mouse.GetState();
 
+            // Detect mouse release to prevent holding click
             if (mouseState.LeftButton == ButtonState.Released)
             {
                 mouseReleased = true;
             }
 
+        
             if (mouseState.LeftButton == ButtonState.Pressed && mouseReleased && !gameOver)
             {
                 mouseReleased = false;
 
+                // Player found Waldo
                 if (waldoBoundingBox.Contains((int)mouseX, (int)mouseY))
                 {
                     correctSound.Play(); 
@@ -133,7 +144,7 @@ namespace PetCareGame
                     score++;
                     timeVisible = timeToDisappear;
                 }
-                else
+                else // Player guessed incorrectly
                 {
                     wrongSound.Play(); 
                     showCheck = false;
@@ -150,6 +161,7 @@ namespace PetCareGame
 
                     incorrectGuesses++;
 
+                    // End game if too many wrong guesses
                     if (incorrectGuesses >= maxIncorrectGuesses)
                     {
                         gameOver = true;
@@ -157,25 +169,20 @@ namespace PetCareGame
                 }
             }
 
+            // Hide checkmark after timeout
             if (timeVisible > 0)
-            {
                 timeVisible -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
             else
-            {
                 showCheck = false;
-            }
 
+            // Hide red X after timeout
             if (xTimeVisible > 0)
-            {
                 xTimeVisible -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
             else
-            {
                 showX = false;
-            }
         }
 
+        
         public void HandleInput(GameTime gameTime)
         {
             if (gameOver && Keyboard.GetState().IsKeyDown(Keys.Space))
@@ -183,17 +190,18 @@ namespace PetCareGame
                 if (incorrectGuesses >= maxIncorrectGuesses)
                 {
                     currentLevel = 1;
-                    LoadLevel();
+                    LoadLevel(); // Restart
                 }
                 else
                 {
                     if (currentLevel < maxLevels)
                     {
                         currentLevel++;
-                        LoadLevel();
+                        LoadLevel(); // Next level
                     }
                     else
                     {
+                        // Game finished - return to overworld
                         MediaPlayer.Stop();
                         musicPlaying = false;
                         GameHandler.CurrentState = GameHandler.GameState.Overworld;
@@ -206,6 +214,7 @@ namespace PetCareGame
             }
         }
 
+        // Render everything on screen
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDeviceManager _graphics)
         {
             _graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -213,6 +222,7 @@ namespace PetCareGame
             float screenWidth = _graphics.PreferredBackBufferWidth;
             float screenHeight = _graphics.PreferredBackBufferHeight;
 
+            // Draw Waldo image scaled and centered
             if (waldoImages[currentLevel] != null)
             {
                 float scale = Math.Min(screenWidth / (float)waldoImages[currentLevel].Width, screenHeight / (float)waldoImages[currentLevel].Height);
@@ -224,12 +234,14 @@ namespace PetCareGame
                 spriteBatch.DrawString(font, "Error: Waldo Image Not Loaded", new Vector2(10, 50), Color.Red);
             }
 
+            // Draw incorrect guesses counter
             string incorrectGuessesText = $"Incorrect Guesses: {incorrectGuesses}/{maxIncorrectGuesses}";
             Vector2 incorrectGuessesSize = font.MeasureString(incorrectGuessesText);
             Rectangle incorrectGuessesRect = new Rectangle(0, 0, (int)screenWidth, (int)(incorrectGuessesSize.Y + 10));
             spriteBatch.Draw(GameHandler.plainWhiteTexture, incorrectGuessesRect, Color.Gray);
             spriteBatch.DrawString(font, incorrectGuessesText, new Vector2(10, 5), Color.Black);
 
+            // Draw either checkmark or red X icon
             if (showCheck || showX)
             {
                 Rectangle sourceRect = showCheck ? checkmarkRect : markXRect;
@@ -247,6 +259,7 @@ namespace PetCareGame
                 spriteBatch.Draw(coreTextureAtlas, iconPosition, sourceRect, tint, 0f, Vector2.Zero, iconScale, SpriteEffects.None, 0f);
             }
 
+            // Draw end-of-level message
             if (gameOver)
             {
                 string message = incorrectGuesses >= maxIncorrectGuesses ? "Game Over! Too many incorrect guesses." : "You found Waldo!";
@@ -268,12 +281,10 @@ namespace PetCareGame
             }
         }
 
+       
         public void CleanupProcesses() { }
-
         public void Dispose() { }
-
         public void SaveData(SaveFile saveFile) { }
-
         public void LoadData() { }
     }
 }
