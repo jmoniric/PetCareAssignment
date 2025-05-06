@@ -53,6 +53,8 @@ namespace PetCareGame
         private bool roadBlock1;
         private bool roadBlock2;
 
+        private bool keyPressedE = false;
+
         private Rectangle missionPad1;
         private Rectangle missionPad2;
         private Rectangle missionPad3;
@@ -125,7 +127,8 @@ namespace PetCareGame
                 }
 
                 //handle the mission pads here
-                if(kybdState.IsKeyDown(Keys.E)) {
+                if(kybdState.IsKeyDown(Keys.E) && !keyPressedE) {
+                    keyPressedE = true;
                     if(missionPad1.Contains(catBounds)) {
                         GameHandler.UnloadCurrentLevel();
                         GameHandler.CurrentState = GameHandler.GameState.SlidingGame;
@@ -142,6 +145,8 @@ namespace PetCareGame
                         PetCareLevel.LoadContent(GameHandler.petcareAssets, coreAssets);
                         PetCareLevel.LoadLevel();
                     }
+                } else if(kybdState.IsKeyUp(Keys.E)) {
+                    keyPressedE = false;
                 }
 
 
